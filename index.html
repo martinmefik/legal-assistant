@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЮрПомощник — конструктор документов</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --primary: #2b4c7e;
+    --primary-hover: #1e3a63;
+    --accent: #4a90d9;
+    --text: #1c2333;
+    --muted: #6b7385;
+    --border: #e1e6ef;
+    --success: #2e7d5b;
+    --shadow: 0 4px 20px rgba(30, 50, 90, 0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header {
+    text-align: center;
+    padding: 30px 20px;
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-size: 28px;
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  header p { color: var(--muted); font-size: 15px; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+  }
+  .panel h2 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    font-family: system-ui, sans-serif;
+  }
+
+  .type-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .type-btn {
+    padding: 12px 8px;
+    border: 2px solid var(--border);
+    background: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .type-btn.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+  }
+  .type-btn:hover:not(.active) { border-color: var(--accent); color: var(--primary); }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    transition: border 0.2s;
+    background: #fbfcfe;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .hint {
+    font-family: system-ui, sans-serif;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 10px;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-outline {
+    background: #fff;
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+  }
+  .btn-outline:hover { background: #eef3fa; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #246147; }
+
+  /* Документ */
+  #docPreview {
+    background: #fff;
+    padding: 40px 45px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #111;
+    min-height: 500px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    white-space: pre-wrap;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  #docPreview .doc-header {
+    text-align: right;
+    margin-bottom: 30px;
+    font-size: 13.5px;
+  }
+  #docPreview .doc-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 20px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  #docPreview .doc-body { text-align: justify; margin: 16px 0; }
+  #docPreview .doc-footer {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13.5px;
+  }
+  #docPreview .doc-footer .sign-line { border-bottom: 1px solid #333; width: 180px; }
+
+  .placeholder-empty {
+    color: #b0b6c4;
+    font-style: italic;
+    text-align: center;
+    padding-top: 100px;
+    font-family: system-ui, sans-serif;
+  }
+
+  .disclaimer {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: #fff8e6;
+    border-left: 4px solid #e6a817;
+    border-radius: 6px;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    color: #6b5320;
+    line-height: 1.5;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>⚖️ ЮрПомощник</h1>
+    <p>Конструктор юридически грамотных документов: претензии, ходатайства, заявления</p>
+  </header>
+
+  <div class="layout">
+
+    <!-- ЛЕВАЯ ПАНЕЛЬ: ФОРМА -->
+    <div class="panel">
+      <h2>1. Тип документа</h2>
+      <div class="type-selector">
+        <button class="type-btn active" data-type="claim">Претензия</button>
+        <button class="type-btn" data-type="motion">Ходатайство</button>
+        <button class="type-btn" data-type="statement">Заявление</button>
+      </div>
+
+      <h2>2. Данные</h2>
+
+      <!-- Адресат -->
+      <div class="field">
+        <label>Кому (организация / должность / ФИО)</label>
+        <input type="text" id="recipient" placeholder="ООО «Ромашка», директору Иванову И.И.">
+        <div class="hint">Например: УК «Дом-Сервис», начальнику Петрову А.С.</div>
+      </div>
+      <div class="field">
+        <label>Адрес адресата</label>
+        <input type="text" id="recipientAddr" placeholder="г. Москва, ул. Ленина, д. 10, офис 5">
+      </div>
+
+      <!-- Заявитель -->
+      <div class="row">
+        <div class="field">
+          <label>Ваше ФИО</label>
+          <input type="text" id="applicant" placeholder="Сидоров Сидор Сидорович">
+        </div>
+        <div class="field">
+          <label>Ваш телефон</label>
+          <input type="text" id="phone" placeholder="+7 (900) 123-45-67">
+        </div>
+      </div>
+      <div class="field">
+        <label>Ваш адрес</label>
+        <input type="text" id="applicantAddr" placeholder="г. Москва, ул. Пушкина, д. 5, кв. 12">
+      </div>
+
+      <!-- Суть -->
+      <div class="field">
+        <label>Что произошло (суть ситуации)</label>
+        <textarea id="situation" placeholder="15 января 2025 г. я приобрёл в магазине «ТехноМир» телефон стоимостью 45 000 руб. Через 20 дней телефон перестал включаться..."></textarea>
+        <div class="hint">Опишите факты: дата, место, что именно не так, какие документы есть.</div>
+      </div>
+
+      <!-- Требование -->
+      <div class="field">
+        <label>Ваше требование</label>
+        <textarea id="demand" placeholder="Прошу вернуть уплаченные денежные средства в размере 45 000 руб. в течение 10 дней."></textarea>
+      </div>
+
+      <!-- Приложения -->
+      <div class="field">
+        <label>Приложения (по одному на строку)</label>
+        <textarea id="attachments" placeholder="Копия чека от 15.01.2025&#10;Копия гарантийного талона&#10;Копия переписки с продавцом"></textarea>
+      </div>
+
+      <!-- Дата -->
+      <div class="field">
+        <label>Дата составления</label>
+        <input type="date" id="docDate">
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="generateDoc()">Сформировать документ</button>
+        <button class="btn btn-outline" onclick="resetForm()">Очистить</button>
+      </div>
+
+      <div class="disclaimer">
+        ⚠️ Сервис не оказывает юридических услуг. Документы носят информационный характер. Перед подачей рекомендуется консультация с юристом.
+      </div>
+    </div>
+
+    <!-- ПРАВАЯ ПАНЕЛЬ: ПРЕДПРОСМОТР -->
+    <div class="panel">
+      <h2>3. Предпросмотр <span class="badge">PDF / Печать</span></h2>
+      <div id="docPreview">
+        <div class="placeholder-empty">
+          Заполните форму слева и нажмите<br>«Сформировать документ»
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-success" onclick="downloadPDF()">📥 Скачать PDF</button>
+        <button class="btn btn-outline" onclick="printDoc()">🖨️ Печать</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   ЮрПомощник — логика генерации документов
+   ========================================================= */
+
+let currentType = 'claim';
+
+// Переключение типа документа
+document.querySelectorAll('.type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentType = btn.dataset.type;
+    updateLabels();
+  });
+});
+
+// Меняем подсказки под тип документа
+function updateLabels() {
+  const situation = document.getElementById('situation');
+  const demand = document.getElementById('demand');
+  const recipient = document.getElementById('recipient');
+
+  if (currentType === 'claim') {
+    situation.placeholder = '15 января 2025 г. я приобрёл в магазине «ТехноМир» телефон стоимостью 45 000 руб. Через 20 дней телефон перестал включаться...';
+    demand.placeholder = 'Прошу вернуть уплаченные денежные средства в размере 45 000 руб. в течение 10 дней.';
+    recipient.placeholder = 'ООО «Ромашка», директору Иванову И.И.';
+  } else if (currentType === 'motion') {
+    situation.placeholder = 'В производстве суда находится гражданское дело № 2-1234/2025 по моему иску к ООО «Ромашка». Для подтверждения позиции необходимо запросить документы...';
+    demand.placeholder = 'Прошу истребовать у ООО «Ромашка» договор оказания услуг и акт выполненных работ.';
+    recipient.placeholder = 'В Ленинский районный суд г. Москвы, судье Смирновой Е.А.';
+  } else {
+    situation.placeholder = 'В моей квартире № 12 по адресу ул. Пушкина, д. 5, с 10 января 2025 г. не работает вентиляция, что подтверждается актом от 12.01.2025...';
+    demand.placeholder = 'Прошу провести проверку вентиляционной системы и устранить неисправность в установленный законом срок.';
+    recipient.placeholder = 'УК «Дом-Сервис», начальнику Петрову А.С.';
+  }
+}
+
+// Склонение даты
+function formatDate(dateStr) {
+  if (!dateStr) return '«___» __________ 20___ г.';
+  const d = new Date(dateStr);
+  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  return `«${String(d.getDate()).padStart(2,'0')}» ${months[d.getMonth()]} ${d.getFullYear()} г.`;
+}
+
+// Заголовок в зависимости от типа
+function getTitle() {
+  if (currentType === 'claim') return 'ПРЕТЕНЗИЯ';
+  if (currentType === 'motion') return 'ХОДАТАЙСТВО';
+  return 'ЗАЯВЛЕНИЕ';
+}
+
+// Правовое обоснование
+function getLegalBasis() {
+  if (currentType === 'claim') {
+    return 'В соответствии со ст. 4, 18, 22 Закона РФ от 07.02.1992 № 2300-1 «О защите прав потребителей», ст. 309, 310 Гражданского кодекса РФ.';
+  }
+  if (currentType === 'motion') {
+    return 'В соответствии со ст. 35, 57, 166 Гражданского процессуального кодекса РФ.';
+  }
+  return 'В соответствии со ст. 33 Конституции РФ, Федеральным законом от 02.05.2006 № 59-ФЗ «О порядке рассмотрения обращений граждан Российской Федерации».';
+}
+
+// Генерация документа
+function generateDoc() {
+  const recipient = document.getElementById('recipient').value.trim();
+  const recipientAddr = document.getElementById('recipientAddr').value.trim();
+  const applicant = document.getElementById('applicant').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const applicantAddr = document.getElementById('applicantAddr').value.trim();
+  const situation = document.getElementById('situation').value.trim();
+  const demand = document.getElementById('demand').value.trim();
+  const attachments = document.getElementById('attachments').value.trim();
+  const docDate = document.getElementById('docDate').value;
+
+  if (!recipient || !applicant || !situation || !demand) {
+    alert('Пожалуйста, заполните обязательные поля: Кому, Ваше ФИО, Что произошло, Требование.');
+    return;
+  }
+
+  const attachmentsList = attachments
+    ? attachments.split('\n').filter(l => l.trim()).map((l, i) => `${i+1}. ${l.trim()}`).join('\n')
+    : '1. ____________________________________________';
+
+  const html = `
+    <div class="doc-header">
+      ${recipient ? `Кому: ${escapeHtml(recipient)}` : 'Кому: _____________________________'}<br>
+      ${recipientAddr ? `Адрес: ${escapeHtml(recipientAddr)}` : ''}
+      <br><br>
+      ${applicant ? `От: ${escapeHtml(applicant)}` : 'От: _____________________________'}<br>
+      ${applicantAddr ? `Адрес: ${escapeHtml(applicantAddr)}` : ''}<br>
+      ${phone ? `Тел.: ${escapeHtml(phone)}` : ''}
+    </div>
+
+    <div class="doc-title">${getTitle()}</div>
+
+    <div class="doc-body">
+${escapeHtml(situation)}
+
+${getLegalBasis()}
+
+На основании изложенного,
+    </div>
+
+    <div class="doc-title" style="text-transform:none; font-size:15px;">ПРОШУ:</div>
+
+    <div class="doc-body">
+${escapeHtml(demand)}
+    </div>
+
+    <div class="doc-body">
+<strong>Приложения:</strong>
+${escapeHtml(attachmentsList)}
+    </div>
+
+    <div class="doc-footer">
+      <div>${formatDate(docDate)}</div>
+      <div>_______________ / ${applicant ? escapeHtml(applicant.split(' ')[0]) : '_____________'}</div>
+    </div>
+
+    <div style="margin-top:30px; font-size:12px; color:#666; font-family:system-ui,sans-serif; border-top:1px dashed #ccc; padding-top:10px;">
+      <strong>Как подать:</strong> составьте документ в двух экземплярах. Один вручите лично под подпись (с датой и ФИО принявшего) или отправьте заказным письмом с уведомлением и описью вложения. Сохраните доказательство вручения.
+    </div>
+  `;
+
+  document.getElementById('docPreview').innerHTML = html;
+}
+
+// Экранирование HTML
+function escapeHtml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Скачать PDF
+function downloadPDF() {
+  const el = document.getElementById('docPreview');
+  if (el.querySelector('.placeholder-empty')) {
+    alert('Сначала сформируйте документ.');
+    return;
+  }
+  const opt = {
+    margin: [15, 15, 15, 15],
+    filename: `document_${Date.now()}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(el).save();
+}
+
+// Печать
+function printDoc() {
+  const el = document.getElementById('docPreview');
+  if (el.querySelector('.placeholder-empty')) {
+    alert('Сначала сформируйте документ.');
+    return;
+  }
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><title>Печать документа</title>
+    <style>
+      body { font-family: 'Times New Roman', serif; padding: 40px; font-size: 14px; line-height: 1.7; }
+      .doc-header { text-align: right; margin-bottom: 30px; font-size: 13.5px; }
+      .doc-title { text-align: center; font-weight: 700; font-size: 16px; margin: 20px 0; text-transform: uppercase; }
+      .doc-body { text-align: justify; margin: 16px 0; }
+      .doc-footer { margin-top: 40px; display: flex; justify-content: space-between; }
+      @media print { @page { margin: 15mm; } }
+    </style></head><body>
+    ${el.innerHTML}
+    </body></html>
+  `);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 300);
+}
+
+// Очистить форму
+function resetForm() {
+  document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+  document.getElementById('docPreview').innerHTML = '<div class="placeholder-empty">Заполните форму слева и нажмите<br>«Сформировать документ»</div>';
+}
+
+// Установить сегодняшнюю дату
+document.getElementById('docDate').valueAsDate = new Date();
+</script>
+</body>
+</html>

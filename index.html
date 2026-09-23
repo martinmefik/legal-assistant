@@ -3,130 +3,320 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ЮрПомощник — конструктор документов</title>
+<title>LexScriptor — конструктор юридических документов</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root {
-    --bg: #f4f6fb;
-    --card: #ffffff;
-    --primary: #2b4c7e;
-    --primary-hover: #1e3a63;
-    --accent: #4a90d9;
-    --text: #1c2333;
-    --muted: #6b7385;
-    --border: #e1e6ef;
-    --success: #2e7d5b;
-    --shadow: 0 4px 20px rgba(30, 50, 90, 0.08);
+    --navy: #0f2544;
+    --navy-2: #1a3a63;
+    --gold: #b8945f;
+    --gold-2: #d4b078;
+    --paper: #fbf9f4;
+    --paper-2: #f4efe4;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --border: #d8d0bd;
+    --success: #2d6a4f;
+    --danger: #9b2226;
+    --shadow: 0 10px 40px rgba(15, 37, 68, 0.12);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
   body {
     font-family: 'Georgia', 'Times New Roman', serif;
-    background: var(--bg);
-    color: var(--text);
+    background: var(--paper-2);
+    color: var(--ink);
     line-height: 1.6;
-    padding: 20px;
+    min-height: 100vh;
   }
-  .container { max-width: 1100px; margin: 0 auto; }
-  header {
+
+  /* ============ WELCOME SCREEN ============ */
+  .welcome {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 60%, #0a1a33 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    overflow-y: auto;
+    transition: opacity 0.5s ease, visibility 0.5s;
+  }
+  .welcome.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .welcome-inner {
+    max-width: 900px;
+    width: 100%;
+    background: var(--paper);
+    border-radius: 4px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    padding: 60px 70px;
+    position: relative;
+    border-top: 6px solid var(--gold);
+  }
+  .welcome-inner::before {
+    content: '';
+    position: absolute;
+    top: 12px; left: 12px; right: 12px; bottom: 12px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+    border-radius: 2px;
+  }
+  .welcome-emblem {
     text-align: center;
-    padding: 30px 20px;
-    background: var(--card);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    margin-bottom: 24px;
+    font-size: 52px;
+    margin-bottom: 16px;
+    color: var(--gold);
+    line-height: 1;
   }
-  header h1 {
-    font-size: 28px;
-    color: var(--primary);
+  .welcome h1 {
+    text-align: center;
+    font-size: 38px;
+    color: var(--navy);
+    letter-spacing: 1px;
     margin-bottom: 8px;
     font-weight: 700;
   }
-  header p { color: var(--muted); font-size: 15px; }
+  .welcome .tagline {
+    text-align: center;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 16px;
+    margin-bottom: 32px;
+    letter-spacing: 0.5px;
+  }
+  .welcome-divider {
+    width: 80px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 32px;
+  }
+  .welcome-lead {
+    font-size: 20px;
+    text-align: center;
+    color: var(--navy);
+    margin-bottom: 36px;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+  .welcome-lead em { color: var(--gold); font-style: italic; }
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 36px;
+  }
+  .benefit {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--gold);
+    border-radius: 3px;
+  }
+  .benefit .icon {
+    font-size: 24px;
+    color: var(--gold);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .benefit .text strong {
+    display: block;
+    color: var(--navy);
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+  .benefit .text span {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: system-ui, sans-serif;
+  }
+  .welcome-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-large {
+    padding: 16px 36px;
+    font-family: system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-transform: uppercase;
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .btn-gold:hover { background: var(--gold-2); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(184,148,95,0.4); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--paper);
+    border: 1.5px solid var(--gold);
+  }
+  .btn-ghost:hover { background: rgba(184,148,95,0.15); }
+
+  /* ============ MAIN APP ============ */
+  .app { display: none; min-height: 100vh; }
+  .app.active { display: block; }
+
+  .topbar {
+    background: var(--navy);
+    color: var(--paper);
+    padding: 14px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--gold);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  .topbar .brand {
+    font-family: 'Georgia', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--gold-2);
+  }
+  .topbar .brand span { color: var(--paper); }
+  .topbar .nav {
+    display: flex;
+    gap: 8px;
+  }
+  .topbar .nav button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--paper);
+    padding: 8px 16px;
+    border-radius: 3px;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .topbar .nav button:hover { border-color: var(--gold); color: var(--gold-2); }
+  .topbar .nav button.active { background: var(--gold); color: var(--navy); font-weight: 600; }
+
+  .container { max-width: 1300px; margin: 0 auto; padding: 30px; }
+
+  .page { display: none; }
+  .page.active { display: block; }
 
   .layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
+    align-items: start;
   }
-  @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
 
   .panel {
-    background: var(--card);
-    border-radius: 16px;
+    background: var(--paper);
+    border-radius: 4px;
     box-shadow: var(--shadow);
-    padding: 24px;
+    padding: 28px 30px;
+    border-top: 4px solid var(--navy);
   }
   .panel h2 {
-    font-size: 18px;
-    color: var(--primary);
-    margin-bottom: 16px;
+    font-size: 17px;
+    color: var(--navy);
+    margin-bottom: 18px;
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--border);
+    border-bottom: 1px solid var(--border);
     font-family: system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
   }
 
-  .type-selector {
+  /* Type & language selectors */
+  .grid-selector {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
-  .type-btn {
-    padding: 12px 8px;
-    border: 2px solid var(--border);
-    background: #fff;
-    border-radius: 10px;
+  .type-grid { grid-template-columns: repeat(3, 1fr); }
+  .lang-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .sel-btn {
+    padding: 11px 8px;
+    border: 1.5px solid var(--border);
+    background: var(--paper);
+    border-radius: 3px;
     cursor: pointer;
     font-family: system-ui, sans-serif;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--muted);
     transition: all 0.2s;
+    line-height: 1.3;
+    text-align: center;
   }
-  .type-btn.active {
-    border-color: var(--primary);
-    background: var(--primary);
-    color: #fff;
+  .sel-btn.active {
+    border-color: var(--navy);
+    background: var(--navy);
+    color: var(--paper);
   }
-  .type-btn:hover:not(.active) { border-color: var(--accent); color: var(--primary); }
+  .sel-btn:hover:not(.active) { border-color: var(--gold); color: var(--navy); }
 
   .field { margin-bottom: 14px; }
   .field label {
     display: block;
     font-family: system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
     margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   .field input, .field textarea, .field select {
     width: 100%;
     padding: 10px 12px;
     border: 1.5px solid var(--border);
-    border-radius: 8px;
+    border-radius: 3px;
     font-family: system-ui, sans-serif;
     font-size: 14px;
-    color: var(--text);
+    color: var(--ink);
+    background: #fff;
     transition: border 0.2s;
-    background: #fbfcfe;
   }
   .field input:focus, .field textarea:focus, .field select:focus {
     outline: none;
-    border-color: var(--accent);
-    background: #fff;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(184,148,95,0.15);
   }
-  .field textarea { resize: vertical; min-height: 70px; }
+  .field textarea { resize: vertical; min-height: 90px; font-family: system-ui, sans-serif; }
   .hint {
     font-family: system-ui, sans-serif;
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--muted);
     margin-top: 4px;
     line-height: 1.4;
   }
-
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Analysis block */
+  .analysis {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: #eef4ec;
+    border-left: 3px solid var(--success);
+    border-radius: 3px;
+    font-family: system-ui, sans-serif;
+    font-size: 12.5px;
+    color: #1e3a2b;
+    line-height: 1.55;
+    display: none;
+  }
+  .analysis.show { display: block; }
+  .analysis strong { color: var(--success); display: block; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .analysis ul { margin: 6px 0 0 18px; }
+  .analysis li { margin-bottom: 3px; }
 
   .actions {
     display: flex;
@@ -136,192 +326,516 @@
   }
   .btn {
     flex: 1;
-    min-width: 140px;
+    min-width: 130px;
     padding: 12px 16px;
     border: none;
-    border-radius: 10px;
+    border-radius: 3px;
     font-family: system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
-  .btn-primary { background: var(--primary); color: #fff; }
-  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary { background: var(--navy); color: var(--paper); }
+  .btn-primary:hover { background: var(--navy-2); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: var(--gold-2); }
   .btn-outline {
-    background: #fff;
-    color: var(--primary);
-    border: 1.5px solid var(--primary);
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
   }
-  .btn-outline:hover { background: #eef3fa; }
+  .btn-outline:hover { background: var(--navy); color: var(--paper); }
   .btn-success { background: var(--success); color: #fff; }
-  .btn-success:hover { background: #246147; }
+  .btn-success:hover { background: #1e4a36; }
 
-  /* Документ */
+  /* Document preview */
   #docPreview {
     background: #fff;
-    padding: 40px 45px;
+    padding: 50px 55px;
     font-size: 14px;
-    line-height: 1.7;
-    color: #111;
+    line-height: 1.75;
+    color: var(--ink);
     min-height: 500px;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    white-space: pre-wrap;
+    border-radius: 3px;
     font-family: 'Times New Roman', Times, serif;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.02);
+    position: relative;
   }
-  #docPreview .doc-header {
-    text-align: right;
-    margin-bottom: 30px;
-    font-size: 13.5px;
-  }
+  #docPreview .doc-header { text-align: right; margin-bottom: 34px; font-size: 13.5px; line-height: 1.6; }
+  #docPreview .doc-header .label { color: var(--muted); }
   #docPreview .doc-title {
     text-align: center;
     font-weight: 700;
     font-size: 16px;
-    margin: 20px 0;
+    margin: 22px 0;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
   }
-  #docPreview .doc-body { text-align: justify; margin: 16px 0; }
+  #docPreview .doc-body { text-align: justify; margin: 14px 0; text-indent: 30px; }
+  #docPreview .doc-body.no-indent { text-indent: 0; }
+  #docPreview .doc-legal {
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: #f8f6ef;
+    border-left: 3px solid var(--gold);
+    font-size: 13px;
+    font-style: italic;
+    color: #333;
+    text-indent: 0;
+  }
   #docPreview .doc-footer {
-    margin-top: 40px;
+    margin-top: 50px;
     display: flex;
     justify-content: space-between;
     font-size: 13.5px;
+    align-items: flex-end;
   }
-  #docPreview .doc-footer .sign-line { border-bottom: 1px solid #333; width: 180px; }
-
+  #docPreview .sign-line { border-bottom: 1px solid #333; display: inline-block; min-width: 180px; }
+  #docPreview .doc-notes {
+    margin-top: 36px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    font-family: system-ui, sans-serif;
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
   .placeholder-empty {
     color: #b0b6c4;
     font-style: italic;
     text-align: center;
-    padding-top: 100px;
+    padding-top: 120px;
     font-family: system-ui, sans-serif;
+    font-size: 14px;
   }
 
   .disclaimer {
     margin-top: 16px;
     padding: 12px 14px;
-    background: #fff8e6;
-    border-left: 4px solid #e6a817;
-    border-radius: 6px;
+    background: #fdf6e3;
+    border-left: 3px solid var(--gold);
+    border-radius: 3px;
     font-family: system-ui, sans-serif;
-    font-size: 12px;
+    font-size: 11.5px;
     color: #6b5320;
-    line-height: 1.5;
+    line-height: 1.55;
   }
-
   .badge {
     display: inline-block;
-    background: var(--accent);
-    color: #fff;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: system-ui, sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .hidden { display: none !important; }
+
+  /* Templates page */
+  .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 20px;
+  }
+  .template-card {
+    background: var(--paper);
+    border-radius: 4px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--gold);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .template-card:hover { transform: translateY(-3px); box-shadow: 0 15px 45px rgba(15,37,68,0.18); }
+  .template-card h3 {
+    color: var(--navy);
+    font-size: 16px;
+    margin-bottom: 8px;
+    font-family: 'Georgia', serif;
+  }
+  .template-card p {
+    font-family: system-ui, sans-serif;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .template-card .tag {
+    display: inline-block;
+    background: var(--paper-2);
+    color: var(--navy);
     font-family: system-ui, sans-serif;
     font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
-    margin-left: 6px;
-    vertical-align: middle;
+    padding: 3px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
   }
 
-  .hidden { display: none !important; }
+  /* Subscription page */
+  .subscription-wrap { max-width: 900px; margin: 0 auto; text-align: center; }
+  .subscription-wrap h2 {
+    color: var(--navy);
+    font-size: 30px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  .subscription-wrap .sub-lead {
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 36px;
+    font-size: 16px;
+  }
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 800px) { .plans { grid-template-columns: 1fr; } }
+  .plan {
+    background: var(--paper);
+    border-radius: 4px;
+    padding: 32px 24px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--border);
+    text-align: center;
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .plan.featured { border-top-color: var(--gold); transform: scale(1.03); }
+  .plan h3 {
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .plan .price {
+    font-size: 38px;
+    color: var(--navy);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .plan .price small { font-size: 14px; color: var(--muted); font-weight: 400; }
+  .plan .price-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; font-family: system-ui, sans-serif; }
+  .plan ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 24px;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.9;
+  }
+  .plan ul li::before { content: '✓  '; color: var(--success); font-weight: 700; }
+  .plan ul li.no::before { content: '✕  '; color: #c0c0c0; }
+  .plan ul li.no { color: #b0b0b0; }
+  .plan .btn { width: 100%; }
+  .plan .badge-feat {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy);
+    font-family: system-ui, sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
 </style>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <h1>⚖️ ЮрПомощник</h1>
-    <p>Конструктор юридически грамотных документов: претензии, ходатайства, заявления</p>
-  </header>
+<!-- ============ WELCOME SCREEN ============ -->
+<div class="welcome" id="welcome">
+  <div class="welcome-inner">
+    <div class="welcome-emblem">⚖</div>
+    <h1>LEXSCRIPTOR</h1>
+    <div class="tagline">Юридические документы — правильно, быстро, обоснованно</div>
+    <div class="welcome-divider"></div>
 
-  <div class="layout">
+    <p class="welcome-lead">
+      Хочешь составить <em>юридически грамотную претензию</em>,<br>
+      но не знаешь как? — Тогда тебе к нам.
+    </p>
 
-    <!-- ЛЕВАЯ ПАНЕЛЬ: ФОРМА -->
-    <div class="panel">
-      <h2>1. Тип документа</h2>
-      <div class="type-selector">
-        <button class="type-btn active" data-type="claim">Претензия</button>
-        <button class="type-btn" data-type="motion">Ходатайство</button>
-        <button class="type-btn" data-type="statement">Заявление</button>
-      </div>
-
-      <h2>2. Данные</h2>
-
-      <!-- Адресат -->
-      <div class="field">
-        <label>Кому (организация / должность / ФИО)</label>
-        <input type="text" id="recipient" placeholder="ООО «Ромашка», директору Иванову И.И.">
-        <div class="hint">Например: УК «Дом-Сервис», начальнику Петрову А.С.</div>
-      </div>
-      <div class="field">
-        <label>Адрес адресата</label>
-        <input type="text" id="recipientAddr" placeholder="г. Москва, ул. Ленина, д. 10, офис 5">
-      </div>
-
-      <!-- Заявитель -->
-      <div class="row">
-        <div class="field">
-          <label>Ваше ФИО</label>
-          <input type="text" id="applicant" placeholder="Сидоров Сидор Сидорович">
-        </div>
-        <div class="field">
-          <label>Ваш телефон</label>
-          <input type="text" id="phone" placeholder="+7 (900) 123-45-67">
+    <div class="benefits">
+      <div class="benefit">
+        <div class="icon">§</div>
+        <div class="text">
+          <strong>Реальные статьи законов</strong>
+          <span>Система сама подбирает нормы ГК РФ, ЗоЗПП, ГПК РФ по тексту</span>
         </div>
       </div>
-      <div class="field">
-        <label>Ваш адрес</label>
-        <input type="text" id="applicantAddr" placeholder="г. Москва, ул. Пушкина, д. 5, кв. 12">
+      <div class="benefit">
+        <div class="icon">✎</div>
+        <div class="text">
+          <strong>Умная генерация</strong>
+          <span>Текст перерабатывается в юридический стиль, а не просто вставляется</span>
+        </div>
       </div>
-
-      <!-- Суть -->
-      <div class="field">
-        <label>Что произошло (суть ситуации)</label>
-        <textarea id="situation" placeholder="15 января 2025 г. я приобрёл в магазине «ТехноМир» телефон стоимостью 45 000 руб. Через 20 дней телефон перестал включаться..."></textarea>
-        <div class="hint">Опишите факты: дата, место, что именно не так, какие документы есть.</div>
+      <div class="benefit">
+        <div class="icon">🌐</div>
+        <div class="text">
+          <strong>Любой язык мира</strong>
+          <span>Обращения за границу и из-за границы — на нужном языке</span>
+        </div>
       </div>
-
-      <!-- Требование -->
-      <div class="field">
-        <label>Ваше требование</label>
-        <textarea id="demand" placeholder="Прошу вернуть уплаченные денежные средства в размере 45 000 руб. в течение 10 дней."></textarea>
-      </div>
-
-      <!-- Приложения -->
-      <div class="field">
-        <label>Приложения (по одному на строку)</label>
-        <textarea id="attachments" placeholder="Копия чека от 15.01.2025&#10;Копия гарантийного талона&#10;Копия переписки с продавцом"></textarea>
-      </div>
-
-      <!-- Дата -->
-      <div class="field">
-        <label>Дата составления</label>
-        <input type="date" id="docDate">
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-primary" onclick="generateDoc()">Сформировать документ</button>
-        <button class="btn btn-outline" onclick="resetForm()">Очистить</button>
-      </div>
-
-      <div class="disclaimer">
-        ⚠️ Сервис не оказывает юридических услуг. Документы носят информационный характер. Перед подачей рекомендуется консультация с юристом.
+      <div class="benefit">
+        <div class="icon">📄</div>
+        <div class="text">
+          <strong>PDF и печать</strong>
+          <span>Готовый документ с правильной структурой и реквизитами</span>
+        </div>
       </div>
     </div>
 
-    <!-- ПРАВАЯ ПАНЕЛЬ: ПРЕДПРОСМОТР -->
-    <div class="panel">
-      <h2>3. Предпросмотр <span class="badge">PDF / Печать</span></h2>
-      <div id="docPreview">
-        <div class="placeholder-empty">
-          Заполните форму слева и нажмите<br>«Сформировать документ»
+    <div class="welcome-actions">
+      <button class="btn-large btn-gold" onclick="startApp()">Начать работу →</button>
+      <button class="btn-large btn-ghost" onclick="showTemplatesFromWelcome()">Шаблоны</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="brand">LEX<span>SCRIPTOR</span></div>
+    <div class="nav">
+      <button class="active" data-page="constructor" onclick="switchPage('constructor')">Конструктор</button>
+      <button data-page="templates" onclick="switchPage('templates')">Шаблоны</button>
+      <button data-page="subscription" onclick="switchPage('subscription')">Подписка</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ===== PAGE: CONSTRUCTOR ===== -->
+    <div class="page active" id="page-constructor">
+      <div class="layout">
+
+        <!-- LEFT: FORM -->
+        <div class="panel">
+          <h2>1. Тип документа</h2>
+          <div class="grid-selector type-grid">
+            <button class="sel-btn active" data-type="claim" onclick="setType('claim', this)">Претензия</button>
+            <button class="sel-btn" data-type="motion" onclick="setType('motion', this)">Ходатайство</button>
+            <button class="sel-btn" data-type="statement" onclick="setType('statement', this)">Заявление</button>
+            <button class="sel-btn" data-type="complaint" onclick="setType('complaint', this)">Жалоба</button>
+            <button class="sel-btn" data-type="appeal" onclick="setType('appeal', this)">Апелляция</button>
+            <button class="sel-btn" data-type="intl" onclick="setType('intl', this)">Междунар.</button>
+          </div>
+
+          <h2>2. Язык документа</h2>
+          <div class="grid-selector lang-grid" id="langGrid">
+            <button class="sel-btn active" data-lang="ru" onclick="setLang('ru', this)">Русский</button>
+            <button class="sel-btn" data-lang="en" onclick="setLang('en', this)">English</button>
+            <button class="sel-btn" data-lang="de" onclick="setLang('de', this)">Deutsch</button>
+            <button class="sel-btn" data-lang="fr" onclick="setLang('fr', this)">Français</button>
+            <button class="sel-btn" data-lang="es" onclick="setLang('es', this)">Español</button>
+            <button class="sel-btn" data-lang="it" onclick="setLang('it', this)">Italiano</button>
+            <button class="sel-btn" data-lang="zh" onclick="setLang('zh', this)">中文</button>
+            <button class="sel-btn" data-lang="ar" onclick="setLang('ar', this)">العربية</button>
+            <button class="sel-btn" data-lang="tr" onclick="setLang('tr', this)">Türkçe</button>
+          </div>
+
+          <h2>3. Данные</h2>
+
+          <div class="field">
+            <label>Кому (орган, суд, организация, ФИО)</label>
+            <input type="text" id="recipient" placeholder="ООО «Ромашка», директору Иванову И.И.">
+          </div>
+          <div class="field">
+            <label>Адрес адресата</label>
+            <input type="text" id="recipientAddr" placeholder="г. Москва, ул. Ленина, д. 10, офис 5">
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Ваше ФИО</label>
+              <input type="text" id="applicant" placeholder="Сидоров Сидор Сидорович">
+            </div>
+            <div class="field">
+              <label>Телефон / Email</label>
+              <input type="text" id="phone" placeholder="+7 (900) 123-45-67">
+            </div>
+          </div>
+          <div class="field">
+            <label>Ваш адрес</label>
+            <input type="text" id="applicantAddr" placeholder="г. Москва, ул. Пушкина, д. 5, кв. 12">
+          </div>
+
+          <div class="field">
+            <label>Опишите ситуацию своими словами</label>
+            <textarea id="situation" placeholder="Купил телефон 15 января в магазине ТехноМир за 45000 рублей. Через 20 дней он сломался, не включается. Продавец отказывается принимать по гарантии, говорит что это моя вина. Чек и гарантийный талон есть."></textarea>
+            <div class="hint">Пишите как есть — система сама переработает текст в юридический стиль и подберёт статьи.</div>
+          </div>
+
+          <div class="field">
+            <label>Что вы требуете</label>
+            <textarea id="demand" placeholder="Вернуть деньги, заменить товар, устранить недостатки, компенсировать моральный вред..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Приложения (по одному на строку)</label>
+            <textarea id="attachments" placeholder="Копия чека от 15.01.2025&#10;Копия гарантийного талона"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Дата составления</label>
+            <input type="date" id="docDate">
+          </div>
+
+          <div class="analysis" id="analysis">
+            <strong>⚖ Правовой анализ</strong>
+            <div id="analysisContent"></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" onclick="generateDoc()">Сформировать документ</button>
+            <button class="btn btn-outline" onclick="saveDraft()">💾 Сохранить</button>
+            <button class="btn btn-outline" onclick="loadDraft()">📂 Загрузить</button>
+            <button class="btn btn-outline" onclick="resetForm()">Очистить</button>
+          </div>
+
+          <div class="disclaimer">
+            ⚠️ Сервис не оказывает юридических услуг. Документы носят информационный характер и требуют проверки юристом перед подачей.
+          </div>
+        </div>
+
+        <!-- RIGHT: PREVIEW -->
+        <div class="panel">
+          <h2>4. Предпросмотр <span class="badge">PDF / Печать</span></h2>
+          <div id="docPreview">
+            <div class="placeholder-empty">
+              Заполните форму слева и нажмите<br>«Сформировать документ»
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-success" onclick="downloadPDF()">📥 Скачать PDF</button>
+            <button class="btn btn-gold" onclick="printDoc()">🖨 Печать</button>
+            <button class="btn btn-outline" onclick="copyText()">📋 Копировать</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== PAGE: TEMPLATES ===== -->
+    <div class="page" id="page-templates">
+      <div class="panel" style="border-top-color: var(--gold);">
+        <h2>Библиотека шаблонов</h2>
+        <p style="font-family: system-ui, sans-serif; font-size: 13.5px; color: var(--muted); margin-bottom: 6px;">
+          Выберите готовый шаблон — он автоматически подставится в конструктор. Дальше только заполнить поля.
+        </p>
+        <div class="templates-grid">
+          <div class="template-card" onclick="useTemplate('refund')">
+            <h3>Возврат товара</h3>
+            <p>Претензия продавцу о возврате денег за некачественный товар по ЗоЗПП.</p>
+            <span class="tag">ЗоЗПП · ст. 18, 22</span>
+          </div>
+          <div class="template-card" onclick="useTemplate('uk')">
+            <h3>Жалоба в УК</h3>
+            <p>Заявление в управляющую компанию о неисправности или бездействии.</p>
+            <span class="tag">ЖК РФ · 59-ФЗ</span>
+          </div>
+          <div class="template-card" onclick="useTemplate('salary')">
+            <h3>Задержка зарплаты</h3>
+            <p>Требование к работодателю о выплате задолженности и компенсации.</p>
+            <span class="tag">ТК РФ · ст. 236</span>
+          </div>
+          <div class="template-card" onclick="useTemplate('court_motion')">
+            <h3>Ходатайство в суд</h3>
+            <p>Об истребовании доказательств, экспертизе, отложении заседания.</p>
+            <span class="tag">ГПК РФ · ст. 35, 57</span>
+          </div>
+          <div class="template-card" onclick="useTemplate('prosecutor')">
+            <h3>Жалоба в прокуратуру</h3>
+            <p>О нарушении прав, бездействии органов, незаконных действиях.</p>
+            <span class="tag">59-ФЗ · ст. 10</span>
+          </div>
+          <div class="template-card" onclick="useTemplate('intl')">
+            <h3>Обращение за границу</h3>
+            <p>Международное обращение на английском/немецком/другом языке.</p>
+            <span class="tag">International</span>
+          </div>
         </div>
       </div>
-      <div class="actions">
-        <button class="btn btn-success" onclick="downloadPDF()">📥 Скачать PDF</button>
-        <button class="btn btn-outline" onclick="printDoc()">🖨️ Печать</button>
+    </div>
+
+    <!-- ===== PAGE: SUBSCRIPTION ===== -->
+    <div class="page" id="page-subscription">
+      <div class="subscription-wrap">
+        <h2>Тарифные планы</h2>
+        <p class="sub-lead">Оформите подписку и составляйте документы без ограничений</p>
+
+        <div class="plans">
+          <div class="plan">
+            <h3>Базовый</h3>
+            <div class="price">0 ₽</div>
+            <div class="price-sub">навсегда</div>
+            <ul>
+              <li>1 документ в месяц</li>
+              <li>Русский язык</li>
+              <li>Базовые шаблоны</li>
+              <li class="no">PDF без водяного знака</li>
+              <li class="no">Международные обращения</li>
+              <li class="no">Приоритетная поддержка</li>
+            </ul>
+            <button class="btn btn-outline" onclick="alert('Вы уже на базовом тарифе')">Текущий</button>
+          </div>
+
+          <div class="plan featured">
+            <span class="badge-feat">Популярный</span>
+            <h3>Профессиональный</h3>
+            <div class="price">499 ₽<small>/мес</small></div>
+            <div class="price-sub">для частых обращений</div>
+            <ul>
+              <li>Неограниченно документов</li>
+              <li>Все языки мира</li>
+              <li>Все шаблоны</li>
+              <li>PDF без водяного знака</li>
+              <li>Международные обращения</li>
+              <li class="no">Приоритетная поддержка</li>
+            </ul>
+            <button class="btn btn-gold" onclick="subscribe('pro')">Оформить</button>
+          </div>
+
+          <div class="plan">
+            <h3>Бизнес</h3>
+            <div class="price">1 990 ₽<small>/мес</small></div>
+            <div class="price-sub">для юристов и компаний</div>
+            <ul>
+              <li>Всё из «Профессионального»</li>
+              <li>До 10 пользователей</li>
+              <li>API-доступ</li>
+              <li>Персональный менеджер</li>
+              <li>Юридическая проверка</li>
+              <li>Приоритетная поддержка 24/7</li>
+            </ul>
+            <button class="btn btn-primary" onclick="subscribe('business')">Оформить</button>
+          </div>
+        </div>
+
+        <p style="font-family: system-ui, sans-serif; font-size: 12px; color: var(--muted);">
+          Это шаблон страницы подписки. Интеграция с платёжной системой (ЮKassa, Stripe) подключается отдельно.
+        </p>
       </div>
     </div>
 
@@ -330,195 +844,621 @@
 
 <script>
 /* =========================================================
-   ЮрПомощник — логика генерации документов
+   LEXSCRIPTOR — Конструктор юридических документов
    ========================================================= */
 
-let currentType = 'claim';
+// === СОСТОЯНИЕ ===
+let state = {
+  type: 'claim',
+  lang: 'ru'
+};
 
-// Переключение типа документа
-document.querySelectorAll('.type-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentType = btn.dataset.type;
-    updateLabels();
+// === ПЕРЕВОДЫ ИНТЕРФЕЙСА ДОКУМЕНТА ===
+const i18n = {
+  ru: {
+    title: { claim:'ПРЕТЕНЗИЯ', motion:'ХОДАТАЙСТВО', statement:'ЗАЯВЛЕНИЕ', complaint:'ЖАЛОБА', appeal:'АПЕЛЛЯЦИОННАЯ ЖАЛОБА', intl:'ОБРАЩЕНИЕ' },
+    to:'Кому', from:'От', addr:'Адрес', tel:'Тел./Email',
+    situation:'ОПИСАТЕЛЬНАЯ ЧАСТЬ', legal:'ПРАВОВОЕ ОБОСНОВАНИЕ', request:'ПРОШУ', attachments:'ПРИЛОЖЕНИЯ',
+    date:'Дата', sign:'Подпись'
+  },
+  en: {
+    title: { claim:'CLAIM', motion:'MOTION', statement:'STATEMENT', complaint:'COMPLAINT', appeal:'APPEAL', intl:'INTERNATIONAL REQUEST' },
+    to:'To', from:'From', addr:'Address', tel:'Tel./Email',
+    situation:'STATEMENT OF FACTS', legal:'LEGAL GROUNDS', request:'REQUEST', attachments:'ATTACHMENTS',
+    date:'Date', sign:'Signature'
+  },
+  de: {
+    title: { claim:'ANSPRUCH', motion:'ANTRAG', statement:'ERKLÄRUNG', complaint:'BESCHWERDE', appeal:'BERUFUNG', intl:'INTERNATIONALER ANTRAG' },
+    to:'An', from:'Von', addr:'Adresse', tel:'Tel./E-Mail',
+    situation:'SACHVERHALT', legal:'RECHTSGRUNDLAGE', request:'ANTRAG', attachments:'ANLAGEN',
+    date:'Datum', sign:'Unterschrift'
+  },
+  fr: {
+    title: { claim:'RÉCLAMATION', motion:'REQUÊTE', statement:'DÉCLARATION', complaint:'PLAINTE', appeal:'APPEL', intl:'DEMANDE INTERNATIONALE' },
+    to:'À', from:'De', addr:'Adresse', tel:'Tél./Email',
+    situation:'EXPOSÉ DES FAITS', legal:'BASE JURIDIQUE', request:'DEMANDE', attachments:'PIÈCES JOINTES',
+    date:'Date', sign:'Signature'
+  },
+  es: {
+    title: { claim:'RECLAMACIÓN', motion:'SOLICITUD', statement:'DECLARACIÓN', complaint:'QUEJA', appeal:'APELACIÓN', intl:'SOLICITUD INTERNACIONAL' },
+    to:'A', from:'De', addr:'Dirección', tel:'Tel./Email',
+    situation:'HECHOS', legal:'FUNDAMENTOS JURÍDICOS', request:'SOLICITO', attachments:'ANEXOS',
+    date:'Fecha', sign:'Firma'
+  },
+  it: {
+    title: { claim:'RECLAMO', motion:'ISTANZA', statement:'DICHIARAZIONE', complaint:'DENUNCIA', appeal:'APPELLO', intl:'RICHIESTA INTERNAZIONALE' },
+    to:'A', from:'Da', addr:'Indirizzo', tel:'Tel./Email',
+    situation:'FATTI', legal:'FONDAMENTI GIURIDICI', request:'CHIEDO', attachments:'ALLEGATI',
+    date:'Data', sign:'Firma'
+  },
+  zh: {
+    title: { claim:'索赔函', motion:'申请书', statement:'声明书', complaint:'投诉书', appeal:'上诉书', intl:'国际请求' },
+    to:'收件人', from:'发件人', addr:'地址', tel:'电话/邮箱',
+    situation:'事实陈述', legal:'法律依据', request:'请求事项', attachments:'附件',
+    date:'日期', sign:'签名'
+  },
+  ar: {
+    title: { claim:'مطالبة', motion:'طلب', statement:'إفادة', complaint:'شكوى', appeal:'استئناف', intl:'طلب دولي' },
+    to:'إلى', from:'من', addr:'العنوان', tel:'الهاتف/البريد',
+    situation:'الوقائع', legal:'الأساس القانوني', request:'الطلبات', attachments:'المرفقات',
+    date:'التاريخ', sign:'التوقيع'
+  },
+  tr: {
+    title: { claim:'TALEP', motion:'DİLEKÇE', statement:'BEYAN', complaint:'ŞİKAYET', appeal:'TEMYİZ', intl:'ULUSLARARASI BAŞVURU' },
+    to:'Kime', from:'Kimden', addr:'Adres', tel:'Tel./E-posta',
+    situation:'OLAYLAR', legal:'HUKUKİ DAYANAK', request:'TALEPLER', attachments:'EKLER',
+    date:'Tarih', sign:'İmza'
+  }
+};
+
+// === ПРАВОВЫЕ БАЗЫ (ключевые слова → статьи) ===
+const legalDB = {
+  ru: [
+    { kw: ['телефон','техника','товар','купил','приобрел','сломался','не работает','брак','дефект','магазин'],
+      law: 'ст. 4, 18, 22 Закона РФ «О защите прав потребителей»; ст. 309, 310, 469, 470 ГК РФ' },
+    { kw: ['услуга','не оказана','не выполнена','работа','подряд','исполнитель'],
+      law: 'ст. 4, 27, 28, 29 Закона РФ «О защите прав потребителей»; ст. 702, 720, 723 ГК РФ' },
+    { kw: ['зарплата','задержка','работодатель','труд','выплата','заработная'],
+      law: 'ст. 136, 142, 236 ТК РФ; ст. 145.1 УК РФ' },
+    { kw: ['ук','управляющая','жкх','квартира','ремонт','подъезд','вентиляция','протечка','дом'],
+      law: 'ст. 161, 162 ЖК РФ; Правила содержания общего имущества (Пост. Правительства № 491)' },
+    { kw: ['суд','иск','заседание','дело','истец','ответчик','ходатайство'],
+      law: 'ст. 35, 57, 166 ГПК РФ' },
+    { kw: ['прокуратура','надзор','бездействие','орган','нарушение'],
+      law: 'ст. 10 ФЗ «О прокуратуре РФ»; ФЗ № 59-ФЗ «О порядке рассмотрения обращений граждан»' },
+    { kw: ['полиция','заявление','преступление','мошенничество','кража','ущерб'],
+      law: 'ст. 141 УПК РФ; ст. 144-145 УПК РФ' },
+    { kw: ['налог','вычет','фнс','декларация','ндфл'],
+      law: 'ст. 207-221 НК РФ' },
+    { kw: ['штраф','гибдд','гаи','водитель','дтп','авто','машина'],
+      law: 'КоАП РФ; ст. 30.1-30.3 КоАП РФ (обжалование)' },
+    { kw: ['аренда','арендодатель','найм','жилье','квартира','съем'],
+      law: 'ст. 606-625 ГК РФ; ст. 671-688 ГК РФ' }
+  ],
+  en: [
+    { kw: ['product','goods','purchase','defect','broken','refund','warranty','store'],
+      law: 'Directive (EU) 2019/771 on certain aspects concerning contracts for the sale of goods; applicable national consumer protection law' },
+    { kw: ['service','not provided','contractor','work','failure'],
+      law: 'Directive 2006/123/EC on services in the internal market; applicable national law' },
+    { kw: ['employment','salary','wage','employer','dismissal'],
+      law: 'Directive (EU) 2019/1152 on transparent and predictable working conditions' },
+    { kw: ['court','claim','hearing','plaintiff','defendant','motion'],
+      law: 'Applicable rules of civil procedure; Art. 6 ECHR (right to a fair trial)' },
+    { kw: ['personal data','privacy','gdpr','data protection'],
+      law: 'Regulation (EU) 2016/679 (GDPR)' }
+  ],
+  de: [
+    { kw: ['ware','kauf','mangel','defekt','garantie','rückgabe','geschäft'],
+      law: '§ 434, 437, 439, 440 BGB (Sachmängelhaftung)' },
+    { kw: ['dienstleistung','werk','unternehmer','nicht erbracht'],
+      law: '§ 631 ff. BGB (Werkvertrag)' },
+    { kw: ['arbeit','lohn','gehalt','arbeitgeber','kündigung'],
+      law: '§ 611a ff. BGB; Kündigungsschutzgesetz (KSchG)' },
+    { kw: ['gericht','klage','verfahren','antrag'],
+      law: 'Zivilprozessordnung (ZPO)' }
+  ],
+  fr: [
+    { kw: ['produit','achat','défaut','garantie','remboursement','magasin'],
+      law: 'Art. L. 217-1 à L. 217-20 Code de la consommation (garantie légale de conformité)' },
+    { kw: ['service','travail','entrepreneur','non exécuté'],
+      law: 'Art. 1779 et suivants du Code civil' },
+    { kw: ['salaire','employeur','travail','licenciement'],
+      law: 'Code du travail; Art. L. 3241-1 et suivants' },
+    { kw: ['tribunal','procès','demande','audience'],
+      law: 'Code de procédure civile' }
+  ],
+  es: [
+    { kw: ['producto','compra','defecto','garantía','devolución','tienda'],
+      law: 'Real Decreto Legislativo 1/2007 (Ley General para la Defensa de los Consumidores)' },
+    { kw: ['servicio','obra','contratista','no realizado'],
+      law: 'Art. 1544 y siguientes del Código Civil' },
+    { kw: ['salario','empleador','trabajo','despido'],
+      law: 'Estatuto de los Trabajadores (RDL 2/2015)' },
+    { kw: ['tribunal','demanda','juicio'],
+      law: 'Ley de Enjuiciamiento Civil' }
+  ],
+  it: [
+    { kw: ['prodotto','acquisto','difetto','garanzia','rimborso','negozio'],
+      law: 'Art. 128-135 Codice del Consumo (D.Lgs. 206/2005)' },
+    { kw: ['servizio','lavoro','appaltatore','non eseguito'],
+      law: 'Art. 1655 e seguenti Codice Civile' },
+    { kw: ['stipendio','datore di lavoro','licenziamento'],
+      law: 'Art. 2094 e seguenti Codice Civile; Legge 300/1970' },
+    { kw: ['tribunale','causa','domanda'],
+      law: 'Codice di Procedura Civile' }
+  ],
+  zh: [
+    { kw: ['产品','购买','缺陷','保修','退款','商店'],
+      law: '《中华人民共和国消费者权益保护法》第二十四条、第五十五条' },
+    { kw: ['服务','未提供','承包商'],
+      law: '《中华人民共和国民法典》合同编' },
+    { kw: ['工资','雇主','劳动','解雇'],
+      law: '《中华人民共和国劳动合同法》' },
+    { kw: ['法院','诉讼','请求'],
+      law: '《中华人民共和国民事诉讼法》' }
+  ],
+  ar: [
+    { kw: ['منتج','شراء','عيب','ضمان','استرداد','متجر'],
+      law: 'قانون حماية المستهلك المعمول به' },
+    { kw: ['خدمة','عمل','مقاول','عدم التنفيذ'],
+      law: 'القانون المدني المعمول به' },
+    { kw: ['راتب','صاحب العمل','عمل','فصل'],
+      law: 'قانون العمل المعمول به' },
+    { kw: ['محكمة','دعوى','طلب'],
+      law: 'قانون الإجراءات المدنية المعمول به' }
+  ],
+  tr: [
+    { kw: ['ürün','satın','kusur','garanti','iade','mağaza'],
+      law: '6502 sayılı Tüketicinin Korunması Hakkında Kanun' },
+    { kw: ['hizmet','iş','yüklenici','yerine getirilmedi'],
+      law: '6098 sayılı Türk Borçlar Kanunu' },
+    { kw: ['maaş','işveren','iş','işten çıkarma'],
+      law: '4857 sayılı İş Kanunu' },
+    { kw: ['mahkeme','dava','talep'],
+      law: '6100 sayılı Hukuk Muhakemeleri Kanunu' }
+  ]
+};
+
+// === ФРАЗЫ ДЛЯ ГЕНЕРАЦИИ ЮРИДИЧЕСКОГО ТЕКСТА ===
+const legalPhrases = {
+  ru: {
+    intro: 'Я, нижеподписавшийся(аяся), настоящим обращаюсь по следующему вопросу.',
+    factPrefix: 'Как следует из обстоятельств дела, ',
+    closing: 'На основании вышеизложенного, руководствуясь действующим законодательством,'
+  },
+  en: {
+    intro: 'I, the undersigned, hereby apply on the following matter.',
+    factPrefix: 'The circumstances of the case are as follows: ',
+    closing: 'Based on the foregoing, and guided by applicable law,'
+  },
+  de: {
+    intro: 'Ich, der/die Unterzeichnende, wende mich hiermit in folgender Angelegenheit an Sie.',
+    factPrefix: 'Der Sachverhalt stellt sich wie folgt dar: ',
+    closing: 'Aus den vorgenannten Gründen und unter Berufung auf geltendes Recht,'
+  },
+  fr: {
+    intro: 'Je, soussigné(e), vous adresse la présente en la matière suivante.',
+    factPrefix: 'Les faits de l\'espèce sont les suivants : ',
+    closing: 'Pour les motifs exposés ci-dessus, et conformément au droit applicable,'
+  },
+  es: {
+    intro: 'Yo, el/la abajo firmante, me dirijo a ustedes en relación con el siguiente asunto.',
+    factPrefix: 'Los hechos son los siguientes: ',
+    closing: 'Con base en lo anterior, y conforme a la legislación aplicable,'
+  },
+  it: {
+    intro: 'Io, sottoscritto/a, mi rivolgo a Voi in merito alla seguente questione.',
+    factPrefix: 'I fatti di causa sono i seguenti: ',
+    closing: 'Sulla base di quanto sopra esposto, e in conformità alla legge applicabile,'
+  },
+  zh: {
+    intro: '本人（签署人）就以下事项向贵方提出申请。',
+    factPrefix: '案件事实如下：',
+    closing: '综上，依据相关法律规定，'
+  },
+  ar: {
+    intro: 'أنا الموقع أدناه، أتقدم إليكم بخصوص المسألة التالية.',
+    factPrefix: 'وقائع الحالة كالتالي: ',
+    closing: 'بناءً على ما سبق، واستناداً إلى القانون المعمول به،'
+  },
+  tr: {
+    intro: 'Ben, aşağıda imzası bulunan, aşağıdaki konuda başvuruda bulunuyorum.',
+    factPrefix: 'Olayın maddi vakıaları şöyledir: ',
+    closing: 'Yukarıda arz edilen nedenlerle ve yürürlükteki mevzuat uyarınca,'
+  }
+};
+
+// === WELCOME ===
+function startApp() {
+  document.getElementById('welcome').classList.add('hidden');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('docDate').valueAsDate = new Date();
+}
+function showTemplatesFromWelcome() {
+  startApp();
+  switchPage('templates');
+}
+
+// === NAV ===
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.topbar .nav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === page);
   });
-});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-// Меняем подсказки под тип документа
-function updateLabels() {
-  const situation = document.getElementById('situation');
-  const demand = document.getElementById('demand');
-  const recipient = document.getElementById('recipient');
+// === TYPE / LANG ===
+function setType(type, btn) {
+  state.type = type;
+  document.querySelectorAll('.type-grid .sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updatePlaceholders();
+}
+function setLang(lang, btn) {
+  state.lang = lang;
+  document.querySelectorAll('#langGrid .sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Для арабского — RTL
+  document.getElementById('docPreview').style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+  document.getElementById('docPreview').style.textAlign = (lang === 'ar') ? 'right' : 'left';
+}
 
-  if (currentType === 'claim') {
-    situation.placeholder = '15 января 2025 г. я приобрёл в магазине «ТехноМир» телефон стоимостью 45 000 руб. Через 20 дней телефон перестал включаться...';
-    demand.placeholder = 'Прошу вернуть уплаченные денежные средства в размере 45 000 руб. в течение 10 дней.';
-    recipient.placeholder = 'ООО «Ромашка», директору Иванову И.И.';
-  } else if (currentType === 'motion') {
-    situation.placeholder = 'В производстве суда находится гражданское дело № 2-1234/2025 по моему иску к ООО «Ромашка». Для подтверждения позиции необходимо запросить документы...';
-    demand.placeholder = 'Прошу истребовать у ООО «Ромашка» договор оказания услуг и акт выполненных работ.';
-    recipient.placeholder = 'В Ленинский районный суд г. Москвы, судье Смирновой Е.А.';
+function updatePlaceholders() {
+  const s = document.getElementById('situation');
+  const d = document.getElementById('demand');
+  const r = document.getElementById('recipient');
+  if (state.type === 'claim') {
+    s.placeholder = 'Купил телефон 15 января в магазине ТехноМир за 45000 рублей. Через 20 дней он сломался...';
+    d.placeholder = 'Вернуть деньги / заменить товар / устранить недостатки';
+    r.placeholder = 'ООО «Ромашка», директору Иванову И.И.';
+  } else if (state.type === 'motion') {
+    s.placeholder = 'В производстве суда находится дело № 2-1234/2025. Для подтверждения позиции необходимо...';
+    d.placeholder = 'Истребовать доказательства / назначить экспертизу';
+    r.placeholder = 'В Ленинский районный суд г. Москвы, судье Смирновой Е.А.';
+  } else if (state.type === 'complaint') {
+    s.placeholder = 'Орган бездействует, мои обращения игнорируются с 10 января 2025 года...';
+    d.placeholder = 'Провести проверку и принять меры';
+    r.placeholder = 'Прокуратуру г. Москвы';
+  } else if (state.type === 'intl') {
+    s.placeholder = 'I purchased a product on 15 January 2025 in Berlin for 500 EUR. It broke within 20 days...';
+    d.placeholder = 'Full refund / replacement / compensation';
+    r.placeholder = 'Consumer Protection Office, Berlin';
   } else {
-    situation.placeholder = 'В моей квартире № 12 по адресу ул. Пушкина, д. 5, с 10 января 2025 г. не работает вентиляция, что подтверждается актом от 12.01.2025...';
-    demand.placeholder = 'Прошу провести проверку вентиляционной системы и устранить неисправность в установленный законом срок.';
-    recipient.placeholder = 'УК «Дом-Сервис», начальнику Петрову А.С.';
+    s.placeholder = 'Опишите ситуацию своими словами...';
+    d.placeholder = 'Что вы требуете...';
+    r.placeholder = 'Наименование организации или органа';
   }
 }
 
-// Склонение даты
-function formatDate(dateStr) {
-  if (!dateStr) return '«___» __________ 20___ г.';
-  const d = new Date(dateStr);
-  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-  return `«${String(d.getDate()).padStart(2,'0')}» ${months[d.getMonth()]} ${d.getFullYear()} г.`;
+// === АНАЛИЗ ТЕКСТА И ПОДБОР СТАТЕЙ ===
+function analyzeText(text, lang) {
+  const db = legalDB[lang] || legalDB['en'];
+  const lower = text.toLowerCase();
+  const found = [];
+  db.forEach(entry => {
+    const matches = entry.kw.filter(k => lower.includes(k));
+    if (matches.length > 0) {
+      found.push({ law: entry.law, matched: matches });
+    }
+  });
+  return found;
 }
 
-// Заголовок в зависимости от типа
-function getTitle() {
-  if (currentType === 'claim') return 'ПРЕТЕНЗИЯ';
-  if (currentType === 'motion') return 'ХОДАТАЙСТВО';
-  return 'ЗАЯВЛЕНИЕ';
-}
+// === ЮРИДИЧЕСКАЯ ПЕРЕРАБОТКА ТЕКСТА ===
+function juridify(text, lang) {
+  if (!text) return '';
+  let t = text.trim();
+  // Убираем разговорные начала
+  t = t.replace(/^(ну\s+|вот\s+|короче\s+|значит\s+)/i, '');
+  // Заменяем просторечия
+  const replacements = {
+    ru: [
+      [/\bкупил\b/gi, 'приобрёл'],
+      [/\bкупила\b/gi, 'приобрела'],
+      [/\bсломался\b/gi, 'вышел из строя'],
+      [/\bсломалась\b/gi, 'вышла из строя'],
+      [/\bне работает\b/gi, 'не функционирует'],
+      [/\bне работал\b/gi, 'не функционировал'],
+      [/\bотказывается\b/gi, 'отказывается в добровольном порядке'],
+      [/\bденьги\b/gi, 'денежные средства'],
+      [/\bмагазин\b/gi, 'торговую организацию'],
+      [/\bчек\b/gi, 'кассовый чек'],
+      [/\bбрак\b/gi, 'производственный недостаток'],
+      [/\bмуж\b/gi, 'супруг'],
+      [/\bжена\b/gi, 'супруга']
+    ],
+    en: [
+      [/\bbought\b/gi, 'purchased'],
+      [/\bbroke\b/gi, 'failed'],
+      [/\bdoesn't work\b/gi, 'does not function'],
+      [/\brefund\b/gi, 'reimbursement'],
+      [/\bmoney\b/gi, 'funds']
+    ],
+    de: [
+      [/\bgekauft\b/gi, 'erworben'],
+      [/\bkaputt\b/gi, 'defekt'],
+      [/\bGeld\b/gi, 'Gelder']
+    ]
+  };
+  const reps = replacements[lang] || replacements['en'];
+  reps.forEach(([re, to]) => { t = t.replace(re, to); });
 
-// Правовое обоснование
-function getLegalBasis() {
-  if (currentType === 'claim') {
-    return 'В соответствии со ст. 4, 18, 22 Закона РФ от 07.02.1992 № 2300-1 «О защите прав потребителей», ст. 309, 310 Гражданского кодекса РФ.';
+  // Добавляем вводную фразу
+  const intro = (legalPhrases[lang] || legalPhrases['en']).factPrefix;
+  if (!t.toLowerCase().startsWith(intro.toLowerCase().slice(0, 20))) {
+    t = intro + t.charAt(0).toLowerCase() + t.slice(1);
   }
-  if (currentType === 'motion') {
-    return 'В соответствии со ст. 35, 57, 166 Гражданского процессуального кодекса РФ.';
-  }
-  return 'В соответствии со ст. 33 Конституции РФ, Федеральным законом от 02.05.2006 № 59-ФЗ «О порядке рассмотрения обращений граждан Российской Федерации».';
+  // Точка в конце
+  if (!/[.!?。؟]$/.test(t)) t += '.';
+  return t;
 }
 
-// Генерация документа
+// === ГЕНЕРАЦИЯ ДОКУМЕНТА ===
 function generateDoc() {
-  const recipient = document.getElementById('recipient').value.trim();
-  const recipientAddr = document.getElementById('recipientAddr').value.trim();
-  const applicant = document.getElementById('applicant').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const applicantAddr = document.getElementById('applicantAddr').value.trim();
-  const situation = document.getElementById('situation').value.trim();
-  const demand = document.getElementById('demand').value.trim();
-  const attachments = document.getElementById('attachments').value.trim();
+  const recipient = val('recipient');
+  const recipientAddr = val('recipientAddr');
+  const applicant = val('applicant');
+  const phone = val('phone');
+  const applicantAddr = val('applicantAddr');
+  const situation = val('situation');
+  const demand = val('demand');
+  const attachments = val('attachments');
   const docDate = document.getElementById('docDate').value;
 
   if (!recipient || !applicant || !situation || !demand) {
-    alert('Пожалуйста, заполните обязательные поля: Кому, Ваше ФИО, Что произошло, Требование.');
+    alert('Заполните обязательные поля: Кому, Ваше ФИО, Ситуация, Требование.');
     return;
   }
 
+  const T = i18n[state.lang] || i18n.ru;
+  const legal = analyzeText(situation + ' ' + demand, state.lang);
+  const legalText = legal.length
+    ? legal.map(l => l.law).join('; ')
+    : (state.lang === 'ru'
+        ? 'действующее законодательство Российской Федерации'
+        : 'applicable national and international law');
+
+  // Показываем анализ
+  const analysis = document.getElementById('analysis');
+  const analysisContent = document.getElementById('analysisContent');
+  if (legal.length) {
+    analysisContent.innerHTML = 'Обнаружены применимые нормы:<ul>' +
+      legal.map(l => `<li>${escapeHtml(l.law)}</li>`).join('') + '</ul>';
+    analysis.classList.add('show');
+  } else {
+    analysisContent.innerHTML = 'Специфических норм не обнаружено. Будет использована общая правовая формулировка.';
+    analysis.classList.add('show');
+  }
+
+  // Юридическая обработка текста
+  const juridifiedSituation = juridify(situation, state.lang);
+  const juridifiedDemand = demand.trim().replace(/[.!?。؟]$/, '');
+
   const attachmentsList = attachments
-    ? attachments.split('\n').filter(l => l.trim()).map((l, i) => `${i+1}. ${l.trim()}`).join('\n')
+    ? attachments.split('\n').filter(l => l.trim()).map((l, i) => `${i+1}. ${escapeHtml(l.trim())}`).join('<br>')
     : '1. ____________________________________________';
+
+  const dateFormatted = formatDateLocale(docDate, state.lang);
+  const signatureName = applicant ? applicant.split(' ')[0] : '_____________';
 
   const html = `
     <div class="doc-header">
-      ${recipient ? `Кому: ${escapeHtml(recipient)}` : 'Кому: _____________________________'}<br>
-      ${recipientAddr ? `Адрес: ${escapeHtml(recipientAddr)}` : ''}
-      <br><br>
-      ${applicant ? `От: ${escapeHtml(applicant)}` : 'От: _____________________________'}<br>
-      ${applicantAddr ? `Адрес: ${escapeHtml(applicantAddr)}` : ''}<br>
-      ${phone ? `Тел.: ${escapeHtml(phone)}` : ''}
+      <span class="label">${T.to}:</span> ${escapeHtml(recipient)}<br>
+      ${recipientAddr ? `<span class="label">${T.addr}:</span> ${escapeHtml(recipientAddr)}<br>` : ''}
+      <br>
+      <span class="label">${T.from}:</span> ${escapeHtml(applicant)}<br>
+      ${applicantAddr ? `<span class="label">${T.addr}:</span> ${escapeHtml(applicantAddr)}<br>` : ''}
+      ${phone ? `<span class="label">${T.tel}:</span> ${escapeHtml(phone)}` : ''}
     </div>
 
-    <div class="doc-title">${getTitle()}</div>
+    <div class="doc-title">${T.title[state.type] || T.title.claim}</div>
 
     <div class="doc-body">
-${escapeHtml(situation)}
-
-${getLegalBasis()}
-
-На основании изложенного,
-    </div>
-
-    <div class="doc-title" style="text-transform:none; font-size:15px;">ПРОШУ:</div>
-
-    <div class="doc-body">
-${escapeHtml(demand)}
+${escapeHtml((legalPhrases[state.lang] || legalPhrases.en).intro)}
     </div>
 
     <div class="doc-body">
-<strong>Приложения:</strong>
-${escapeHtml(attachmentsList)}
+${escapeHtml(juridifiedSituation)}
+    </div>
+
+    <div class="doc-legal">
+      <strong>${T.legal}:</strong> ${escapeHtml(legalText)}.
+    </div>
+
+    <div class="doc-body no-indent">
+${escapeHtml((legalPhrases[state.lang] || legalPhrases.en).closing)}
+    </div>
+
+    <div class="doc-title" style="text-transform:none; font-size:15px;">${T.request}:</div>
+
+    <div class="doc-body">
+${escapeHtml(juridifiedDemand)}.
+    </div>
+
+    <div class="doc-body no-indent">
+<strong>${T.attachments}:</strong><br>
+${attachmentsList}
     </div>
 
     <div class="doc-footer">
-      <div>${formatDate(docDate)}</div>
-      <div>_______________ / ${applicant ? escapeHtml(applicant.split(' ')[0]) : '_____________'}</div>
+      <div>${dateFormatted}</div>
+      <div>_______________________ / ${escapeHtml(signatureName)}</div>
     </div>
 
-    <div style="margin-top:30px; font-size:12px; color:#666; font-family:system-ui,sans-serif; border-top:1px dashed #ccc; padding-top:10px;">
-      <strong>Как подать:</strong> составьте документ в двух экземплярах. Один вручите лично под подпись (с датой и ФИО принявшего) или отправьте заказным письмом с уведомлением и описью вложения. Сохраните доказательство вручения.
+    <div class="doc-notes">
+      <strong>Как подать:</strong> составьте документ в двух экземплярах. Один вручите лично под подпись (с датой и ФИО принявшего) либо направьте заказным письмом с уведомлением и описью вложения. Сохраните доказательство вручения — это ключевой факт для дальнейшего обращения в суд.
     </div>
   `;
 
   document.getElementById('docPreview').innerHTML = html;
 }
 
-// Экранирование HTML
+// === УТИЛИТЫ ===
+function val(id) { return (document.getElementById(id).value || '').trim(); }
 function escapeHtml(text) {
   if (!text) return '';
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  return String(text)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+function formatDateLocale(dateStr, lang) {
+  if (!dateStr) return '«___» __________ 20___';
+  const d = new Date(dateStr);
+  const months = {
+    ru: ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'],
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    de: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+    fr: ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'],
+    es: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
+    it: ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'],
+    zh: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    ar: ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+    tr: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık']
+  };
+  const m = (months[lang] || months.ru)[d.getMonth()];
+  if (lang === 'zh') return `${d.getFullYear()}年${m}${d.getDate()}日`;
+  if (lang === 'en') return `${m} ${d.getDate()}, ${d.getFullYear()}`;
+  return `${String(d.getDate()).padStart(2,'0')} ${m} ${d.getFullYear()} г.`;
 }
 
-// Скачать PDF
+// === СОХРАНЕНИЕ ЧЕРНОВИКА ===
+function saveDraft() {
+  const draft = {
+    type: state.type, lang: state.lang,
+    recipient: val('recipient'), recipientAddr: val('recipientAddr'),
+    applicant: val('applicant'), phone: val('phone'), applicantAddr: val('applicantAddr'),
+    situation: val('situation'), demand: val('demand'),
+    attachments: val('attachments'), docDate: val('docDate')
+  };
+  localStorage.setItem('lexscriptor_draft', JSON.stringify(draft));
+  alert('Черновик сохранён в браузере.');
+}
+function loadDraft() {
+  const raw = localStorage.getItem('lexscriptor_draft');
+  if (!raw) { alert('Сохранённых черновиков нет.'); return; }
+  const d = JSON.parse(raw);
+  ['recipient','recipientAddr','applicant','phone','applicantAddr','situation','demand','attachments','docDate']
+    .forEach(k => { if (d[k] !== undefined) document.getElementById(k).value = d[k]; });
+  alert('Черновик загружен.');
+}
+
+// === ЭКСПОРТ ===
 function downloadPDF() {
   const el = document.getElementById('docPreview');
-  if (el.querySelector('.placeholder-empty')) {
-    alert('Сначала сформируйте документ.');
-    return;
-  }
-  const opt = {
+  if (el.querySelector('.placeholder-empty')) { alert('Сначала сформируйте документ.'); return; }
+  html2pdf().set({
     margin: [15, 15, 15, 15],
-    filename: `document_${Date.now()}.pdf`,
+    filename: `lexscriptor_${Date.now()}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(el).save();
+  }).from(el).save();
 }
-
-// Печать
 function printDoc() {
   const el = document.getElementById('docPreview');
-  if (el.querySelector('.placeholder-empty')) {
-    alert('Сначала сформируйте документ.');
-    return;
-  }
+  if (el.querySelector('.placeholder-empty')) { alert('Сначала сформируйте документ.'); return; }
   const win = window.open('', '_blank');
-  win.document.write(`
-    <html><head><title>Печать документа</title>
-    <style>
-      body { font-family: 'Times New Roman', serif; padding: 40px; font-size: 14px; line-height: 1.7; }
-      .doc-header { text-align: right; margin-bottom: 30px; font-size: 13.5px; }
-      .doc-title { text-align: center; font-weight: 700; font-size: 16px; margin: 20px 0; text-transform: uppercase; }
-      .doc-body { text-align: justify; margin: 16px 0; }
-      .doc-footer { margin-top: 40px; display: flex; justify-content: space-between; }
-      @media print { @page { margin: 15mm; } }
-    </style></head><body>
-    ${el.innerHTML}
-    </body></html>
-  `);
+  win.document.write(`<html><head><title>Печать</title>
+    <style>body{font-family:'Times New Roman',serif;padding:40px;font-size:14px;line-height:1.7;color:#111}
+    .doc-header{text-align:right;margin-bottom:34px;font-size:13.5px}
+    .doc-title{text-align:center;font-weight:700;font-size:16px;margin:22px 0;text-transform:uppercase;letter-spacing:1px}
+    .doc-body{text-align:justify;margin:14px 0;text-indent:30px}
+    .doc-body.no-indent{text-indent:0}
+    .doc-legal{margin:16px 0;padding:12px 16px;background:#f8f6ef;border-left:3px solid #b8945f;font-size:13px;font-style:italic}
+    .doc-footer{margin-top:50px;display:flex;justify-content:space-between;font-size:13.5px}
+    .doc-notes{margin-top:36px;padding-top:14px;border-top:1px dashed #d8d0bd;font-family:system-ui;font-size:11.5px;color:#6b6b6b}
+    @media print{@page{margin:15mm}}</style></head><body>${el.innerHTML}</body></html>`);
   win.document.close();
   win.focus();
   setTimeout(() => win.print(), 300);
 }
-
-// Очистить форму
+function copyText() {
+  const el = document.getElementById('docPreview');
+  if (el.querySelector('.placeholder-empty')) { alert('Сначала сформируйте документ.'); return; }
+  navigator.clipboard.writeText(el.innerText).then(() => alert('Текст скопирован в буфер обмена.'));
+}
 function resetForm() {
-  document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+  document.querySelectorAll('#page-constructor input, #page-constructor textarea').forEach(el => el.value = '');
   document.getElementById('docPreview').innerHTML = '<div class="placeholder-empty">Заполните форму слева и нажмите<br>«Сформировать документ»</div>';
+  document.getElementById('analysis').classList.remove('show');
+  document.getElementById('docDate').valueAsDate = new Date();
 }
 
-// Установить сегодняшнюю дату
-document.getElementById('docDate').valueAsDate = new Date();
+// === ШАБЛОНЫ ===
+function useTemplate(key) {
+  switchPage('constructor');
+  const set = (id, v) => document.getElementById(id).value = v;
+  const templates = {
+    refund: {
+      type: 'claim',
+      recipient: 'ООО «[Наименование магазина]», директору [ФИО]',
+      situation: 'Я приобрёл в вашем магазине товар [наименование] стоимостью [сумма] руб., что подтверждается кассовым чеком от [дата]. В течение гарантийного срока в товаре обнаружен недостаток: [описание]. Моё обращение о замене/возврате оставлено без удовлетворения.',
+      demand: 'Возвратить уплаченные денежные средства в размере [сумма] руб. в течение 10 дней с момента получения настоящей претензии'
+    },
+    uk: {
+      type: 'statement',
+      recipient: 'УК «[Наименование]», начальнику [ФИО]',
+      situation: 'В квартире № [номер] по адресу [адрес] с [дата] наблюдается [проблема: неисправность вентиляции / протечка / отсутствие отопления]. Мои обращения от [дата] оставлены без ответа.',
+      demand: 'Провести проверку, устранить неисправность и произвести перерасчёт платы за некачественную услугу'
+    },
+    salary: {
+      type: 'claim',
+      recipient: 'ООО «[Наименование]», генеральному директору [ФИО]',
+      situation: 'Я работаю в вашей организации в должности [должность] с [дата]. Заработная плата за [период] в размере [сумма] руб. до настоящего времени не выплачена.',
+      demand: 'Выплатить задолженность по заработной плате в размере [сумма] руб. и компенсацию за задержку согласно ст. 236 ТК РФ'
+    },
+    court_motion: {
+      type: 'motion',
+      recipient: 'В [наименование] районный суд, судье [ФИО]',
+      situation: 'В производстве суда находится гражданское дело № [номер] по иску [истец] к [ответчик]. Для подтверждения юридически значимых обстоятельств необходимо истребовать у [лицо] следующие документы: [перечень].',
+      demand: 'Истребовать у [лицо] документы: [перечень]'
+    },
+    prosecutor: {
+      type: 'complaint',
+      recipient: 'Прокуратуру [наименование]',
+      situation: '[Наименование органа/организации] с [дата] допускает нарушение моих прав: [описание]. Мои обращения от [дата] оставлены без ответа/удовлетворения.',
+      demand: 'Провести проверку по факту нарушения, принять меры прокурорского реагирования'
+    },
+    intl: {
+      type: 'intl',
+      recipient: 'Consumer Protection Office, [City, Country]',
+      situation: 'I purchased [product] on [date] at [store] for [amount] EUR. Within the warranty period the product failed: [description]. My request for a refund was rejected.',
+      demand: 'Full reimbursement of [amount] EUR and compensation for damages'
+    }
+  };
+  const t = templates[key];
+  if (!t) return;
+  set('recipient', t.recipient);
+  set('situation', t.situation);
+  set('demand', t.demand);
+  if (t.type) {
+    state.type = t.type;
+    document.querySelectorAll('.type-grid .sel-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.type === t.type);
+    });
+    updatePlaceholders();
+  }
+  if (key === 'intl') {
+    state.lang = 'en';
+    document.querySelectorAll('#langGrid .sel-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === 'en');
+    });
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// === ПОДПИСКА (шаблон) ===
+function subscribe(plan) {
+  alert('Это шаблон. Здесь будет интеграция с платёжной системой (ЮKassa / Stripe).\n\nВыбран тариф: ' + plan);
+}
+
+// === ИНИЦИАЛИЗАЦИЯ ===
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('docDate').valueAsDate = new Date();
+  updatePlaceholders();
+});
 </script>
 </body>
 </html>

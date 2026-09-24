@@ -3,64 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LexScriptor — Юридический генератор документов</title>
+<title>LexScriptor — Юридический ИИ-генератор документов</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://js.puter.com/v2/"></script>
 <style>
   :root {
-    --navy: #0a1e3d;
-    --navy-2: #16325a;
-    --navy-3: #1f4275;
-    --gold: #b8894a;
-    --gold-2: #d4a868;
-    --gold-3: #e8c88a;
-    --paper: #fbf7ee;
-    --paper-2: #f2ead6;
-    --paper-3: #ede3ca;
-    --ink: #1a1a1a;
-    --muted: #7a6f5a;
-    --border: #c9b98f;
-    --border-2: #d8cba0;
-    --success: #2d5f3f;
-    --danger: #8b2020;
+    --navy: #0a1e3d; --navy-2: #16325a; --navy-3: #1f4275;
+    --gold: #b8894a; --gold-2: #d4a868; --gold-3: #e8c88a;
+    --paper: #fbf7ee; --paper-2: #f2ead6; --paper-3: #ede3ca;
+    --ink: #1a1a1a; --muted: #7a6f5a; --border: #c9b98f; --border-2: #d8cba0;
+    --success: #2d5f3f; --danger: #8b2020; --red: #b3261e;
     --shadow: 0 10px 40px rgba(10, 30, 61, 0.15);
     --shadow-lg: 0 20px 60px rgba(10, 30, 61, 0.25);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    background: var(--paper-2);
-    color: var(--ink);
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+  body { font-family: 'Georgia', 'Times New Roman', serif; background: var(--paper-2); color: var(--ink); line-height: 1.6; min-height: 100vh; }
 
-  /* ============ WELCOME ============ */
-  .welcome {
-    position: fixed; inset: 0; z-index: 9999;
-    background: radial-gradient(circle at 50% 20%, #16325a 0%, #0a1e3d 60%, #050f22 100%);
-    display: flex; align-items: center; justify-content: center;
-    padding: 30px; overflow-y: auto;
-    transition: opacity 0.6s ease, visibility 0.6s;
-  }
+  .welcome { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at 50% 20%, #16325a 0%, #0a1e3d 60%, #050f22 100%); display: flex; align-items: center; justify-content: center; padding: 30px; overflow-y: auto; transition: opacity 0.6s ease, visibility 0.6s; }
   .welcome.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-  .welcome-inner {
-    max-width: 940px; width: 100%;
-    background: var(--paper);
-    border-radius: 2px;
-    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(184,137,74,0.4);
-    padding: 70px 80px; position: relative;
-    border-top: 6px solid var(--gold);
-  }
-  .welcome-inner::before {
-    content: ''; position: absolute; top: 14px; left: 14px; right: 14px; bottom: 14px;
-    border: 1px solid var(--border); pointer-events: none; border-radius: 2px;
-  }
-  .welcome-inner::after {
-    content: ''; position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px;
-    border: 1px solid var(--border-2); pointer-events: none; border-radius: 2px;
-    opacity: 0.5;
-  }
+  .welcome-inner { max-width: 940px; width: 100%; background: var(--paper); border-radius: 2px; box-shadow: var(--shadow-lg), 0 0 0 1px rgba(184,137,74,0.4); padding: 70px 80px; position: relative; border-top: 6px solid var(--gold); }
+  .welcome-inner::before { content: ''; position: absolute; top: 14px; left: 14px; right: 14px; bottom: 14px; border: 1px solid var(--border); pointer-events: none; border-radius: 2px; }
+  .welcome-inner::after { content: ''; position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px; border: 1px solid var(--border-2); pointer-events: none; border-radius: 2px; opacity: 0.5; }
   .welcome-emblem { text-align: center; font-size: 60px; margin-bottom: 20px; color: var(--gold); line-height: 1; text-shadow: 0 2px 0 rgba(0,0,0,0.1); }
   .welcome h1 { text-align: center; font-size: 42px; color: var(--navy); letter-spacing: 3px; margin-bottom: 10px; font-weight: 700; }
   .welcome .tagline { text-align: center; font-style: italic; color: var(--muted); font-size: 16px; margin-bottom: 36px; letter-spacing: 1px; }
@@ -78,31 +40,18 @@
   .btn-large { padding: 16px 40px; font-family: system-ui, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1.5px; border: none; border-radius: 2px; cursor: pointer; transition: all 0.25s; text-transform: uppercase; }
   .btn-gold { background: linear-gradient(180deg, var(--gold-2) 0%, var(--gold) 100%); color: var(--navy); }
   .btn-gold:hover { background: linear-gradient(180deg, var(--gold-3) 0%, var(--gold-2) 100%); transform: translateY(-1px); box-shadow: 0 10px 25px rgba(184,137,74,0.4); }
-  .btn-ghost { background: transparent; color: var(--paper); border: 1.5px solid var(--gold); }
-  .btn-ghost:hover { background: rgba(184,137,74,0.15); }
+  .btn-red { background: linear-gradient(180deg, #c53030 0%, var(--red) 100%); color: #ffffff; }
+  .btn-red:hover { background: linear-gradient(180deg, #d63a3a 0%, #c53030 100%); transform: translateY(-1px); box-shadow: 0 10px 25px rgba(179,38,30,0.4); }
 
-  /* ============ APP ============ */
   .app { display: none; min-height: 100vh; }
   .app.active { display: block; }
-  .topbar {
-    background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%);
-    color: var(--paper); padding: 16px 34px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 3px solid var(--gold);
-    box-shadow: 0 3px 15px rgba(0,0,0,0.25);
-    position: sticky; top: 0; z-index: 100;
-  }
+  .topbar { background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%); color: var(--paper); padding: 16px 34px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); box-shadow: 0 3px 15px rgba(0,0,0,0.25); position: sticky; top: 0; z-index: 100; }
   .topbar .brand { font-family: 'Georgia', serif; font-size: 22px; font-weight: 700; letter-spacing: 3px; color: var(--gold-2); display: flex; align-items: center; gap: 10px; }
   .topbar .brand .emblem { font-size: 24px; }
   .topbar .brand span.name { color: var(--paper); }
   .topbar .brand .pro { font-size: 10px; color: var(--gold); border: 1px solid var(--gold); padding: 2px 6px; border-radius: 2px; letter-spacing: 1.5px; }
-  .topbar .nav { display: flex; gap: 6px; }
-  .topbar .nav button {
-    background: transparent; border: 1px solid transparent; color: var(--paper);
-    padding: 9px 20px; border-radius: 2px; font-family: system-ui, sans-serif;
-    font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    letter-spacing: 0.5px;
-  }
+  .topbar .nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  .topbar .nav button { background: transparent; border: 1px solid transparent; color: var(--paper); padding: 9px 16px; border-radius: 2px; font-family: system-ui, sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px; }
   .topbar .nav button:hover { border-color: var(--gold); color: var(--gold-2); }
   .topbar .nav button.active { background: var(--gold); color: var(--navy); }
 
@@ -111,97 +60,31 @@
   .page.active { display: block; }
   .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
   @media (max-width: 1050px) { .layout { grid-template-columns: 1fr; } }
-
-  .panel {
-    background: var(--paper);
-    border-radius: 2px;
-    box-shadow: var(--shadow);
-    padding: 30px 32px;
-    border: 1px solid var(--border-2);
-    border-top: 4px solid var(--navy);
-    position: relative;
-  }
-  .panel::before {
-    content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-    border: 1px solid var(--border-2); pointer-events: none; opacity: 0.4; border-radius: 1px;
-  }
+  .panel { background: var(--paper); border-radius: 2px; box-shadow: var(--shadow); padding: 30px 32px; border: 1px solid var(--border-2); border-top: 4px solid var(--navy); position: relative; }
+  .panel::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; border: 1px solid var(--border-2); pointer-events: none; opacity: 0.4; border-radius: 1px; }
   .panel > * { position: relative; }
-  .panel h2 {
-    font-size: 15px; color: var(--navy); margin-bottom: 20px; padding-bottom: 12px;
-    border-bottom: 2px solid var(--gold); font-family: system-ui, sans-serif;
-    text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .panel h2::before {
-    content: '§'; color: var(--gold); font-size: 18px; font-family: Georgia, serif;
-  }
-
-  .grid-selector { display: grid; gap: 8px; margin-bottom: 22px; }
-  .type-grid { grid-template-columns: repeat(3, 1fr); }
-
-  .sel-btn {
-    padding: 12px 8px; border: 1.5px solid var(--border); background: var(--paper);
-    border-radius: 2px; cursor: pointer; font-family: system-ui, sans-serif;
-    font-size: 12px; font-weight: 700; color: var(--muted); transition: all 0.2s;
-    line-height: 1.3; text-align: center; letter-spacing: 0.5px;
-  }
-  .sel-btn.active { border-color: var(--navy); background: var(--navy); color: var(--gold-2); }
-  .sel-btn:hover:not(.active) { border-color: var(--gold); color: var(--navy); }
+  .panel h2 { font-size: 15px; color: var(--navy); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--gold); font-family: system-ui, sans-serif; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .panel h2::before { content: '§'; color: var(--gold); font-size: 18px; font-family: Georgia, serif; }
 
   .field { margin-bottom: 15px; }
-  .field label {
-    display: block; font-family: system-ui, sans-serif; font-size: 11px;
-    font-weight: 700; color: var(--navy); margin-bottom: 6px;
-    text-transform: uppercase; letter-spacing: 1px;
-  }
-  .field input, .field textarea, .field select {
-    width: 100%; padding: 11px 13px; border: 1.5px solid var(--border);
-    border-radius: 2px; font-family: system-ui, sans-serif; font-size: 14px;
-    color: var(--ink); background: #fff; transition: all 0.2s;
-  }
-  .field input:focus, .field textarea:focus, .field select:focus {
-    outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,137,74,0.15);
-  }
+  .field label { display: block; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 700; color: var(--navy); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .field input, .field textarea, .field select { width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 2px; font-family: system-ui, sans-serif; font-size: 14px; color: var(--ink); background: #fff; transition: all 0.2s; }
+  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,137,74,0.15); }
   .field textarea { resize: vertical; min-height: 80px; font-family: system-ui, sans-serif; }
   .field select { cursor: pointer; }
   .hint { font-family: system-ui, sans-serif; font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.45; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  .analysis {
-    margin-top: 16px; padding: 16px 18px;
-    background: linear-gradient(180deg, #eef4ec 0%, #e5efe2 100%);
-    border-left: 3px solid var(--success); border-radius: 2px;
-    font-family: system-ui, sans-serif; font-size: 12.5px; color: #1e3a2b;
-    line-height: 1.55; display: none;
-  }
-  .analysis.show { display: block; }
-  .analysis strong { color: var(--success); display: block; margin-bottom: 8px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 1px; }
-  .analysis ul { margin: 6px 0 0 18px; }
-  .analysis li { margin-bottom: 4px; }
-
-  .ai-status {
-    margin-top: 14px; padding: 12px 16px; border-radius: 2px;
-    font-family: system-ui, sans-serif; font-size: 12.5px;
-    display: none; align-items: center; gap: 10px;
-  }
+  .ai-status { margin-top: 14px; padding: 12px 16px; border-radius: 2px; font-family: system-ui, sans-serif; font-size: 12.5px; display: none; align-items: center; gap: 10px; }
   .ai-status.show { display: flex; }
   .ai-status.loading { background: #fff8e1; border-left: 3px solid var(--gold); color: #6b5320; }
   .ai-status.success { background: #e8f5e9; border-left: 3px solid var(--success); color: #1e3a2b; }
   .ai-status.error { background: #ffebee; border-left: 3px solid var(--danger); color: #7a1a1a; }
-  .spinner {
-    width: 16px; height: 16px; border: 2px solid var(--gold);
-    border-top-color: transparent; border-radius: 50%;
-    animation: spin 0.8s linear infinite; flex-shrink: 0;
-  }
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--gold); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .actions { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
-  .btn {
-    flex: 1; min-width: 130px; padding: 13px 16px; border: none; border-radius: 2px;
-    font-family: system-ui, sans-serif; font-size: 12.5px; font-weight: 700;
-    cursor: pointer; transition: all 0.2s; text-transform: uppercase;
-    letter-spacing: 1px; position: relative;
-  }
+  .btn { flex: 1; min-width: 130px; padding: 13px 16px; border: none; border-radius: 2px; font-family: system-ui, sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; }
   .btn:disabled { opacity: 0.6; cursor: not-allowed; }
   .btn-primary { background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%); color: var(--paper); }
   .btn-primary:hover:not(:disabled) { background: linear-gradient(180deg, var(--navy-3) 0%, var(--navy-2) 100%); }
@@ -211,89 +94,40 @@
   .btn-outline:hover:not(:disabled) { background: var(--navy); color: var(--paper); }
   .btn-success { background: linear-gradient(180deg, #2d5f3f 0%, #1e4a30 100%); color: #fff; }
   .btn-success:hover:not(:disabled) { background: #1e4a30; }
+  .btn-red { background: linear-gradient(180deg, #c53030 0%, var(--red) 100%); color: #fff; }
+  .btn-red:hover:not(:disabled) { background: #c53030; }
 
-  #docPreview {
-    background: #fff; padding: 55px 60px; font-size: 14px; line-height: 1.8;
-    color: var(--ink); min-height: 500px; border: 1px solid var(--border);
-    border-radius: 2px; font-family: 'Times New Roman', Times, serif;
-    box-shadow: inset 0 0 60px rgba(10,30,61,0.03), 0 2px 8px rgba(0,0,0,0.05);
-    white-space: pre-wrap; position: relative;
-  }
-  #docPreview::before {
-    content: ''; position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px;
-    border: 1px solid #e8e2d0; pointer-events: none;
-  }
+  #docPreview { background: #fff; padding: 55px 60px; font-size: 14px; line-height: 1.8; color: var(--ink); min-height: 500px; border: 1px solid var(--border); border-radius: 2px; font-family: 'Times New Roman', Times, serif; box-shadow: inset 0 0 60px rgba(10,30,61,0.03), 0 2px 8px rgba(0,0,0,0.05); white-space: pre-wrap; position: relative; }
+  #docPreview::before { content: ''; position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px; border: 1px solid #e8e2d0; pointer-events: none; }
   #docPreview .doc-text { position: relative; }
-  .placeholder-empty {
-    color: #b0a992; font-style: italic; text-align: center; padding-top: 140px;
-    font-family: system-ui, sans-serif; font-size: 14px; line-height: 1.7;
-  }
+  .placeholder-empty { color: #b0a992; font-style: italic; text-align: center; padding-top: 140px; font-family: system-ui, sans-serif; font-size: 14px; line-height: 1.7; }
 
-  .disclaimer {
-    margin-top: 18px; padding: 14px 16px;
-    background: linear-gradient(180deg, #fdf6e3 0%, #f8ecd0 100%);
-    border-left: 3px solid var(--gold); border-radius: 2px;
-    font-family: system-ui, sans-serif; font-size: 11.5px; color: #6b5320; line-height: 1.6;
-  }
-  .badge {
-    display: inline-block; background: var(--gold); color: var(--navy);
-    font-family: system-ui, sans-serif; font-size: 10px; font-weight: 700;
-    padding: 3px 10px; border-radius: 20px; margin-left: 8px;
-    letter-spacing: 1px; text-transform: uppercase; vertical-align: middle;
-  }
+  .disclaimer { margin-top: 18px; padding: 14px 16px; background: linear-gradient(180deg, #fdf6e3 0%, #f8ecd0 100%); border-left: 3px solid var(--gold); border-radius: 2px; font-family: system-ui, sans-serif; font-size: 11.5px; color: #6b5320; line-height: 1.6; }
+  .badge { display: inline-block; background: var(--gold); color: var(--navy); font-family: system-ui, sans-serif; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: 8px; letter-spacing: 1px; text-transform: uppercase; vertical-align: middle; }
   .badge-ai { background: var(--navy); color: var(--gold-2); }
-
   .hidden { display: none !important; }
 
   .situation-selector { margin-bottom: 18px; }
-  .situation-selector select {
-    width: 100%; padding: 13px 15px; border: 2px solid var(--gold);
-    border-radius: 2px; font-family: system-ui, sans-serif; font-size: 14px;
-    font-weight: 600; color: var(--navy); background: #fff; cursor: pointer;
-  }
-  .facts-block {
-    background: linear-gradient(180deg, #f9f4e6 0%, #f2ead6 100%);
-    border: 1px solid var(--border-2); border-radius: 2px;
-    padding: 18px 20px; margin-bottom: 18px;
-  }
-  .facts-block h4 {
-    font-family: system-ui, sans-serif; font-size: 11.5px; text-transform: uppercase;
-    letter-spacing: 1.5px; color: var(--navy); margin-bottom: 14px;
-    padding-bottom: 8px; border-bottom: 1px dashed var(--border);
-  }
-
+  .situation-selector select { width: 100%; padding: 13px 15px; border: 2px solid var(--gold); border-radius: 2px; font-family: system-ui, sans-serif; font-size: 14px; font-weight: 600; color: var(--navy); background: #fff; cursor: pointer; }
+  .facts-block { background: linear-gradient(180deg, #f9f4e6 0%, #f2ead6 100%); border: 1px solid var(--border-2); border-radius: 2px; padding: 18px 20px; margin-bottom: 18px; }
+  .facts-block h4 { font-family: system-ui, sans-serif; font-size: 11.5px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed var(--border); }
   .org-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 700px) { .org-grid { grid-template-columns: 1fr; } }
 
-  /* Templates page */
   .templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 24px; }
-  .template-card {
-    background: var(--paper); border-radius: 2px; padding: 24px 26px;
-    box-shadow: var(--shadow); border: 1px solid var(--border-2);
-    border-top: 3px solid var(--gold); transition: all 0.25s; cursor: pointer;
-    position: relative;
-  }
+  .template-card { background: var(--paper); border-radius: 2px; padding: 24px 26px; box-shadow: var(--shadow); border: 1px solid var(--border-2); border-top: 3px solid var(--gold); transition: all 0.25s; cursor: pointer; position: relative; }
   .template-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-top-color: var(--navy); }
   .template-card h3 { color: var(--navy); font-size: 16px; margin-bottom: 8px; letter-spacing: 0.3px; }
   .template-card p { font-family: system-ui, sans-serif; font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
-  .template-card .tag {
-    display: inline-block; background: var(--paper-2); color: var(--navy);
-    font-family: system-ui, sans-serif; font-size: 10.5px; padding: 4px 12px;
-    border-radius: 2px; border: 1px solid var(--border); letter-spacing: 0.5px;
-  }
+  .template-card .tag { display: inline-block; background: var(--paper-2); color: var(--navy); font-family: system-ui, sans-serif; font-size: 10.5px; padding: 4px 12px; border-radius: 2px; border: 1px solid var(--border); letter-spacing: 0.5px; }
+  .template-card .tag-red { background: #fdecea; color: var(--red); border-color: #f5c6c6; }
 
-  /* Subscription */
   .subscription-wrap { max-width: 940px; margin: 0 auto; text-align: center; }
   .subscription-wrap h2 { color: var(--navy); font-size: 32px; margin-bottom: 12px; letter-spacing: 1px; }
   .subscription-wrap .sub-lead { color: var(--muted); font-style: italic; margin-bottom: 40px; font-size: 16px; }
   .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 40px; }
   @media (max-width: 800px) { .plans { grid-template-columns: 1fr; } }
-  .plan {
-    background: var(--paper); border-radius: 2px; padding: 36px 26px;
-    box-shadow: var(--shadow); border: 1px solid var(--border-2);
-    border-top: 4px solid var(--border); text-align: center; position: relative;
-    transition: transform 0.25s;
-  }
+  .plan { background: var(--paper); border-radius: 2px; padding: 36px 26px; box-shadow: var(--shadow); border: 1px solid var(--border-2); border-top: 4px solid var(--border); text-align: center; position: relative; transition: transform 0.25s; }
   .plan.featured { border-top-color: var(--gold); transform: scale(1.04); box-shadow: var(--shadow-lg); }
   .plan h3 { font-family: system-ui, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 18px; }
   .plan .price { font-size: 42px; color: var(--navy); font-weight: 700; margin-bottom: 6px; font-family: Georgia, serif; }
@@ -304,18 +138,28 @@
   .plan ul li.no::before { content: '✕  '; color: #c0c0c0; }
   .plan ul li.no { color: #b0b0b0; }
   .plan .btn { width: 100%; }
-  .plan .badge-feat {
-    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-    background: linear-gradient(180deg, var(--gold-2) 0%, var(--gold) 100%);
-    color: var(--navy); font-family: system-ui, sans-serif; font-size: 10.5px;
-    font-weight: 700; padding: 5px 16px; border-radius: 20px;
-    letter-spacing: 1.5px; text-transform: uppercase;
-  }
+  .plan .badge-feat { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(180deg, var(--gold-2) 0%, var(--gold) 100%); color: var(--navy); font-family: system-ui, sans-serif; font-size: 10.5px; font-weight: 700; padding: 5px 16px; border-radius: 20px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+  .org-templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+  .org-tpl { background: var(--paper); border-radius: 2px; padding: 20px 22px; border: 1px solid var(--border-2); border-left: 4px solid var(--navy); box-shadow: 0 4px 15px rgba(10,30,61,0.08); cursor: pointer; transition: all 0.2s; }
+  .org-tpl:hover { transform: translateX(4px); border-left-color: var(--gold); box-shadow: var(--shadow); }
+  .org-tpl .org-icon { font-size: 26px; color: var(--gold); margin-bottom: 8px; display: block; }
+  .org-tpl h4 { font-family: system-ui, sans-serif; font-size: 14px; color: var(--navy); margin-bottom: 6px; font-weight: 700; }
+  .org-tpl p { font-family: system-ui, sans-serif; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+  .tool-card { background: var(--paper); border-radius: 2px; padding: 26px 28px; border: 1px solid var(--border-2); border-top: 4px solid var(--gold); box-shadow: var(--shadow); }
+  .tool-card h3 { font-family: system-ui, sans-serif; font-size: 15px; color: var(--navy); margin-bottom: 14px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .tool-card .result { margin-top: 14px; padding: 14px 16px; background: var(--paper-2); border-left: 3px solid var(--success); border-radius: 2px; font-family: system-ui, sans-serif; font-size: 14px; color: var(--navy); font-weight: 600; }
+  .history-item { padding: 14px 16px; background: var(--paper-2); border-left: 3px solid var(--gold); border-radius: 2px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+  .history-item:hover { background: var(--paper-3); border-left-color: var(--navy); }
+  .history-item .h-title { font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; color: var(--navy); }
+  .history-item .h-meta { font-family: system-ui, sans-serif; font-size: 11px; color: var(--muted); margin-top: 3px; }
 </style>
 </head>
 <body>
 
-<!-- ============ WELCOME ============ -->
+<!-- WELCOME -->
 <div class="welcome" id="welcome">
   <div class="welcome-inner">
     <div class="welcome-emblem">⚖</div>
@@ -327,19 +171,19 @@
       но не знаешь как? — Тогда тебе к нам.
     </p>
     <div class="benefits">
-      <div class="benefit"><div class="icon">§</div><div class="text"><strong>Реальные статьи законов</strong><span>Нейросеть подбирает нормы по вашим фактам и составляет документ</span></div></div>
-      <div class="benefit"><div class="icon">✎</div><div class="text"><strong>Генерация, а не вставка</strong><span>ИИ переработает ваши слова в юридический текст</span></div></div>
-      <div class="benefit"><div class="icon">🏛</div><div class="text"><strong>Все органы РФ</strong><span>Суды, прокуратура, УК, ФНС, Роспотребнадзор, СФР и другие</span></div></div>
-      <div class="benefit"><div class="icon">📄</div><div class="text"><strong>PDF и печать</strong><span>Готовый документ с реквизитами и подписью</span></div></div>
+      <div class="benefit"><div class="icon">§</div><div class="text"><strong>Встроенный юридический ИИ</strong><span>Работает прямо на странице — без интернета и API-ключей</span></div></div>
+      <div class="benefit"><div class="icon">✎</div><div class="text"><strong>Генерация, а не вставка</strong><span>Движок сам строит документ по процессуальной форме</span></div></div>
+      <div class="benefit"><div class="icon">🏛</div><div class="text"><strong>Все органы РФ</strong><span>Суды, прокуратура, УК, ФНС, ГИБДД, СФР, школы и другие</span></div></div>
+      <div class="benefit"><div class="icon">📄</div><div class="text"><strong>25+ ситуаций</strong><span>Потребители, ЖКХ, труд, налоги, семья, ДТП, наследство</span></div></div>
     </div>
     <div class="welcome-actions">
       <button class="btn-large btn-gold" onclick="startApp()">Начать работу →</button>
-      <button class="btn-large btn-ghost" onclick="showTemplatesFromWelcome()">Ситуации</button>
+      <button class="btn-large btn-red" onclick="showTemplatesFromWelcome()">Ситуации</button>
     </div>
   </div>
 </div>
 
-<!-- ============ APP ============ -->
+<!-- APP -->
 <div class="app" id="app">
   <div class="topbar">
     <div class="brand">
@@ -350,16 +194,16 @@
     <div class="nav">
       <button class="active" data-page="constructor" onclick="switchPage('constructor')">Конструктор</button>
       <button data-page="templates" onclick="switchPage('templates')">Ситуации</button>
+      <button data-page="orgtemplates" onclick="switchPage('orgtemplates')">Шаблоны заявлений</button>
+      <button data-page="tools" onclick="switchPage('tools')">Инструменты</button>
       <button data-page="subscription" onclick="switchPage('subscription')">Подписка</button>
     </div>
   </div>
 
   <div class="container">
-    <!-- ===== CONSTRUCTOR ===== -->
+    <!-- CONSTRUCTOR -->
     <div class="page active" id="page-constructor">
       <div class="layout">
-
-        <!-- LEFT -->
         <div class="panel">
           <h2>Правовая ситуация</h2>
           <div class="situation-selector">
@@ -374,14 +218,12 @@
           </div>
 
           <h2>Кому адресуется</h2>
-
           <div class="field">
             <label>Орган / организация</label>
             <select id="orgSelect" onchange="onOrgChange()">
               <option value="">— Выберите орган —</option>
             </select>
           </div>
-
           <div class="org-grid">
             <div class="field">
               <label>Должность</label>
@@ -394,17 +236,14 @@
               <input type="text" id="recipientName" placeholder="Иванов Иван Иванович">
             </div>
           </div>
-
           <div class="field" id="customOrgField" style="display:none;">
             <label>Свой орган / организация</label>
             <input type="text" id="customOrg" placeholder="Например: Прокуратура Ленинского района г. Москвы">
           </div>
-
           <div class="field" id="customPositionField" style="display:none;">
             <label>Своя должность</label>
             <input type="text" id="customPosition" placeholder="Например: Начальнику отдела по надзору">
           </div>
-
           <div class="field">
             <label>Наименование органа (полное, для шапки)</label>
             <input type="text" id="recipientFull" placeholder="Например: Прокуратура Ленинского района г. Москвы">
@@ -430,9 +269,8 @@
           <h2>Ваше требование</h2>
           <div class="field">
             <label>Опишите своими словами, что вы хотите</label>
-            <textarea id="demand" placeholder="Например: прошу провести проверку и привлечь виновных к ответственности, вернуть деньги, устранить недостатки..."></textarea>
+            <textarea id="demand" placeholder="Например: прошу провести проверку и привлечь виновных к ответственности..."></textarea>
           </div>
-
           <div class="field">
             <label>Дата составления</label>
             <input type="date" id="docDate">
@@ -440,7 +278,7 @@
 
           <div class="ai-status" id="aiStatus">
             <div class="spinner"></div>
-            <span id="aiStatusText">Нейросеть составляет документ…</span>
+            <span id="aiStatusText">Юридический ИИ составляет документ…</span>
           </div>
 
           <div class="actions">
@@ -458,13 +296,12 @@
           </div>
         </div>
 
-        <!-- RIGHT -->
         <div class="panel">
           <h2>Предпросмотр <span class="badge badge-ai">AI</span></h2>
           <div id="docPreview">
             <div class="placeholder-empty">
               Заполните данные слева<br>и нажмите «Составить через ИИ»<br><br>
-              Нейросеть проанализирует вашу ситуацию<br>и составит документ по всей форме.
+              Встроенный движок проанализирует факты<br>и составит документ по всей форме.
             </div>
           </div>
           <div class="actions">
@@ -473,22 +310,103 @@
             <button class="btn btn-outline" onclick="copyText()">📋 Копировать</button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- ===== TEMPLATES ===== -->
+    <!-- SITUATIONS -->
     <div class="page" id="page-templates">
       <div class="panel" style="border-top-color: var(--gold);">
-        <h2>Правовые ситуации</h2>
+        <h2>Правовые ситуации <span class="badge" id="sitCount">25+</span></h2>
         <p style="font-family: system-ui, sans-serif; font-size: 13.5px; color: var(--muted); margin-bottom: 6px;">
-          Выберите ситуацию — нейросеть подберёт статьи и составит документ.
+          Выберите ситуацию — встроенный ИИ подберёт статьи и составит документ.
         </p>
         <div class="templates-grid" id="templatesGrid"></div>
       </div>
     </div>
 
-    <!-- ===== SUBSCRIPTION ===== -->
+    <!-- ORG TEMPLATES -->
+    <div class="page" id="page-orgtemplates">
+      <div class="panel" style="border-top-color: var(--gold);">
+        <h2>Шаблоны заявлений по организациям</h2>
+        <p style="font-family: system-ui, sans-serif; font-size: 13.5px; color: var(--muted); margin-bottom: 6px;">
+          Выберите организацию — конструктор автоматически подставит адресата и должность.
+        </p>
+        <div class="org-templates-grid" id="orgTemplatesGrid"></div>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="page" id="page-tools">
+      <div class="panel" style="border-top-color: var(--gold);">
+        <h2>Правовые инструменты</h2>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <h3>🧮 Калькулятор госпошлины</h3>
+            <div class="field">
+              <label>Тип иска</label>
+              <select id="feeType" onchange="calcFee()">
+                <option value="property">Имущественный (цена иска)</option>
+                <option value="nonproperty">Неимущественный (для граждан)</option>
+                <option value="moral">О компенсации морального вреда</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Цена иска (руб.)</label>
+              <input type="number" id="feeAmount" placeholder="50000" oninput="calcFee()">
+            </div>
+            <div class="result" id="feeResult">Введите сумму для расчёта</div>
+            <p style="font-family: system-ui, sans-serif; font-size: 11px; color: var(--muted); margin-top: 10px;">
+              Расчёт по ст. 333.19 НК РФ (2025). Для потребителей — госпошлина не уплачивается при цене иска до 1 млн руб.
+            </p>
+          </div>
+
+          <div class="tool-card">
+            <h3>⏱ Юридические сроки</h3>
+            <div class="field">
+              <label>Выберите срок</label>
+              <select id="deadlineSelect" onchange="showDeadline()">
+                <option value="">— Выберите —</option>
+                <option value="d10_zozpp">Возврат денег за товар (10 дней) — ст. 22 ЗоЗПП</option>
+                <option value="d7_zozpp">Замена товара (7 дней) — ст. 21 ЗоЗПП</option>
+                <option value="d45_zozpp">Устранение недостатков (45 дней) — ст. 20 ЗоЗПП</option>
+                <option value="d10_koap">Обжалование штрафа (10 суток) — ст. 30.3 КоАП</option>
+                <option value="d3m_tk">Обращение в суд по увольнению (1 месяц) — ст. 392 ТК</option>
+                <option value="d1y_tk">Обращение по зарплате (1 год) — ст. 392 ТК</option>
+                <option value="d3y_gk">Общий срок исковой давности (3 года) — ст. 196 ГК</option>
+                <option value="d30_59fz">Рассмотрение обращения (30 дней) — 59-ФЗ</option>
+                <option value="d5_gpk">Апелляционная жалоба (1 месяц) — ст. 321 ГПК</option>
+                <option value="d10_gpk">Возражение на судебный приказ (10 дней) — ст. 128 ГПК</option>
+              </select>
+            </div>
+            <div class="result" id="deadlineResult">Выберите срок для пояснения</div>
+          </div>
+
+          <div class="tool-card">
+            <h3>📚 История документов</h3>
+            <div id="historyList"><p style="font-family: system-ui, sans-serif; font-size: 12.5px; color: var(--muted);">Пока нет сохранённых документов.</p></div>
+            <button class="btn btn-outline" onclick="clearHistory()" style="margin-top: 10px;">Очистить историю</button>
+          </div>
+
+          <div class="tool-card">
+            <h3>📖 Правовой справочник</h3>
+            <p style="font-family: system-ui, sans-serif; font-size: 12.5px; color: var(--muted); line-height: 1.7;">
+              <strong style="color: var(--navy);">ГК РФ</strong> — гражданские споры, сделки, наследство<br>
+              <strong style="color: var(--navy);">ЗоЗПП</strong> — защита прав потребителей<br>
+              <strong style="color: var(--navy);">ТК РФ</strong> — трудовые споры<br>
+              <strong style="color: var(--navy);">ЖК РФ</strong> — жилищные вопросы<br>
+              <strong style="color: var(--navy);">ГПК РФ</strong> — гражданский процесс<br>
+              <strong style="color: var(--navy);">КоАП РФ</strong> — административные дела<br>
+              <strong style="color: var(--navy);">НК РФ</strong> — налоги и вычеты<br>
+              <strong style="color: var(--navy);">УПК РФ</strong> — уголовный процесс<br>
+              <strong style="color: var(--navy);">СК РФ</strong> — семейные споры<br>
+              <strong style="color: var(--navy);">59-ФЗ</strong> — обращения граждан
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBSCRIPTION -->
     <div class="page" id="page-subscription">
       <div class="subscription-wrap">
         <h2>Тарифные планы</h2>
@@ -500,7 +418,7 @@
             <div class="price-sub">навсегда</div>
             <ul>
               <li>3 документа в месяц</li>
-              <li>Генерация через ИИ</li>
+              <li>Встроенный ИИ</li>
               <li>Базовые ситуации</li>
               <li class="no">PDF без водяного знака</li>
               <li class="no">Все органы РФ</li>
@@ -543,176 +461,567 @@
         </p>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
 /* =========================================================
-   LEXSCRIPTOR — реестр органов РФ и генерация через ИИ
+   LEXSCRIPTOR — встроенный юридический ИИ-движок
+   Работает локально, без внешних API
    ========================================================= */
 
 // ============ РЕЕСТР ОРГАНОВ РФ ============
 const ORGS = [
-  { id: 'court_district', name: 'Районный / городской суд', positions: ['Председательствующему судье', 'Судье', 'Председателю суда'], template: 'В {court} районный суд г. {city}' },
-  { id: 'court_world', name: 'Мировой судья', positions: ['Мировому судье судебного участка №___'], template: 'Мировому судье судебного участка №___' },
-  { id: 'court_region', name: 'Областной / краевой суд', positions: ['Председательствующему судье', 'Судье', 'Председателю суда'], template: 'В {region} областной суд' },
-  { id: 'court_arbitration', name: 'Арбитражный суд', positions: ['Судье', 'Председателю суда'], template: 'В Арбитражный суд г. {city}' },
-  { id: 'court_appeal', name: 'Апелляционный суд', positions: ['Председательствующему судье'], template: 'В судебную коллегию по гражданским делам {court} областного суда' },
-  { id: 'court_cassation', name: 'Кассационный суд', positions: ['Председательствующему судье'], template: 'В {court} кассационный суд общей юрисдикции' },
-  { id: 'court_supreme', name: 'Верховный Суд РФ', positions: ['Судье', 'Председателю'], template: 'В Верховный Суд Российской Федерации' },
-  { id: 'prosecutor', name: 'Прокуратура', positions: ['Прокурору', 'Заместителю прокурора', 'Помощнику прокурора', 'Старшему помощнику прокурора'], template: 'Прокурору {district} района г. {city}' },
-  { id: 'prosecutor_gen', name: 'Генеральная прокуратура', positions: ['Генеральному прокурору РФ'], template: 'Генеральному прокурору Российской Федерации' },
-  { id: 'police', name: 'Полиция / МВД', positions: ['Начальнику отдела полиции', 'Начальнику УМВД', 'Дежурному'], template: 'Начальнику ОП №___ УМВД России по г. {city}' },
-  { id: 'sk', name: 'Следственный комитет', positions: ['Руководителю следственного отдела', 'Следователю'], template: 'Руководителю {district} межрайонного следственного отдела СУ СК России' },
-  { id: 'gibdd', name: 'ГИБДД', positions: ['Начальнику ГИБДД', 'Начальнику ЦАФАП', 'Инспектору ДПС'], template: 'Начальнику ОГИБДД УМВД России по г. {city}' },
-  { id: 'fssp', name: 'Служба судебных приставов (ФССП)', positions: ['Начальнику отдела', 'Судебному приставу-исполнителю', 'Старшему судебному приставу'], template: 'Начальнику {district} ОСП УФССП России по г. {city}' },
-  { id: 'uk', name: 'Управляющая компания', positions: ['Генеральному директору', 'Директору', 'Начальнику'], template: 'ООО «___», генеральному директору' },
-  { id: 'tsg', name: 'ТСЖ / ЖСК', positions: ['Председателю правления', 'Правлению'], template: 'ТСЖ «___», председателю правления' },
-  { id: 'rospotreb', name: 'Роспотребнадзор', positions: ['Руководителю', 'Начальнику отдела'], template: 'Руководителю Управления Роспотребнадзора по г. {city}' },
-  { id: 'fns', name: 'ФНС / Налоговая инспекция', positions: ['Начальнику ИФНС', 'Руководителю УФНС'], template: 'Начальнику ИФНС России №___ по г. {city}' },
-  { id: 'sfr', name: 'Социальный фонд России (СФР)', positions: ['Руководителю отделения', 'Начальнику управления'], template: 'Руководителю Отделения СФР по {region}' },
-  { id: 'rostrud', name: 'Трудовая инспекция (Роструд)', positions: ['Руководителю', 'Государственному инспектору труда'], template: 'Руководителю Государственной инспекции труда в {region}' },
-  { id: 'administration_city', name: 'Администрация города', positions: ['Главе города', 'Заместителю главы'], template: 'Главе администрации г. {city}' },
-  { id: 'administration_district', name: 'Администрация района', positions: ['Главе района', 'Заместителю главы'], template: 'Главе администрации {district} района' },
-  { id: 'mfc', name: 'МФЦ', positions: ['Директору', 'Руководителю филиала'], template: 'Директору ГБУ «МФЦ» {region}' },
-  { id: 'employer', name: 'Работодатель / организация', positions: ['Генеральному директору', 'Директору', 'Руководителю отдела кадров'], template: 'ООО «___», генеральному директору' },
-  { id: 'bank', name: 'Банк', positions: ['Председателю правления', 'Управляющему отделения', 'Директору'], template: 'ПАО «___», председателю правления' },
-  { id: 'insurance', name: 'Страховая компания', positions: ['Генеральному директору', 'Директору филиала', 'Руководителю отдела урегулирования убытков'], template: 'СПАО «___», генеральному директору' },
-  { id: 'ombudsman', name: 'Уполномоченный по правам человека', positions: ['Уполномоченному по правам человека'], template: 'Уполномоченному по правам человека в {region}' },
-  { id: 'ombudsman_child', name: 'Уполномоченный по правам ребёнка', positions: ['Уполномоченному по правам ребёнка'], template: 'Уполномоченному по правам ребёнка в {region}' },
-  { id: 'ombudsman_business', name: 'Уполномоченный по защите прав предпринимателей', positions: ['Уполномоченному'], template: 'Уполномоченному по защите прав предпринимателей в {region}' },
-  { id: 'notary', name: 'Нотариус', positions: ['Нотариусу'], template: 'Нотариусу {district} нотариального округа' },
-  { id: 'zags', name: 'ЗАГС', positions: ['Начальнику отдела ЗАГС', 'Руководителю'], template: 'Начальнику Отдела ЗАГС {district} района' },
-  { id: 'rosreestr', name: 'Росреестр', positions: ['Руководителю управления', 'Начальнику отдела'], template: 'Руководителю Управления Росреестра по {region}' },
-  { id: 'roszdravnadzor', name: 'Росздравнадзор', positions: ['Руководителю'], template: 'Руководителю Территориального органа Росздравнадзора по {region}' },
-  { id: 'rosobrnadzor', name: 'Рособрнадзор', positions: ['Руководителю'], template: 'Руководителю Федеральной службы по надзору в сфере образования и науки' },
-  { id: 'zhilinsp', name: 'Жилищная инспекция', positions: ['Руководителю', 'Государственному жилищному инспектору'], template: 'Руководителю Государственной жилищной инспекции {region}' },
-  { id: 'fas', name: 'ФАС (антимонопольная служба)', positions: ['Руководителю управления'], template: 'Руководителю Управления ФАС России по {region}' },
-  { id: 'customs', name: 'Таможня', positions: ['Начальнику таможни', 'Начальнику поста'], template: 'Начальнику {city} таможни' },
-  { id: 'school', name: 'Школа / детский сад', positions: ['Директору', 'Заведующему', 'Завучу'], template: 'МБОУ «Школа №___», директору' },
-  { id: 'medical', name: 'Медицинское учреждение', positions: ['Главному врачу', 'Заведующему отделением'], template: 'ГБУЗ «ГКБ №___», главному врачу' },
-  { id: 'custom', name: '— Свой вариант —', positions: ['— Своя должность —'], template: '' }
+  { id: 'court_district', name: 'Районный / городской суд', positions: ['Председательствующему судье','Судье','Председателю суда'], template: 'В {court} районный суд г. {city}', icon: '⚖' },
+  { id: 'court_world', name: 'Мировой судья', positions: ['Мировому судье судебного участка №___'], template: 'Мировому судье судебного участка №___', icon: '⚖' },
+  { id: 'court_region', name: 'Областной / краевой суд', positions: ['Председательствующему судье','Судье','Председателю суда'], template: 'В {region} областной суд', icon: '⚖' },
+  { id: 'court_arbitration', name: 'Арбитражный суд', positions: ['Судье','Председателю суда'], template: 'В Арбитражный суд г. {city}', icon: '⚖' },
+  { id: 'court_appeal', name: 'Апелляционный суд', positions: ['Председательствующему судье'], template: 'В судебную коллегию по гражданским делам {court} областного суда', icon: '⚖' },
+  { id: 'court_cassation', name: 'Кассационный суд', positions: ['Председательствующему судье'], template: 'В {court} кассационный суд общей юрисдикции', icon: '⚖' },
+  { id: 'court_supreme', name: 'Верховный Суд РФ', positions: ['Судье','Председателю'], template: 'В Верховный Суд Российской Федерации', icon: '⚖' },
+  { id: 'prosecutor', name: 'Прокуратура', positions: ['Прокурору','Заместителю прокурора','Помощнику прокурора','Старшему помощнику прокурора'], template: 'Прокурору {district} района г. {city}', icon: '🏛' },
+  { id: 'prosecutor_gen', name: 'Генеральная прокуратура', positions: ['Генеральному прокурору РФ'], template: 'Генеральному прокурору Российской Федерации', icon: '🏛' },
+  { id: 'police', name: 'Полиция / МВД', positions: ['Начальнику отдела полиции','Начальнику УМВД','Дежурному'], template: 'Начальнику ОП №___ УМВД России по г. {city}', icon: '👮' },
+  { id: 'sk', name: 'Следственный комитет', positions: ['Руководителю следственного отдела','Следователю'], template: 'Руководителю {district} межрайонного следственного отдела СУ СК России', icon: '🔎' },
+  { id: 'gibdd', name: 'ГИБДД', positions: ['Начальнику ГИБДД','Начальнику ЦАФАП','Инспектору ДПС'], template: 'Начальнику ОГИБДД УМВД России по г. {city}', icon: '🚔' },
+  { id: 'fssp', name: 'Служба судебных приставов (ФССП)', positions: ['Начальнику отдела','Судебному приставу-исполнителю','Старшему судебному приставу'], template: 'Начальнику {district} ОСП УФССП России по г. {city}', icon: '📋' },
+  { id: 'uk', name: 'Управляющая компания', positions: ['Генеральному директору','Директору','Начальнику'], template: 'ООО «___», генеральному директору', icon: '🏢' },
+  { id: 'tsg', name: 'ТСЖ / ЖСК', positions: ['Председателю правления','Правлению'], template: 'ТСЖ «___», председателю правления', icon: '🏘' },
+  { id: 'rospotreb', name: 'Роспотребнадзор', positions: ['Руководителю','Начальнику отдела'], template: 'Руководителю Управления Роспотребнадзора по г. {city}', icon: '🛡' },
+  { id: 'fns', name: 'ФНС / Налоговая инспекция', positions: ['Начальнику ИФНС','Руководителю УФНС'], template: 'Начальнику ИФНС России №___ по г. {city}', icon: '💰' },
+  { id: 'sfr', name: 'Социальный фонд России (СФР)', positions: ['Руководителю отделения','Начальнику управления'], template: 'Руководителю Отделения СФР по {region}', icon: '🛡' },
+  { id: 'rostrud', name: 'Трудовая инспекция (Роструд)', positions: ['Руководителю','Государственному инспектору труда'], template: 'Руководителю Государственной инспекции труда в {region}', icon: '⚒' },
+  { id: 'administration_city', name: 'Администрация города', positions: ['Главе города','Заместителю главы'], template: 'Главе администрации г. {city}', icon: '🏛' },
+  { id: 'administration_district', name: 'Администрация района', positions: ['Главе района','Заместителю главы'], template: 'Главе администрации {district} района', icon: '🏛' },
+  { id: 'mfc', name: 'МФЦ', positions: ['Директору','Руководителю филиала'], template: 'Директору ГБУ «МФЦ» {region}', icon: '📄' },
+  { id: 'employer', name: 'Работодатель / организация', positions: ['Генеральному директору','Директору','Руководителю отдела кадров'], template: 'ООО «___», генеральному директору', icon: '💼' },
+  { id: 'bank', name: 'Банк', positions: ['Председателю правления','Управляющему отделения','Директору'], template: 'ПАО «___», председателю правления', icon: '🏦' },
+  { id: 'insurance', name: 'Страховая компания', positions: ['Генеральному директору','Директору филиала','Руководителю отдела урегулирования убытков'], template: 'СПАО «___», генеральному директору', icon: '🛡' },
+  { id: 'ombudsman', name: 'Уполномоченный по правам человека', positions: ['Уполномоченному по правам человека'], template: 'Уполномоченному по правам человека в {region}', icon: '⚖' },
+  { id: 'ombudsman_child', name: 'Уполномоченный по правам ребёнка', positions: ['Уполномоченному по правам ребёнка'], template: 'Уполномоченному по правам ребёнка в {region}', icon: '👶' },
+  { id: 'ombudsman_business', name: 'Уполномоченный по защите прав предпринимателей', positions: ['Уполномоченному'], template: 'Уполномоченному по защите прав предпринимателей в {region}', icon: '💼' },
+  { id: 'notary', name: 'Нотариус', positions: ['Нотариусу'], template: 'Нотариусу {district} нотариального округа', icon: '📜' },
+  { id: 'zags', name: 'ЗАГС', positions: ['Начальнику отдела ЗАГС','Руководителю'], template: 'Начальнику Отдела ЗАГС {district} района', icon: '💍' },
+  { id: 'rosreestr', name: 'Росреестр', positions: ['Руководителю управления','Начальнику отдела'], template: 'Руководителю Управления Росреестра по {region}', icon: '🗺' },
+  { id: 'roszdravnadzor', name: 'Росздравнадзор', positions: ['Руководителю'], template: 'Руководителю Территориального органа Росздравнадзора по {region}', icon: '🏥' },
+  { id: 'rosobrnadzor', name: 'Рособрнадзор', positions: ['Руководителю'], template: 'Руководителю Федеральной службы по надзору в сфере образования и науки', icon: '🎓' },
+  { id: 'zhilinsp', name: 'Жилищная инспекция', positions: ['Руководителю','Государственному жилищному инспектору'], template: 'Руководителю Государственной жилищной инспекции {region}', icon: '🏘' },
+  { id: 'fas', name: 'ФАС (антимонопольная служба)', positions: ['Руководителю управления'], template: 'Руководителю Управления ФАС России по {region}', icon: '📊' },
+  { id: 'customs', name: 'Таможня', positions: ['Начальнику таможни','Начальнику поста'], template: 'Начальнику {city} таможни', icon: '🛃' },
+  { id: 'school', name: 'Школа / детский сад', positions: ['Директору','Заведующему','Завучу'], template: 'МБОУ «Школа №___», директору', icon: '🎓' },
+  { id: 'medical', name: 'Медицинское учреждение', positions: ['Главному врачу','Заведующему отделением'], template: 'ГБУЗ «ГКБ №___», главному врачу', icon: '🏥' },
+  { id: 'custom', name: '— Свой вариант —', positions: ['— Своя должность —'], template: '', icon: '✎' }
 ];
 
-// ============ БАЗА ПРАВОВЫХ СИТУАЦИЙ ============
+// ============ БАЗА ПРАВОВЫХ СИТУАЦИЙ (25+) ============
+// Формат: fields, rules [{when, arts, why, demand}], descTpl, attach
 const SITUATIONS = {
-  defective_goods: {
-    id: 'defective_goods',
-    title: 'Товар ненадлежащего качества',
-    type: 'claim',
-    group: 'Защита прав потребителей',
-    fields: [
-      { id: 'product', label: 'Наименование товара', type: 'text', required: true, placeholder: 'Мобильный телефон Samsung Galaxy A54' },
-      { id: 'purchaseDate', label: 'Дата покупки', type: 'date', required: true },
-      { id: 'defectDate', label: 'Дата обнаружения недостатка', type: 'date', required: true },
-      { id: 'price', label: 'Стоимость товара (руб.)', type: 'number', required: true, placeholder: '45000' },
-      { id: 'defectDesc', label: 'Описание недостатка', type: 'textarea', required: true, placeholder: 'Телефон перестал включаться, экран не реагирует на нажатия' },
-      { id: 'hasReceipt', label: 'Кассовый чек сохранён', type: 'select', required: true, options: ['Да', 'Нет'] },
-      { id: 'sellerContact', label: 'Обращались ли к продавцу', type: 'select', required: true, options: ['Да, требование оставлено без удовлетворения', 'Да, ответа не последовало', 'Нет, обращаюсь впервые'] },
-      { id: 'desiredResult', label: 'Желаемый результат', type: 'select', required: true, options: ['Возврат денежных средств', 'Замена товара', 'Безвозмездное устранение недостатков', 'Соразмерное уменьшение цены'] }
-    ]
-  },
-  salary_delay: {
-    id: 'salary_delay',
-    title: 'Задержка заработной платы',
-    type: 'claim',
-    group: 'Трудовые споры',
-    fields: [
-      { id: 'position', label: 'Ваша должность', type: 'text', required: true, placeholder: 'Менеджер по продажам' },
-      { id: 'employmentDate', label: 'Дата приёма на работу', type: 'date', required: true },
-      { id: 'salaryAmount', label: 'Сумма задолженности (руб.)', type: 'number', required: true, placeholder: '80000' },
-      { id: 'salaryPeriod', label: 'За какой период задолженность', type: 'text', required: true, placeholder: 'октябрь 2025 г.' },
-      { id: 'dueDate', label: 'Срок выплаты по договору', type: 'date', required: true },
-      { id: 'delayDays', label: 'Количество дней задержки', type: 'number', required: true, placeholder: '30' },
-      { id: 'contactedEmployer', label: 'Обращались ли к работодателю', type: 'select', required: true, options: ['Да, ответа не последовало', 'Да, отказано', 'Нет, обращаюсь впервые'] }
-    ]
-  },
-  uk_failure: {
-    id: 'uk_failure',
-    title: 'Бездействие управляющей компании',
-    type: 'statement',
-    group: 'ЖКХ',
-    fields: [
-      { id: 'address', label: 'Адрес дома / квартиры', type: 'text', required: true, placeholder: 'г. Москва, ул. Ленина, д. 10, кв. 5' },
-      { id: 'problem', label: 'Описание проблемы', type: 'textarea', required: true, placeholder: 'С 10 января 2025 г. не работает вентиляция в квартире' },
-      { id: 'problemStart', label: 'С какой даты проблема', type: 'date', required: true },
-      { id: 'contactedUK', label: 'Обращались ли в УК', type: 'select', required: true, options: ['Да, ответа не последовало', 'Да, отказано', 'Нет, обращаюсь впервые'] },
-      { id: 'contactDate', label: 'Дата обращения в УК (если было)', type: 'date', required: false },
-      { id: 'desiredAction', label: 'Требуемое действие', type: 'select', required: true, options: ['Устранить неисправность и произвести перерасчёт', 'Произвести перерасчёт платы', 'Устранить неисправность'] }
-    ]
-  },
-  court_evidence: {
-    id: 'court_evidence',
-    title: 'Ходатайство об истребовании доказательств',
-    type: 'motion',
-    group: 'Судебные ходатайства',
-    fields: [
-      { id: 'caseNumber', label: 'Номер гражданского дела', type: 'text', required: true, placeholder: '2-1234/2025' },
-      { id: 'plaintiff', label: 'Истец (ФИО)', type: 'text', required: true, placeholder: 'Сидоров С.С.' },
-      { id: 'defendant', label: 'Ответчик (наименование)', type: 'text', required: true, placeholder: 'ООО «Ромашка»' },
-      { id: 'evidenceList', label: 'Какие доказательства необходимы', type: 'textarea', required: true, placeholder: 'Договор оказания услуг № 123 от 01.01.2025; акт выполненных работ' },
-      { id: 'evidenceHolder', label: 'У кого находятся доказательства', type: 'text', required: true, placeholder: 'ООО «Ромашка», г. Москва, ул. Ленина, д. 10' },
-      { id: 'whyCannotObtain', label: 'Почему не можете получить самостоятельно', type: 'textarea', required: true, placeholder: 'Организация отказывает в предоставлении документов без судебного запроса' }
-    ]
-  },
-  fine_appeal: {
-    id: 'fine_appeal',
-    title: 'Обжалование административного штрафа',
-    type: 'complaint',
-    group: 'Административные дела',
-    fields: [
-      { id: 'fineNumber', label: 'Номер постановления', type: 'text', required: true, placeholder: '1234567890' },
-      { id: 'fineDate', label: 'Дата постановления', type: 'date', required: true },
-      { id: 'fineAuthority', label: 'Орган, вынесший постановление', type: 'text', required: true, placeholder: 'ЦАФАП ГИБДД МВД России' },
-      { id: 'fineAmount', label: 'Сумма штрафа (руб.)', type: 'number', required: true, placeholder: '5000' },
-      { id: 'violationDesc', label: 'Суть вменяемого нарушения', type: 'textarea', required: true, placeholder: 'Превышение скорости на 20 км/ч' },
-      { id: 'appealReason', label: 'Основание для обжалования', type: 'textarea', required: true, placeholder: 'Автомобиль в момент фиксации находился в другом месте' },
-      { id: 'receivedDate', label: 'Дата получения копии постановления', type: 'date', required: true }
-    ]
-  },
-  tax_deduction: {
-    id: 'tax_deduction',
-    title: 'Заявление на налоговый вычет',
-    type: 'statement',
-    group: 'Налоги',
-    fields: [
-      { id: 'deductionType', label: 'Вид вычета', type: 'select', required: true, options: ['Имущественный (покупка жилья)', 'Социальный (обучение)', 'Социальный (лечение)', 'Стандартный (дети)', 'Профессиональный'] },
-      { id: 'expenseAmount', label: 'Сумма расходов (руб.)', type: 'number', required: true, placeholder: '2000000' },
-      { id: 'expenseYear', label: 'Год, за который заявляется вычет', type: 'number', required: true, placeholder: '2024' },
-      { id: 'paidTax', label: 'Уплачено НДФЛ за год (руб.)', type: 'number', required: true, placeholder: '156000' },
-      { id: 'bankAccount', label: 'Реквизиты для возврата', type: 'text', required: true, placeholder: 'Р/с 40817810... в ПАО Сбербанк' }
-    ]
-  },
-  prosecutor_complaint: {
-    id: 'prosecutor_complaint',
-    title: 'Жалоба в прокуратуру',
-    type: 'complaint',
-    group: 'Надзорные органы',
-    fields: [
-      { id: 'violator', label: 'Кто нарушил ваши права', type: 'text', required: true, placeholder: 'ООО «Ромашка» / Отдел полиции № 5' },
-      { id: 'violationDesc', label: 'Суть нарушения', type: 'textarea', required: true, placeholder: 'Организация игнорирует мои обращения с 10.01.2025' },
-      { id: 'violationStart', label: 'С какой даты нарушение', type: 'date', required: true },
-      { id: 'priorAppeals', label: 'Куда уже обращались', type: 'textarea', required: false, placeholder: 'В УК, в Роспотребнадзор — без результата' },
-      { id: 'desiredAction', label: 'Что просите', type: 'textarea', required: true, placeholder: 'Провести проверку, принять меры прокурорского реагирования' }
-    ]
-  },
-  intl_consumer: {
-    id: 'intl_consumer',
-    title: 'Обращение в защиту потребителя (международное)',
-    type: 'intl',
-    group: 'Международные обращения',
-    fields: [
-      { id: 'product', label: 'Product / Наименование товара', type: 'text', required: true, placeholder: 'Samsung Galaxy A54' },
-      { id: 'purchaseDate', label: 'Date of purchase / Дата покупки', type: 'date', required: true },
-      { id: 'seller', label: 'Seller / Продавец', type: 'text', required: true, placeholder: 'TechStore GmbH, Berlin' },
-      { id: 'price', label: 'Price / Стоимость (EUR/USD)', type: 'number', required: true, placeholder: '500' },
-      { id: 'defectDesc', label: 'Defect description / Описание недостатка', type: 'textarea', required: true, placeholder: 'The phone stopped working after 20 days' },
-      { id: 'lawCountry', label: 'Country of purchase / Страна покупки', type: 'text', required: true, placeholder: 'Germany' },
-      { id: 'desiredResult', label: 'Desired remedy / Требуемый результат', type: 'select', required: true, options: ['Full refund / Полный возврат', 'Replacement / Замена', 'Repair / Ремонт', 'Compensation / Компенсация'] }
-    ]
-  }
+
+// ===== ЗАЩИТА ПРАВ ПОТРЕБИТЕЛЕЙ =====
+defective_goods: {
+  title: 'Товар ненадлежащего качества', type: 'claim', group: 'Защита прав потребителей',
+  fields: [
+    { id: 'product', label: 'Наименование товара', type: 'text', required: true, placeholder: 'Мобильный телефон Samsung Galaxy A54' },
+    { id: 'purchaseDate', label: 'Дата покупки', type: 'date', required: true },
+    { id: 'defectDate', label: 'Дата обнаружения недостатка', type: 'date', required: true },
+    { id: 'price', label: 'Стоимость товара (руб.)', type: 'number', required: true, placeholder: '45000' },
+    { id: 'defectDesc', label: 'Описание недостатка', type: 'textarea', required: true, placeholder: 'Телефон перестал включаться, экран не реагирует' },
+    { id: 'hasReceipt', label: 'Кассовый чек сохранён', type: 'select', required: true, options: ['Да','Нет'] },
+    { id: 'sellerContact', label: 'Обращались ли к продавцу', type: 'select', required: true, options: ['Да, требование оставлено без удовлетворения','Да, ответа не последовало','Нет, обращаюсь впервые'] },
+    { id: 'desiredResult', label: 'Желаемый результат', type: 'select', required: true, options: ['Возврат денежных средств','Замена товара','Безвозмездное устранение недостатков','Соразмерное уменьшение цены'] }
+  ],
+  rules: [
+    { when: f => days(f.purchaseDate, f.defectDate) <= 15 && f.desiredResult === 'Возврат денежных средств',
+      arts: ['п. 1 ст. 18 Закона РФ от 07.02.1992 № 2300-1 «О защите прав потребителей»','ст. 22 Закона РФ «О защите прав потребителей»','ст. 469, 470 ГК РФ'],
+      why: 'Недостаток обнаружен в течение 15 дней с момента передачи товара. В силу п. 1 ст. 18 ЗоЗПП потребитель вправе отказаться от исполнения договора и потребовать возврата денег. Срок — 10 дней (ст. 22 ЗоЗПП).',
+      demand: 'Отказаться от исполнения договора купли-продажи и возвратить уплаченные денежные средства в размере {price} руб. в течение 10 дней с момента получения настоящей претензии (ст. 22 ЗоЗПП).' },
+    { when: f => f.desiredResult === 'Замена товара',
+      arts: ['п. 1 ст. 18 ЗоЗПП','ст. 21 ЗоЗПП','ст. 469, 470 ГК РФ'],
+      why: 'Потребитель вправе требовать замены товара ненадлежащего качества на аналогичный. Срок — 7 дней, при проверке — 20 дней (ст. 21 ЗоЗПП).',
+      demand: 'Произвести замену товара «{product}» на аналогичный товар надлежащего качества в течение 7 дней с момента получения требования (ст. 21 ЗоЗПП).' },
+    { when: f => f.desiredResult === 'Безвозмездное устранение недостатков',
+      arts: ['п. 1 ст. 18 ЗоЗПП','ст. 20 ЗоЗПП','ст. 470, 471 ГК РФ'],
+      why: 'Потребитель вправе требовать безвозмездного устранения недостатков. Срок — не более 45 дней (ст. 20 ЗоЗПП).',
+      demand: 'Безвозмездно устранить недостатки товара «{product}» в срок, не превышающий 45 дней (ст. 20 ЗоЗПП).' },
+    { when: () => true,
+      arts: ['п. 1, п. 4 ст. 24 ЗоЗПП','ст. 469, 470 ГК РФ'],
+      why: 'Потребитель вправе требовать соразмерного уменьшения покупной цены. При возврате товара ненадлежащего качества — возмещения разницы между договорной ценой и ценой товара на момент удовлетворения требования (п. 4 ст. 24 ЗоЗПП).',
+      demand: 'Соразмерно уменьшить покупную цену товара «{product}» и возвратить разницу в размере {price} руб. в течение 10 дней (ст. 22 ЗоЗПП).' }
+  ],
+  descTpl: '{applicant} приобрёл(а) {purchaseDate} в {org} товар «{product}» стоимостью {price} руб., что подтверждается {receiptText}. {defectDate} в товаре обнаружен недостаток: {defectDesc}. {sellerText}. На основании изложенного, руководствуясь действующим законодательством,',
+  attach: ['Копия кассового чека','Копия гарантийного талона','Копия настоящей претензии с отметкой о вручении']
+},
+
+return_service: {
+  title: 'Отказ от услуги / возврат за услугу', type: 'claim', group: 'Защита прав потребителей',
+  fields: [
+    { id: 'serviceType', label: 'Вид услуги', type: 'text', required: true, placeholder: 'Туристическая путёвка / обучение / ремонт' },
+    { id: 'contractDate', label: 'Дата заключения договора', type: 'date', required: true },
+    { id: 'contractSum', label: 'Сумма по договору (руб.)', type: 'number', required: true, placeholder: '80000' },
+    { id: 'reason', label: 'Причина отказа', type: 'textarea', required: true, placeholder: 'Услуга не оказана / оказана некачественно / изменились обстоятельства' },
+    { id: 'priorContact', label: 'Обращались к исполнителю', type: 'select', required: true, options: ['Да, отказано','Да, ответа не последовало','Нет'] }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 32 Закона РФ «О защите прав потребителей»','ст. 782 ГК РФ','ст. 450.1 ГК РФ'],
+    why: 'Потребитель вправе отказаться от исполнения договора о выполнении работ (оказании услуг) в любое время при условии оплаты исполнителю фактически понесённых расходов (ст. 32 ЗоЗПП, ст. 782 ГК РФ).',
+    demand: 'Расторгнуть договор и возвратить уплаченные денежные средства в размере {contractSum} руб. за вычетом фактически понесённых исполнителем расходов (при их документальном подтверждении) в течение 10 дней (ст. 31 ЗоЗПП).' }],
+  descTpl: '{applicant} заключил(а) {contractDate} с {org} договор на оказание услуги «{serviceType}» на сумму {contractSum} руб. Услуга в полном объёме не оказана по причине: {reason}. {priorText}. Согласно ст. 32 ЗоЗПП и ст. 782 ГК РФ, потребитель вправе отказаться от исполнения договора в любое время. На основании изложенного,',
+  attach: ['Копия договора','Копия платёжного документа','Копия обращения к исполнителю (при наличии)']
+},
+
+insurance_claim: {
+  title: 'Претензия страховой компании', type: 'claim', group: 'Защита прав потребителей',
+  fields: [
+    { id: 'policyNumber', label: 'Номер полиса', type: 'text', required: true, placeholder: 'ХХХ 0123456789' },
+    { id: 'eventDate', label: 'Дата страхового случая', type: 'date', required: true },
+    { id: 'eventDesc', label: 'Описание страхового случая', type: 'textarea', required: true, placeholder: 'ДТП / залив / укус / порча имущества' },
+    { id: 'claimSum', label: 'Сумма требования (руб.)', type: 'number', required: true, placeholder: '150000' },
+    { id: 'payout', label: 'Что ответила страховая', type: 'select', required: true, options: ['Отказано','Занижено','Ответа не последовало'] }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 929, 943 ГК РФ','ст. 10, 16.1 Закона РФ «Об организации страхового дела»','Закон РФ «О защите прав потребителей»'],
+    why: 'Страховщик обязан при наступлении страхового случая произвести страховую выплату в установленный договором срок. При отказе или занижении — страхователь вправе требовать выплаты через претензию и суд.',
+    demand: 'Произвести страховую выплату в размере {claimSum} руб. в течение 10 дней с момента получения претензии, а также выплатить неустойку (пени) за нарушение срока.' }],
+  descTpl: '{applicant} заключил(а) со {org} договор страхования, полис № {policyNumber}. {eventDate} наступил страховой случай: {eventDesc}. {payoutText}. В соответствии со ст. 929 ГК РФ и Законом «Об организации страхового дела», страховщик обязан произвести выплату. На основании изложенного,',
+  attach: ['Копия полиса','Документы о страховом случае','Копия заявления о выплате']
+},
+
+// ===== ТРУДОВЫЕ СПОРЫ =====
+salary_delay: {
+  title: 'Задержка заработной платы', type: 'claim', group: 'Трудовые споры',
+  fields: [
+    { id: 'position', label: 'Ваша должность', type: 'text', required: true, placeholder: 'Менеджер по продажам' },
+    { id: 'employmentDate', label: 'Дата приёма на работу', type: 'date', required: true },
+    { id: 'salaryAmount', label: 'Сумма задолженности (руб.)', type: 'number', required: true, placeholder: '80000' },
+    { id: 'salaryPeriod', label: 'За какой период', type: 'text', required: true, placeholder: 'октябрь 2025 г.' },
+    { id: 'dueDate', label: 'Срок выплаты по договору', type: 'date', required: true },
+    { id: 'delayDays', label: 'Количество дней задержки', type: 'number', required: true, placeholder: '30' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 136, 142 ТК РФ','ст. 236 ТК РФ','ст. 145.1 УК РФ (при злостной задержке)'],
+    why: 'Заработная плата выплачивается не реже чем каждые полмесяца (ст. 136 ТК РФ). При нарушении срока работодатель обязан выплатить компенсацию в размере не ниже 1/150 ключевой ставки Банка России от невыплаченной суммы за каждый день задержки (ст. 236 ТК РФ).',
+    demand: '1. Выплатить задолженность по заработной плате за {salaryPeriod} в размере {salaryAmount} руб. 2. Выплатить денежную компенсацию за задержку согласно ст. 236 ТК РФ за {delayDays} дней.' }],
+  descTpl: '{applicant} работает в {org} в должности «{position}» с {employmentDate}. В нарушение ст. 136 ТК РФ заработная плата за {salaryPeriod} в размере {salaryAmount} руб. не выплачена. Установленный срок — {dueDate}. Задержка составляет {delayDays} дней. На основании изложенного, руководствуясь ст. 136, 142, 236 ТК РФ,',
+  attach: ['Копия трудового договора','Расчёт задолженности','Копия трудовой книжки']
+},
+
+dismissal_claim: {
+  title: 'Спор об увольнении', type: 'claim', group: 'Трудовые споры',
+  fields: [
+    { id: 'position', label: 'Должность', type: 'text', required: true },
+    { id: 'dismissalDate', label: 'Дата увольнения', type: 'date', required: true },
+    { id: 'dismissalReason', label: 'Основание увольнения по приказу', type: 'textarea', required: true, placeholder: 'Сокращение штата / по собственному желанию / прогул' },
+    { id: 'violation', label: 'В чём нарушение', type: 'textarea', required: true, placeholder: 'Не предложены вакансии / не выплачен расчёт / нет согласия профсоюза' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 81, 84, 84.1 ТК РФ','ст. 391, 392 ТК РФ','ст. 394 ТК РФ'],
+    why: 'Увольнение допускается только по основаниям и в порядке, установленным ТК РФ. При нарушении порядка увольнения работник вправе требовать восстановления на работе и выплаты среднего заработка за время вынужденного прогула (ст. 394 ТК РФ). Срок обращения в суд — 1 месяц (ст. 392 ТК РФ).',
+    demand: '1. Признать увольнение незаконным. 2. Восстановить меня в прежней должности. 3. Взыскать средний заработок за время вынужденного прогула и компенсацию морального вреда.' }],
+  descTpl: '{applicant} работал(а) в {org} в должности «{position}». {dismissalDate} я уволен(а) по основанию: {dismissalReason}. Считаю увольнение незаконным, поскольку {violation}. В силу ст. 81, 84.1 ТК РФ увольнение допускается только с соблюдением установленного порядка. На основании изложенного, руководствуясь ст. 391, 392, 394 ТК РФ,',
+  attach: ['Копия приказа об увольнении','Копия трудовой книжки','Документы, подтверждающие нарушение']
+},
+
+// ===== ЖКХ =====
+uk_failure: {
+  title: 'Бездействие управляющей компании', type: 'statement', group: 'ЖКХ',
+  fields: [
+    { id: 'address', label: 'Адрес дома / квартиры', type: 'text', required: true, placeholder: 'г. Москва, ул. Ленина, д. 10, кв. 5' },
+    { id: 'problem', label: 'Описание проблемы', type: 'textarea', required: true, placeholder: 'С 10 января 2025 г. не работает вентиляция' },
+    { id: 'problemStart', label: 'С какой даты проблема', type: 'date', required: true },
+    { id: 'contactedUK', label: 'Обращались ли в УК', type: 'select', required: true, options: ['Да, ответа не последовало','Да, отказано','Нет, обращаюсь впервые'] }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ч. 1 ст. 161 ЖК РФ','ст. 162 ЖК РФ','Правила содержания общего имущества (Пост. Правительства РФ № 491)','п. 4 ст. 157 ЖК РФ'],
+    why: 'Управляющая организация обязана обеспечивать надлежащее содержание общего имущества и предоставление коммунальных услуг надлежащего качества (ч. 1 ст. 161 ЖК РФ). При ненадлежащем качестве — перерасчёт (п. 4 ст. 157 ЖК РФ).',
+    demand: '1. Провести проверку по факту неисправности. 2. Устранить неисправность в установленный законом срок. 3. Произвести перерасчёт платы за период с {problemStart} по день устранения неисправности.' }],
+  descTpl: '{applicant} является собственником/нанимателем жилого помещения по адресу: {address}. С {problemStart} наблюдается проблема: {problem}. {ukText}. В силу ч. 1 ст. 161 ЖК РФ УК обязана обеспечивать надлежащее содержание общего имущества. На основании изложенного, руководствуясь ст. 161, 162 ЖК РФ,',
+  attach: ['Копия акта о неисправности','Копия обращения в УК','Копия квитанции об оплате']
+},
+
+neighbor_flood: {
+  title: 'Залив квартиры соседями', type: 'claim', group: 'ЖКХ',
+  fields: [
+    { id: 'floodDate', label: 'Дата залива', type: 'date', required: true },
+    { id: 'culprit', label: 'Кто виновник', type: 'text', required: true, placeholder: 'Кв. № 15, Петров П.П.' },
+    { id: 'damageAmount', label: 'Сумма ущерба (руб.)', type: 'number', required: true, placeholder: '85000' },
+    { id: 'damageDesc', label: 'Описание повреждений', type: 'textarea', required: true, placeholder: 'Повреждён потолок, стены, мебель в комнате' },
+    { id: 'act', label: 'Акт о заливе составлен', type: 'select', required: true, options: ['Да, УК составила','Нет'] }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 1064 ГК РФ','ст. 15 ГК РФ','ст. 30, 31 ЖК РФ'],
+    why: 'Вред, причинённый имуществу гражданина, подлежит возмещению в полном объёме лицом, причинившим вред (ст. 1064 ГК РФ). Убытки — реальный ущерб и упущенная выгода (ст. 15 ГК РФ).',
+    demand: 'Возместить причинённый заливом ущерб в размере {damageAmount} руб. в течение 10 дней с момента получения настоящей претензии.' }],
+  descTpl: '{applicant} является собственником квартиры, расположенной по адресу: {address}. {floodDate} произошёл залив моей квартиры из {culprit}. Согласно акту, составленному управляющей компанией, повреждения: {damageDesc}. Размер ущерба составляет {damageAmount} руб. В соответствии со ст. 1064 ГК РФ, вред подлежит возмещению причинителем. На основании изложенного,',
+  attach: ['Копия акта о заливе','Смета / отчёт об оценке ущерба','Копии фотографий повреждений']
+},
+
+noise_complaint: {
+  title: 'Жалоба на шум', type: 'complaint', group: 'ЖКХ',
+  fields: [
+    { id: 'noiseSource', label: 'Источник шума', type: 'text', required: true, placeholder: 'Кв. № 20 (ремонт) / кафе на 1 этаже' },
+    { id: 'noiseTime', label: 'Время суток нарушения', type: 'text', required: true, placeholder: 'с 23:00 до 06:00' },
+    { id: 'noiseStart', label: 'С какой даты', type: 'date', required: true },
+    { id: 'noiseDesc', label: 'Описание', type: 'textarea', required: true, placeholder: 'Громкая музыка, крики, звук перфоратора' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 17 ЖК РФ','ФЗ от 30.03.1999 № 52-ФЗ «О санэпидблагополучии»','Региональный закон о тишине','ст. 6.3, 6.4 КоАП РФ'],
+    why: 'Пользование жилым помещением осуществляется с соблюдением прав и законных интересов соседей (ст. 17 ЖК РФ). Нарушение тишины в ночное время влечёт административную ответственность по региональным законам и КоАП РФ.',
+    demand: 'Провести проверку по факту нарушения тишины, привлечь виновных к административной ответственности, принять меры по устранению нарушения.' }],
+  descTpl: '{applicant} проживает по адресу: {address}. С {noiseStart} в {noiseTime} со стороны {noiseSource} систематически нарушается тишина: {noiseDesc}. Мои обращения к соседям результата не дали. В силу ст. 17 ЖК РФ пользование жильём не должно нарушать права соседей. На основании изложенного,',
+  attach: ['Записи замеров шума (при наличии)','Заявления соседей','Копии обращений в УК']
+},
+
+// ===== СУДЕБНЫЕ ДОКУМЕНТЫ =====
+court_evidence: {
+  title: 'Ходатайство об истребовании доказательств', type: 'motion', group: 'Судебные документы',
+  fields: [
+    { id: 'caseNumber', label: 'Номер дела', type: 'text', required: true, placeholder: '2-1234/2025' },
+    { id: 'plaintiff', label: 'Истец', type: 'text', required: true },
+    { id: 'defendant', label: 'Ответчик', type: 'text', required: true },
+    { id: 'evidenceList', label: 'Какие доказательства нужны', type: 'textarea', required: true },
+    { id: 'evidenceHolder', label: 'У кого находятся', type: 'text', required: true },
+    { id: 'whyCannotObtain', label: 'Почему не можете получить сами', type: 'textarea', required: true }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ч. 1 ст. 35 ГПК РФ','ч. 1 ст. 57 ГПК РФ','ст. 148 ГПК РФ'],
+    why: 'Согласно ч. 1 ст. 57 ГПК РФ, если представление доказательств затруднительно, суд по ходатайству оказывает содействие в их истребовании.',
+    demand: 'Оказать содействие в истребовании у {evidenceHolder} следующих доказательств: {evidenceList}.' }],
+  descTpl: 'В производстве суда находится гражданское дело № {caseNumber} по иску {plaintiff} к {defendant}. Для правильного рассмотрения дела необходимо установить обстоятельства, имеющие значение. Эти обстоятельства могут быть подтверждены: {evidenceList}. Доказательства находятся у {evidenceHolder}. Самостоятельно получить их я не имею возможности, поскольку {whyCannotObtain}. На основании изложенного, руководствуясь ч. 1 ст. 35, ч. 1 ст. 57 ГПК РФ,',
+  attach: ['Копия ходатайства для лиц, участвующих в деле']
+},
+
+appeal_court_order: {
+  title: 'Возражение на судебный приказ', type: 'motion', group: 'Судебные документы',
+  fields: [
+    { id: 'orderNumber', label: 'Номер судебного приказа', type: 'text', required: true, placeholder: '2-1234/2025' },
+    { id: 'orderDate', label: 'Дата приказа', type: 'date', required: true },
+    { id: 'claimant', label: 'Взыскатель', type: 'text', required: true, placeholder: 'ООО «Ромашка»' },
+    { id: 'amount', label: 'Сумма взыскания (руб.)', type: 'number', required: true },
+    { id: 'objection', label: 'Основание возражения', type: 'textarea', required: true, placeholder: 'Не согласен с суммой / долг отсутствует / пропущен срок' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 128 ГПК РФ','ст. 129 ГПК РФ','ст. 122 ГПК РФ'],
+    why: 'Должник вправе представить возражения относительно исполнения судебного приказа в течение 10 дней со дня получения копии (ст. 128 ГПК РФ). При поступлении возражений судья отменяет судебный приказ (ст. 129 ГПК РФ).',
+    demand: 'Отменить судебный приказ № {orderNumber} от {orderDate} о взыскании с меня в пользу {claimant} суммы {amount} руб.' }],
+  descTpl: '{applicant} получил(а) судебный приказ № {orderNumber} от {orderDate}, вынесенный по заявлению {claimant} о взыскании с меня {amount} руб. Считаю приказ необоснованным, поскольку {objection}. В силу ст. 128 ГПК РФ я вправе заявить возражения в течение 10 дней. На основании изложенного, руководствуясь ст. 128, 129 ГПК РФ,',
+  attach: ['Копия судебного приказа']
+},
+
+// ===== АДМИНИСТРАТИВНЫЕ ДЕЛА =====
+fine_appeal: {
+  title: 'Обжалование административного штрафа', type: 'complaint', group: 'Административные дела',
+  fields: [
+    { id: 'fineNumber', label: 'Номер постановления', type: 'text', required: true },
+    { id: 'fineDate', label: 'Дата постановления', type: 'date', required: true },
+    { id: 'fineAuthority', label: 'Орган, вынесший постановление', type: 'text', required: true, placeholder: 'ЦАФАП ГИБДД МВД России' },
+    { id: 'fineAmount', label: 'Сумма штрафа (руб.)', type: 'number', required: true },
+    { id: 'violationDesc', label: 'Суть нарушения', type: 'textarea', required: true },
+    { id: 'appealReason', label: 'Основание обжалования', type: 'textarea', required: true },
+    { id: 'receivedDate', label: 'Дата получения копии', type: 'date', required: true }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 30.1 КоАП РФ','ст. 30.2 КоАП РФ','ст. 30.3 КоАП РФ'],
+    why: 'Постановление может быть обжаловано в течение 10 суток со дня вручения или получения копии (ч. 1 ст. 30.3 КоАП РФ).',
+    demand: 'Отменить постановление № {fineNumber} от {fineDate} о назначении административного наказания в виде штрафа {fineAmount} руб. и прекратить производство по делу.' }],
+  descTpl: '{fineDate} {fineAuthority} вынесено постановление № {fineNumber} о назначении мне штрафа в размере {fineAmount} руб. за {violationDesc}. Копия получена мной {receivedDate}. Считаю постановление незаконным, поскольку {appealReason}. На основании изложенного, руководствуясь ст. 30.1–30.3 КоАП РФ,',
+  attach: ['Копия постановления','Доказательства в обоснование позиции']
+},
+
+police_statement: {
+  title: 'Заявление о преступлении в полицию', type: 'statement', group: 'Административные дела',
+  fields: [
+    { id: 'crimeDate', label: 'Дата события', type: 'date', required: true },
+    { id: 'crimePlace', label: 'Место события', type: 'text', required: true, placeholder: 'г. Москва, ул. Ленина, д. 10' },
+    { id: 'crimeDesc', label: 'Что произошло', type: 'textarea', required: true, placeholder: 'Кража, мошенничество, побои...' },
+    { id: 'suspect', label: 'Подозреваемое лицо (если известно)', type: 'text', required: false },
+    { id: 'damage', label: 'Размер ущерба (руб.)', type: 'number', required: false }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 141 УПК РФ','ст. 144 УПК РФ','ст. 145 УПК РФ'],
+    why: 'Заявление о преступлении подаётся в письменной или устной форме (ст. 141 УПК РФ). Орган дознания обязан принять и рассмотреть его в течение 3 суток (ст. 144 УПК РФ).',
+    demand: 'Провести проверку по факту изложенных обстоятельств, при наличии оснований — возбудить уголовное дело.' }],
+  descTpl: '{crimeDate} по адресу {crimePlace} произошло следующее: {crimeDesc}. {suspectText} {damageText} Прошу провести проверку по данному факту. На основании изложенного, руководствуясь ст. 141 УПК РФ,',
+  attach: ['Копии документов, подтверждающих обстоятельства','Материальные носители (фото, видео)']
+},
+
+// ===== НАЛОГИ =====
+tax_deduction: {
+  title: 'Заявление на налоговый вычет', type: 'statement', group: 'Налоги',
+  fields: [
+    { id: 'deductionType', label: 'Вид вычета', type: 'select', required: true, options: ['Имущественный (покупка жилья)','Социальный (обучение)','Социальный (лечение)','Стандартный (дети)','Профессиональный'] },
+    { id: 'expenseAmount', label: 'Сумма расходов (руб.)', type: 'number', required: true },
+    { id: 'expenseYear', label: 'Год', type: 'number', required: true },
+    { id: 'paidTax', label: 'Уплачено НДФЛ (руб.)', type: 'number', required: true },
+    { id: 'bankAccount', label: 'Реквизиты для возврата', type: 'text', required: true }
+  ],
+  rules: [
+    { when: f => f.deductionType === 'Имущественный (покупка жилья)',
+      arts: ['пп. 1 п. 1 ст. 220 НК РФ','ст. 207 НК РФ'],
+      why: 'Имущественный вычет предоставляется в размере фактических расходов на приобретение жилья, но не более 2 000 000 руб. (пп. 1 п. 1 ст. 220 НК РФ).',
+      demand: 'Предоставить имущественный налоговый вычет за {expenseYear} год в размере {expenseAmount} руб. и возвратить излишне уплаченный НДФЛ.' },
+    { when: f => f.deductionType === 'Социальный (обучение)' || f.deductionType === 'Социальный (лечение)',
+      arts: ['пп. 2, 3 п. 1 ст. 219 НК РФ','ст. 207 НК РФ'],
+      why: 'Социальный вычет предоставляется в сумме, уплаченной за обучение (пп. 2 п. 1 ст. 219 НК РФ) или лечение (пп. 3 п. 1 ст. 219 НК РФ).',
+      demand: 'Предоставить социальный налоговый вычет за {expenseYear} год в размере {expenseAmount} руб. и возвратить НДФЛ.' },
+    { when: f => f.deductionType === 'Стандартный (дети)',
+      arts: ['пп. 4 п. 1 ст. 218 НК РФ'],
+      why: 'Стандартный вычет на детей предоставляется до достижения дохода 350 000 руб. в год (пп. 4 п. 1 ст. 218 НК РФ).',
+      demand: 'Предоставить стандартный налоговый вычет на детей за {expenseYear} год и возвратить излишне уплаченный НДФЛ.' },
+    { when: () => true,
+      arts: ['ст. 221 НК РФ','ст. 207 НК РФ'],
+      why: 'Профессиональный вычет предоставляется ИП и лицам, выполняющим работы по договорам ГПХ (ст. 221 НК РФ).',
+      demand: 'Предоставить профессиональный налоговый вычет за {expenseYear} год в размере {expenseAmount} руб.' }
+  ],
+  descTpl: '{applicant} является налоговым резидентом РФ (ст. 207 НК РФ) и имеет право на {deductionType} налоговый вычет за {expenseYear} год. Сумма расходов — {expenseAmount} руб. Уплачено НДФЛ — {paidTax} руб. Возврат прошу перечислить на счёт: {bankAccount}. На основании изложенного, руководствуясь НК РФ,',
+  attach: ['Копия декларации 3-НДФЛ','Документы, подтверждающие расходы','Копия паспорта','Реквизиты счёта']
+},
+
+// ===== СЕМЕЙНЫЕ СПОРЫ =====
+divorce: {
+  title: 'Расторжение брака', type: 'statement', group: 'Семейные споры',
+  fields: [
+    { id: 'marriageDate', label: 'Дата заключения брака', type: 'date', required: true },
+    { id: 'spouseName', label: 'ФИО супруга(и)', type: 'text', required: true },
+    { id: 'children', label: 'Несовершеннолетние дети', type: 'select', required: true, options: ['Нет','Да, есть общие дети'] },
+    { id: 'reason', label: 'Причина расторжения', type: 'textarea', required: true, placeholder: 'Фактически брачные отношения прекращены, совместное хозяйство не ведётся' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 21-23 СК РФ','ст. 31-32 СК РФ'],
+    why: 'Расторжение брака производится в судебном порядке при наличии общих несовершеннолетних детей либо при отсутствии согласия одного из супругов (ст. 21 СК РФ).',
+    demand: 'Расторгнуть брак между мной и {spouseName}, зарегистрированный {marriageDate}.' }],
+  descTpl: '{applicant} состоит в браке с {spouseName} с {marriageDate}. Совместная жизнь не сложилась, брачные отношения фактически прекращены, общее хозяйство не ведётся. Причина: {reason}. {childrenText} Дальнейшая совместная жизнь невозможна. На основании изложенного, руководствуясь ст. 21-23 СК РФ,',
+  attach: ['Копия свидетельства о браке','Копия свидетельств о рождении детей','Квитанция об уплате госпошлины']
+},
+
+alimony: {
+  title: 'Взыскание алиментов', type: 'statement', group: 'Семейные споры',
+  fields: [
+    { id: 'childName', label: 'ФИО ребёнка', type: 'text', required: true },
+    { id: 'childBirth', label: 'Дата рождения ребёнка', type: 'date', required: true },
+    { id: 'secondParent', label: 'ФИО второго родителя', type: 'text', required: true },
+    { id: 'secondParentIncome', label: 'Доход второго родителя (если известен)', type: 'text', required: false },
+    { id: 'paymentForm', label: 'Форма взыскания', type: 'select', required: true, options: ['В долях от дохода (1/4, 1/3, 1/2)','В твёрдой денежной сумме'] }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 80, 81, 83 СК РФ','ст. 131-132 ГПК РФ'],
+    why: 'Родители обязаны содержать своих несовершеннолетних детей (ст. 80 СК РФ). При отсутствии соглашения алименты взыскиваются судом ежемесячно в размере: на одного ребёнка — 1/4, на двух — 1/3, на трёх и более — 1/2 дохода (ст. 81 СК РФ).',
+    demand: 'Взыскать с {secondParent} алименты на содержание ребёнка {childName}, {childBirth} г.р., ежемесячно в размере {paymentForm}.' }],
+  descTpl: '{applicant} является родителем несовершеннолетнего ребёнка {childName}, {childBirth} г.р. Второй родитель — {secondParent}. Соглашение об уплате алиментов не достигнуто, добровольно средства не выплачиваются. {incomeText} В силу ст. 80 СК РФ родители обязаны содержать детей. На основании изложенного, руководствуясь ст. 80, 81, 83 СК РФ,',
+  attach: ['Копия свидетельства о рождении ребёнка','Справка о доходах','Копия свидетельства о браке/разводе']
+},
+
+// ===== ПРОКУРАТУРА / НАДЗОР =====
+prosecutor_complaint: {
+  title: 'Жалоба в прокуратуру', type: 'complaint', group: 'Надзорные органы',
+  fields: [
+    { id: 'violator', label: 'Кто нарушил права', type: 'text', required: true, placeholder: 'ООО «Ромашка» / Отдел полиции № 5' },
+    { id: 'violationDesc', label: 'Суть нарушения', type: 'textarea', required: true },
+    { id: 'violationStart', label: 'С какой даты нарушение', type: 'date', required: true },
+    { id: 'priorAppeals', label: 'Куда уже обращались', type: 'textarea', required: false },
+    { id: 'desiredAction', label: 'Что просите', type: 'textarea', required: true }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 10 ФЗ «О прокуратуре РФ»','ФЗ от 02.05.2006 № 59-ФЗ «О порядке рассмотрения обращений граждан»','ст. 21 ФЗ «О прокуратуре РФ»'],
+    why: 'Прокуратура осуществляет надзор за соблюдением прав и свобод человека (ст. 10 ФЗ «О прокуратуре РФ»). Обращение рассматривается в течение 30 дней (59-ФЗ).',
+    demand: '{desiredAction}' }],
+  descTpl: '{applicant} обращается с жалобой на действия (бездействие) {violator}, которые выразились в следующем: {violationDesc}. Нарушение имеет место с {violationStart}. {priorText} В силу ст. 10 ФЗ «О прокуратуре РФ» прокуратура осуществляет надзор за соблюдением прав граждан. На основании изложенного, руководствуясь ст. 10, 21 ФЗ «О прокуратуре РФ»,',
+  attach: ['Копии документов по существу жалобы','Копии предыдущих обращений и ответов']
+},
+
+// ===== ЗАЩИТА ЧЕСТИ И ДОСТОИНСТВА =====
+defamation: {
+  title: 'Защита чести, достоинства и деловой репутации', type: 'claim', group: 'Надзорные органы',
+  fields: [
+    { id: 'publication', label: 'Где распространены сведения', type: 'text', required: true, placeholder: 'Соцсеть / СМИ / публичное выступление' },
+    { id: 'publicationDate', label: 'Дата', type: 'date', required: true },
+    { id: 'statements', label: 'Какие сведения распространены', type: 'textarea', required: true },
+    { id: 'falsity', label: 'Почему сведения не соответствуют действительности', type: 'textarea', required: true },
+    { id: 'moralDamage', label: 'Компенсация морального вреда (руб.)', type: 'number', required: false, placeholder: '50000' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 152 ГК РФ','ст. 151 ГК РФ','ст. 152.1 ГК РФ'],
+    why: 'Гражданин вправе требовать в суде опровержения сведений, порочащих его честь, достоинство или деловую репутацию, если распространивший их не докажет, что они соответствуют действительности (ст. 152 ГК РФ).',
+    demand: '1. Признать распространённые сведения не соответствующими действительности и порочащими мою честь, достоинство и деловую репутацию. 2. Обязать опровергнуть сведения. 3. Взыскать компенсацию морального вреда в размере {moralDamage} руб.' }],
+  descTpl: '{publicationDate} {org} распространены сведения обо мне следующего содержания: {statements}. Указанные сведения не соответствуют действительности, поскольку {falsity}. Они порочат мою честь, достоинство и деловую репутацию. В силу ст. 152 ГК РФ я вправе требовать опровержения и компенсации морального вреда. На основании изложенного,',
+  attach: ['Доказательства распространения сведений (скриншоты, публикации)','Документы, опровергающие сведения']
+},
+
+// ===== НАСЛЕДСТВО =====
+inheritance: {
+  title: 'Восстановление срока принятия наследства', type: 'statement', group: 'Наследственные споры',
+  fields: [
+    { id: 'deceasedName', label: 'ФИО наследодателя', type: 'text', required: true },
+    { id: 'deathDate', label: 'Дата смерти', type: 'date', required: true },
+    { id: 'missedDeadline', label: 'Почему пропущен срок', type: 'textarea', required: true, placeholder: 'Не знал о смерти, находился за границей, не получал уведомлений' },
+    { id: 'property', label: 'Наследственное имущество', type: 'text', required: true, placeholder: 'Квартира по адресу...' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 1154 ГК РФ','ст. 1155 ГК РФ','ст. 1152 ГК РФ'],
+    why: 'Наследство может быть принято в течение шести месяцев со дня открытия наследства (ст. 1154 ГК РФ). По заявлению наследника, пропустившего срок, суд может восстановить его при уважительных причинах (ст. 1155 ГК РФ).',
+    demand: 'Восстановить срок принятия наследства, открывшегося после смерти {deceasedName}, умершего {deathDate}, и признать меня принявшим наследство.' }],
+  descTpl: '{deathDate} умер(ла) {deceasedName}, после смерти которого открылось наследство в виде: {property}. Я являюсь наследником по закону/завещанию. Срок принятия наследства пропущен по уважительной причине: {missedDeadline}. В силу ст. 1155 ГК РФ срок может быть восстановлен судом. На основании изложенного, руководствуясь ст. 1154, 1155 ГК РФ,',
+  attach: ['Копия свидетельства о смерти','Документы, подтверждающие родство','Документы на наследственное имущество','Доказательства уважительности причин']
+},
+
+// ===== ЗАЩИТА ПРАВ ДОЛЬЩИКОВ =====
+building_claim: {
+  title: 'Претензия застройщику (долевое строительство)', type: 'claim', group: 'Строительство и недвижимость',
+  fields: [
+    { id: 'contractNumber', label: 'Номер ДДУ', type: 'text', required: true },
+    { id: 'contractDate', label: 'Дата договора', type: 'date', required: true },
+    { id: 'plannedDate', label: 'Планируемый срок передачи', type: 'date', required: true },
+    { id: 'price', label: 'Цена договора (руб.)', type: 'number', required: true },
+    { id: 'delayDays', label: 'Просрочка (дней)', type: 'number', required: true },
+    { id: 'defects', label: 'Недостатки (если есть)', type: 'textarea', required: false, placeholder: 'Трещины, протечки, недоделки' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 4, 6, 7 ФЗ от 30.12.2004 № 214-ФЗ','ст. 330 ГК РФ','Закон РФ «О защите прав потребителей»'],
+    why: 'Застройщик обязан передать объект долевого строительства не позднее срока, указанного в договоре (ст. 6 ФЗ № 214-ФЗ). За нарушение срока уплачивается неустойка в размере 1/300 ставки рефинансирования за каждый день просрочки (для граждан — 1/150, ст. 6 ФЗ № 214-ФЗ).',
+    demand: '1. Выплатить неустойку за нарушение срока передачи объекта за {delayDays} дней. 2. Устранить выявленные недостатки.' }],
+  descTpl: '{applicant} заключил(а) {contractDate} с {org} договор участия в долевом строительстве № {contractNumber} на сумму {price} руб. По условиям договора объект должен был быть передан не позднее {plannedDate}. На сегодняшний день объект не передан, просрочка составляет {delayDays} дней. {defectsText} В силу ст. 6 ФЗ № 214-ФЗ застройщик обязан уплатить неустойку. На основании изложенного,',
+  attach: ['Копия ДДУ','Копии платёжных документов','Расчёт неустойки']
+},
+
+cadastral: {
+  title: 'Оспаривание кадастровой стоимости', type: 'statement', group: 'Строительство и недвижимость',
+  fields: [
+    { id: 'objectType', label: 'Тип объекта', type: 'text', required: true, placeholder: 'Квартира / дом / участок' },
+    { id: 'cadastralNumber', label: 'Кадастровый номер', type: 'text', required: true },
+    { id: 'currentValue', label: 'Текущая кадастровая стоимость (руб.)', type: 'number', required: true },
+    { id: 'marketValue', label: 'Рыночная стоимость (руб.)', type: 'number', required: true },
+    { id: 'basis', label: 'Основание пересмотра', type: 'textarea', required: true, placeholder: 'Недостоверность сведений / установление рыночной стоимости' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 24.18 ФЗ от 29.07.1998 № 135-ФЗ «Об оценочной деятельности»','ст. 66 ЗК РФ','Приказ Росреестра о порядке рассмотрения споров'],
+    why: 'Кадастровая стоимость может быть оспорена в комиссии при Росреестре или в суде по основаниям недостоверности сведений или установления рыночной стоимости (ст. 24.18 ФЗ № 135-ФЗ).',
+    demand: 'Установить кадастровую стоимость объекта в размере рыночной стоимости — {marketValue} руб.' }],
+  descTpl: '{applicant} является собственником объекта недвижимости ({objectType}) с кадастровым номером {cadastralNumber}. Текущая кадастровая стоимость — {currentValue} руб., что превышает рыночную стоимость ({marketValue} руб.). Основание пересмотра: {basis}. В силу ст. 24.18 ФЗ № 135-ФЗ кадастровая стоимость может быть оспорена. На основании изложенного,',
+  attach: ['Отчёт об оценке рыночной стоимости','Выписка из ЕГРН','Копия правоустанавливающего документа']
+},
+
+// ===== ДТП / СТРАХОВАНИЕ =====
+traffic_accident: {
+  title: 'Возмещение ущерба от ДТП', type: 'claim', group: 'ДТП и страхование',
+  fields: [
+    { id: 'accidentDate', label: 'Дата ДТП', type: 'date', required: true },
+    { id: 'accidentPlace', label: 'Место ДТП', type: 'text', required: true },
+    { id: 'culprit', label: 'Виновник', type: 'text', required: true, placeholder: 'ФИО, марка и номер авто' },
+    { id: 'damageAmount', label: 'Размер ущерба (руб.)', type: 'number', required: true },
+    { id: 'insurancePaid', label: 'Страховая выплата (руб.)', type: 'number', required: false, placeholder: '120000' },
+    { id: 'damageDesc', label: 'Описание повреждений', type: 'textarea', required: true }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ст. 1064, 1079 ГК РФ','ст. 15 ГК РФ','ФЗ от 25.04.2002 № 40-ФЗ «Об ОСАГО»'],
+    why: 'Вред, причинённый источником повышенной опасности, возмещается владельцем источника (ст. 1079 ГК РФ). Разница между фактическим ущербом и страховой выплатой по ОСАГО взыскивается с причинителя вреда.',
+    demand: 'Возместить разницу между фактическим ущербом и страховой выплатой по ОСАГО в размере {damageAmount} руб. в течение 10 дней.' }],
+  descTpl: '{accidentDate} по адресу {accidentPlace} произошло ДТП с участием моего автомобиля и автомобиля под управлением {culprit}. Виновником ДТП признан водитель {culprit}. В результате ДТП моему автомобилю причинены повреждения: {damageDesc}. Размер ущерба — {damageAmount} руб. {insuranceText} В силу ст. 1079 ГК РФ владелец источника повышенной опасности обязан возместить вред. На основании изложенного,',
+  attach: ['Справка о ДТП','Постановление по делу об АП','Заключение независимой экспертизы','Копия выплатного дела']
+},
+
+// ===== МЕДИЦИНА =====
+medical_complaint: {
+  title: 'Жалоба на медицинское учреждение', type: 'complaint', group: 'Медицина',
+  fields: [
+    { id: 'medicalOrg', label: 'Наименование мед. учреждения', type: 'text', required: true },
+    { id: 'treatmentDate', label: 'Дата обращения', type: 'date', required: true },
+    { id: 'problem', label: 'Что произошло', type: 'textarea', required: true, placeholder: 'Отказ в помощи, некачественное лечение, нарушение сроков' },
+    { id: 'consequences', label: 'Последствия', type: 'textarea', required: true, placeholder: 'Ухудшение здоровья, потеря трудоспособности' }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ФЗ от 21.11.2011 № 323-ФЗ «Об основах охраны здоровья граждан»','ст. 98, 1064, 1068 ГК РФ','Закон РФ «О защите прав потребителей»'],
+    why: 'Медицинские организации обязаны оказывать помощь надлежащего качества (ФЗ № 323-ФЗ). За вред, причинённый пациенту, медицинская организация несёт ответственность (ст. 1068 ГК РФ).',
+    demand: 'Провести проверку по факту ненадлежащего оказания медицинской помощи, привлечь виновных к ответственности, возместить причинённый вред.' }],
+  descTpl: '{applicant} обращался(ась) {treatmentDate} в {medicalOrg}. При оказании медицинской помощи имели место следующие обстоятельства: {problem}. Это привело к следующим последствиям: {consequences}. В силу ФЗ № 323-ФЗ и ст. 1068 ГК РФ, медицинская организация несёт ответственность за вред. На основании изложенного,',
+  attach: ['Копия медицинской карты','Копии заключений','Копии чеков на лечение']
+},
+
+// ===== ОБРАЗОВАНИЕ =====
+school_complaint: {
+  title: 'Жалоба на школу / детский сад', type: 'complaint', group: 'Образование',
+  fields: [
+    { id: 'schoolName', label: 'Наименование учреждения', type: 'text', required: true },
+    { id: 'childName', label: 'ФИО ребёнка', type: 'text', required: true },
+    { id: 'problem', label: 'Суть нарушения', type: 'textarea', required: true, placeholder: 'Поборы, конфликт с учителем, отказ в приёме' },
+    { id: 'problemDate', label: 'Дата события', type: 'date', required: true }
+  ],
+  rules: [{ when: () => true,
+    arts: ['ФЗ от 29.12.2012 № 273-ФЗ «Об образовании в РФ»','ст. 43 Конституции РФ','ФЗ № 59-ФЗ «О порядке рассмотрения обращений граждан»'],
+    why: 'Образовательная организация обязана обеспечивать права обучающихся (ФЗ № 273-ФЗ). Обращения граждан рассматриваются в течение 30 дней (59-ФЗ).',
+    demand: 'Провести проверку по факту нарушения, принять меры, устранить нарушение прав ребёнка.' }],
+  descTpl: '{applicant} является законным представителем ребёнка {childName}, обучающегося в {schoolName}. {problemDate} имело место следующее нарушение: {problem}. В силу ФЗ № 273-ФЗ образовательная организация обязана обеспечивать права обучающихся. На основании изложенного,',
+  attach: ['Копии документов, подтверждающих нарушение','Копии письменных обращений к администрации']
+},
+
+// ===== МЕЖДУНАРОДНЫЕ =====
+intl_consumer: {
+  title: 'Обращение в защиту потребителя (международное)', type: 'intl', group: 'Международные обращения',
+  fields: [
+    { id: 'product', label: 'Product / Наименование товара', type: 'text', required: true },
+    { id: 'purchaseDate', label: 'Date of purchase / Дата покупки', type: 'date', required: true },
+    { id: 'seller', label: 'Seller / Продавец', type: 'text', required: true },
+    { id: 'price', label: 'Price / Стоимость (EUR/USD)', type: 'number', required: true },
+    { id: 'defectDesc', label: 'Defect description / Описание недостатка', type: 'textarea', required: true },
+    { id: 'lawCountry', label: 'Country / Страна покупки', type: 'text', required: true },
+    { id: 'desiredResult', label: 'Desired remedy / Требуемый результат', type: 'select', required: true, options: ['Full refund / Полный возврат','Replacement / Замена','Repair / Ремонт','Compensation / Компенсация'] }
+  ],
+  rules: [
+    { when: f => /Germany|Deutschland|Германия|ФРГ/i.test(f.lawCountry),
+      arts: ['§ 434 BGB (Sachmängelhaftung)','§ 437 BGB (rights of buyer)','§ 439 BGB (subsequent performance)','Directive (EU) 2019/771'],
+      why: 'Under § 434 BGB the seller is liable for material defects. § 437 BGB grants subsequent performance, price reduction, or withdrawal. Directive (EU) 2019/771 provides a two-year legal guarantee of conformity.',
+      demand: 'Full reimbursement of {price} EUR pursuant to § 437 BGB and Directive (EU) 2019/771.' },
+    { when: f => /France|Франция/i.test(f.lawCountry),
+      arts: ['Art. L. 217-1 to L. 217-20 Code de la consommation','Directive (EU) 2019/771','Art. 1641 Code civil'],
+      why: 'Under French consumer law the legal guarantee of conformity applies for two years from delivery. The seller must repair or replace the goods free of charge.',
+      demand: 'Remboursement intégral de {price} EUR en application de l\'article L. 217-1 du Code de la consommation.' },
+    { when: f => /USA|United States|США/i.test(f.lawCountry),
+      arts: ['Magnuson-Moss Warranty Act, 15 U.S.C. § 2301 et seq.','U.C.C. § 2-314 (Implied Warranty of Merchantability)','U.C.C. § 2-601 (Perfect Tender Rule)'],
+      why: 'Under U.C.C. § 2-314 goods must be merchantable. The Magnuson-Moss Warranty Act provides additional consumer protections.',
+      demand: 'Full refund of {price} USD under U.C.C. § 2-601 and applicable state law.' },
+    { when: f => /UK|United Kingdom|England|Великобритания|Англия/i.test(f.lawCountry),
+      arts: ['Consumer Rights Act 2015, ss. 9-11','Consumer Rights Act 2015, ss. 19-24','Sale of Goods Act 1979, s. 14'],
+      why: 'Under the Consumer Rights Act 2015 goods must be of satisfactory quality (s. 9). The consumer has the short-term right to reject (30 days), repair or replacement, or price reduction.',
+      demand: 'Full refund of £{price} pursuant to the Consumer Rights Act 2015, s. 20.' },
+    { when: f => /China|Китай|中国|PRC/i.test(f.lawCountry),
+      arts: ['《中华人民共和国消费者权益保护法》第24条','《中华人民共和国产品质量法》第40-43条'],
+      why: 'Under the PRC Consumer Protection Law, consumers are entitled to repair, replacement, or return of goods that do not conform to quality requirements.',
+      demand: '依《中华人民共和国消费者权益保护法》第24条，要求全额退款 {price} 元。' },
+    { when: () => true,
+      arts: ['UN Convention on Contracts for the International Sale of Goods (CISG)','UN Guidelines for Consumer Protection (2015)','Directive (EU) 2019/771 (where applicable)'],
+      why: 'Under the CISG and the UN Guidelines for Consumer Protection, consumers are entitled to adequate remedies for defective goods, including repair, replacement, or refund.',
+      demand: 'Full reimbursement of {price} EUR/USD and compensation for damages.' }
+  ],
+  descTpl: 'I, {applicant}, purchased {product} on {purchaseDate} from {seller} for {price} EUR/USD. Within the warranty period the product failed: {defectDesc}. My request for a remedy was rejected by the seller. The purchase was made in {lawCountry}. On the basis of the foregoing, and guided by applicable law,',
+  attach: ['Copy of receipt','Copy of warranty','Copy of correspondence with seller']
+}
 };
+
+// ============ ОРГ-ШАБЛОНЫ ЗАЯВЛЕНИЙ ============
+const ORG_TEMPLATES = [
+  { icon: '⚖', title: 'Заявление в районный суд', desc: 'Исковое заявление, ходатайство, возражение', orgId: 'court_district', situationId: 'court_evidence' },
+  { icon: '🌍', title: 'Мировому судье', desc: 'Судебный приказ, расторжение брака, алименты', orgId: 'court_world', situationId: 'alimony' },
+  { icon: '🏛', title: 'Жалоба в прокуратуру', desc: 'На действия органов, УК, работодателя', orgId: 'prosecutor', situationId: 'prosecutor_complaint' },
+  { icon: '👮', title: 'Заявление в полицию', desc: 'О преступлении, краже, мошенничестве', orgId: 'police', situationId: 'police_statement' },
+  { icon: '🚔', title: 'Жалоба в ГИБДД', desc: 'Обжалование постановления о штрафе', orgId: 'gibdd', situationId: 'fine_appeal' },
+  { icon: '🏢', title: 'Заявление в УК', desc: 'О неисправности, перерасчёте, бездействии', orgId: 'uk', situationId: 'uk_failure' },
+  { icon: '🏘', title: 'Жалоба в жилищную инспекцию', desc: 'На УК, ТСЖ, нарушения в сфере ЖКХ', orgId: 'zhilinsp', situationId: 'uk_failure' },
+  { icon: '🛡', title: 'Обращение в Роспотребнадзор', desc: 'Защита прав потребителя', orgId: 'rospotreb', situationId: 'defective_goods' },
+  { icon: '💰', title: 'Заявление в ФНС', desc: 'Налоговый вычет, возврат НДФЛ', orgId: 'fns', situationId: 'tax_deduction' },
+  { icon: '⚒', title: 'Жалоба в Роструд', desc: 'Трудовые споры, задержка зарплаты', orgId: 'rostrud', situationId: 'salary_delay' },
+  { icon: '🛡', title: 'Заявление в СФР', desc: 'Пенсионные, социальные выплаты', orgId: 'sfr', situationId: 'prosecutor_complaint' },
+  { icon: '📋', title: 'Жалоба приставу', desc: 'На бездействие судебного пристава', orgId: 'fssp', situationId: 'prosecutor_complaint' },
+  { icon: '🏦', title: 'Претензия банку', desc: 'Спор по кредиту, вкладу, страховке', orgId: 'bank', situationId: 'return_service' },
+  { icon: '🛡', title: 'Претензия страховой', desc: 'ОСАГО, КАСКО, страхование жизни', orgId: 'insurance', situationId: 'insurance_claim' },
+  { icon: '🎓', title: 'Жалоба на школу', desc: 'Нарушения прав ребёнка, поборы', orgId: 'school', situationId: 'school_complaint' },
+  { icon: '🏥', title: 'Жалоба на медицину', desc: 'Некачественная медпомощь', orgId: 'medical', situationId: 'medical_complaint' },
+  { icon: '🏥', title: 'Обращение в Росздравнадзор', desc: 'На мед. учреждение', orgId: 'roszdravnadzor', situationId: 'medical_complaint' },
+  { icon: '🎓', title: 'Обращение в Рособрнадзор', desc: 'На образовательное учреждение', orgId: 'rosobrnadzor', situationId: 'school_complaint' },
+  { icon: '💍', title: 'Заявление в ЗАГС', desc: 'Расторжение брака, регистрация', orgId: 'zags', situationId: 'divorce' },
+  { icon: '🗺', title: 'Заявление в Росреестр', desc: 'Регистрация прав, кадастровый учёт', orgId: 'rosreestr', situationId: 'cadastral' },
+  { icon: '📊', title: 'Обращение в ФАС', desc: 'Нарушения антимонопольного законодательства', orgId: 'fas', situationId: 'prosecutor_complaint' },
+  { icon: '⚖', title: 'Уполномоченному по правам человека', desc: 'Нарушения прав граждан', orgId: 'ombudsman', situationId: 'prosecutor_complaint' },
+  { icon: '👶', title: 'Уполномоченному по правам ребёнка', desc: 'Нарушения прав ребёнка', orgId: 'ombudsman_child', situationId: 'school_complaint' },
+  { icon: '💼', title: 'Работодателю', desc: 'Претензия, заявление, уведомление', orgId: 'employer', situationId: 'salary_delay' }
+];
 
 // ============ СОСТОЯНИЕ ============
 let state = { situation: null, type: 'claim' };
@@ -723,19 +1032,15 @@ function startApp() {
   document.getElementById('app').classList.add('active');
   document.getElementById('docDate').valueAsDate = new Date();
 }
-function showTemplatesFromWelcome() {
-  startApp();
-  switchPage('templates');
-}
+function showTemplatesFromWelcome() { startApp(); switchPage('templates'); }
 
 // ============ NAV ============
 function switchPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-  document.querySelectorAll('.topbar .nav button').forEach(b => {
-    b.classList.toggle('active', b.dataset.page === page);
-  });
+  document.querySelectorAll('.topbar .nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (page === 'tools') renderHistory();
 }
 
 // ============ ORG SELECTOR ============
@@ -748,27 +1053,18 @@ function initOrgSelector() {
     select.appendChild(opt);
   });
 }
-
 function onOrgChange() {
   const orgId = document.getElementById('orgSelect').value;
   const posSelect = document.getElementById('positionSelect');
   const customOrgField = document.getElementById('customOrgField');
   const customPosField = document.getElementById('customPositionField');
   const recipientFull = document.getElementById('recipientFull');
-
   posSelect.innerHTML = '';
   customOrgField.style.display = 'none';
   customPosField.style.display = 'none';
-
-  if (!orgId) {
-    posSelect.innerHTML = '<option value="">— Сначала выберите орган —</option>';
-    recipientFull.value = '';
-    return;
-  }
-
+  if (!orgId) { posSelect.innerHTML = '<option value="">— Сначала выберите орган —</option>'; recipientFull.value = ''; return; }
   const org = ORGS.find(o => o.id === orgId);
   if (!org) return;
-
   if (orgId === 'custom') {
     customOrgField.style.display = 'block';
     customPosField.style.display = 'block';
@@ -776,57 +1072,43 @@ function onOrgChange() {
     recipientFull.value = '';
     return;
   }
-
-  org.positions.forEach((pos, i) => {
+  org.positions.forEach(pos => {
     const opt = document.createElement('option');
-    opt.value = pos;
-    opt.textContent = pos;
+    opt.value = pos; opt.textContent = pos;
     posSelect.appendChild(opt);
   });
-
-  // Автозаполнение наименования органа
-  if (org.template) {
-    recipientFull.value = org.template;
-  }
+  if (org.template) recipientFull.value = org.template;
 }
-
-function onPositionChange() {
-  // Здесь можно добавить доп. логику (например, подстановку ФИО)
-}
+function onPositionChange() {}
 
 // ============ SITUATION ============
 function initSituationSelector() {
   const select = document.getElementById('situationSelect');
   const groups = {};
-  Object.values(SITUATIONS).forEach(s => {
+  Object.entries(SITUATIONS).forEach(([id, s]) => {
     if (!groups[s.group]) groups[s.group] = [];
-    groups[s.group].push(s);
+    groups[s.group].push({ id, ...s });
   });
   Object.entries(groups).forEach(([group, situations]) => {
     const optgroup = document.createElement('optgroup');
     optgroup.label = group;
     situations.forEach(s => {
       const opt = document.createElement('option');
-      opt.value = s.id;
-      opt.textContent = s.title;
+      opt.value = s.id; opt.textContent = s.title;
       optgroup.appendChild(opt);
     });
     select.appendChild(optgroup);
   });
+  document.getElementById('sitCount').textContent = Object.keys(SITUATIONS).length;
 }
-
 function onSituationChange() {
   const id = document.getElementById('situationSelect').value;
-  if (!id) {
-    document.getElementById('factsBlock').classList.add('hidden');
-    state.situation = null;
-    return;
-  }
+  if (!id) { document.getElementById('factsBlock').classList.add('hidden'); state.situation = null; return; }
   state.situation = SITUATIONS[id];
+  state.situation.id = id;
   renderFactsFields();
   document.getElementById('factsBlock').classList.remove('hidden');
 }
-
 function renderFactsFields() {
   const container = document.getElementById('factsFields');
   const s = state.situation;
@@ -837,30 +1119,18 @@ function renderFactsFields() {
     const label = document.createElement('label');
     label.textContent = field.label + (field.required ? ' *' : '');
     div.appendChild(label);
-
     let input;
-    if (field.type === 'textarea') {
-      input = document.createElement('textarea');
-      input.rows = 2;
-    } else if (field.type === 'select') {
+    if (field.type === 'textarea') { input = document.createElement('textarea'); input.rows = 2; }
+    else if (field.type === 'select') {
       input = document.createElement('select');
-      field.options.forEach(opt => {
-        const o = document.createElement('option');
-        o.value = opt;
-        o.textContent = opt;
-        input.appendChild(o);
-      });
-    } else {
-      input = document.createElement('input');
-      input.type = field.type;
-    }
+      field.options.forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; input.appendChild(o); });
+    } else { input = document.createElement('input'); input.type = field.type; }
     input.id = 'fact_' + field.id;
     if (field.placeholder) input.placeholder = field.placeholder;
     div.appendChild(input);
     container.appendChild(div);
   });
 }
-
 function getFacts() {
   if (!state.situation) return {};
   const facts = {};
@@ -871,53 +1141,96 @@ function getFacts() {
   return facts;
 }
 
-function factsToText() {
-  if (!state.situation) return '';
-  const facts = getFacts();
-  return state.situation.fields
-    .filter(f => facts[f.id])
-    .map(f => `${f.label}: ${facts[f.id]}`)
-    .join('\n');
-}
+// ============ ВСТРОЕННЫЙ ИИ-ДВИЖОК ============
+// Локальный анализатор: применяет правила, строит документ по процессуальной форме
+const LegalEngine = {
+  analyze(facts, situation) {
+    let rule = null;
+    for (const r of situation.rules) { try { if (r.when(facts)) { rule = r; break; } } catch(e){} }
+    if (!rule) rule = situation.rules[situation.rules.length - 1];
+    return rule;
+  },
+  buildDescription(tpl, facts, applicant, org) {
+    let t = tpl;
+    Object.entries(facts).forEach(([k, v]) => { t = t.replace(new RegExp('\\{'+k+'\\}','g'), v || '____'); });
+    // Спец-плейсхолдеры
+    if (facts.hasReceipt) t = t.replace('{receiptText}', facts.hasReceipt === 'Да' ? 'кассовым чеком' : 'иными документами');
+    if (facts.sellerContact) {
+      const m = { 'без удовлетворения': 'Моё требование оставлено продавцом без удовлетворения', 'не последовало': 'На моё обращение ответа не последовало', 'впервые': 'Ранее с требованием я не обращался(ась)' };
+      for (const k in m) if (facts.sellerContact.includes(k)) { t = t.replace('{sellerText}', m[k]); break; }
+    }
+    if (facts.contactedUK) {
+      const m = { 'не последовало': 'Моё обращение в управляющую компанию оставлено без ответа', 'отказано': 'УК отказала в удовлетворении обращения', 'впервые': 'Ранее в УК я не обращался(ась)' };
+      for (const k in m) if (facts.contactedUK.includes(k)) { t = t.replace('{ukText}', m[k]); break; }
+    }
+    if (facts.priorContact) {
+      const m = { 'не последовало': 'Моё обращение оставлено без ответа', 'отказано': 'Исполнитель отказал в удовлетворении требования', 'Нет': 'Ранее я к исполнителю не обращался(ась)' };
+      for (const k in m) if (facts.priorContact.includes(k)) { t = t.replace('{priorText}', m[k]); break; }
+    }
+    if (facts.priorAppeals !== undefined) t = t.replace('{priorText}', facts.priorAppeals ? 'Ранее я обращался(ась): ' + facts.priorAppeals + '.' : 'Ранее по данному вопросу я не обращался(ась).');
+    if (facts.payout) {
+      const m = { 'Отказано': 'Страховая компания отказала в выплате', 'Занижено': 'Страховая компания необоснованно занизила размер выплаты', 'не последовало': 'Ответ страховой компании не поступил' };
+      for (const k in m) if (facts.payout.includes(k)) { t = t.replace('{payoutText}', m[k]); break; }
+    }
+    if (facts.children) t = t.replace('{childrenText}', facts.children === 'Да, есть общие дети' ? 'От брака имеются несовершеннолетние дети.' : 'Несовершеннолетних детей от брака нет.');
+    if (facts.secondParentIncome) t = t.replace('{incomeText}', 'Доход второго родителя: ' + facts.secondParentIncome + '.');
+    else t = t.replace('{incomeText}', '');
+    if (facts.defects) t = t.replace('{defectsText}', 'Кроме того, при осмотре выявлены недостатки: ' + facts.defects + '.');
+    else t = t.replace('{defectsText}', '');
+    if (facts.insurancePaid) t = t.replace('{insuranceText}', 'Страховая компания по ОСАГО выплатила ' + facts.insurancePaid + ' руб.');
+    else t = t.replace('{insuranceText}', 'Страховая выплата по ОСАГО не производилась.');
+    if (facts.suspect) t = t.replace('{suspectText}', 'Предполагаемое лицо: ' + facts.suspect + '.');
+    else t = t.replace('{suspectText}', '');
+    if (facts.damage) t = t.replace('{damageText}', 'Размер ущерба: ' + facts.damage + ' руб.');
+    else t = t.replace('{damageText}', '');
+    // Оставшиеся пустые плейсхолдеры
+    t = t.replace(/\{[a-zA-Z_]+\}/g, '____');
+    return t;
+  },
+  buildDemand(tpl, facts) {
+    let t = tpl;
+    Object.entries(facts).forEach(([k, v]) => { t = t.replace(new RegExp('\\{'+k+'\\}','g'), v || '____'); });
+    t = t.replace(/\{[a-zA-Z_]+\}/g, '____');
+    return t;
+  },
+  buildDoc({ header, applicant, applicantAddr, phone, docDate, situation, rule, facts, demandExtra }) {
+    const titleMap = { claim:'ПРЕТЕНЗИЯ', motion:'ХОДАТАЙСТВО', statement:'ЗАЯВЛЕНИЕ', complaint:'ЖАЛОБА', intl:'INTERNATIONAL REQUEST' };
+    const title = titleMap[situation.type] || 'ЗАЯВЛЕНИЕ';
 
-// ============ RECIPIENT BUILDER ============
-function buildRecipientHeader() {
-  const orgId = document.getElementById('orgSelect').value;
-  const position = document.getElementById('positionSelect').value;
-  const recipientName = document.getElementById('recipientName').value.trim();
-  const customOrg = document.getElementById('customOrg').value.trim();
-  const customPosition = document.getElementById('customPosition').value.trim();
-  const recipientFull = document.getElementById('recipientFull').value.trim();
+    const desc = this.buildDescription(situation.descTpl, facts, applicant, header);
+    const demand = this.buildDemand(rule.demand, facts) + (demandExtra ? ' ' + demandExtra : '');
+    const legalBasis = rule.arts.join(';\n') + '.';
 
-  let orgName = '';
-  if (orgId === 'custom') {
-    orgName = customOrg;
-  } else {
-    const org = ORGS.find(o => o.id === orgId);
-    orgName = recipientFull || (org ? org.template : '');
+    let doc = '';
+    doc += header + '\n\n';
+    doc += 'От: ' + applicant + '\n';
+    if (applicantAddr) doc += 'Адрес: ' + applicantAddr + '\n';
+    if (phone) doc += 'Телефон: ' + phone + '\n';
+    doc += '\n';
+    doc += title + '\n\n';
+    doc += desc + '\n\n';
+    doc += 'ПРАВОВОЕ ОБОСНОВАНИЕ:\n' + legalBasis + '\n\n';
+    doc += 'ПРОШУ:\n' + demand + '\n\n';
+    doc += 'ПРИЛОЖЕНИЯ:\n';
+    (situation.attach || []).forEach((a, i) => { doc += (i+1) + '. ' + a + '\n'; });
+
+    doc += '\n' + formatDateRu(docDate) + '\n\n';
+    doc += '_______________________ / ' + (applicant ? applicant.split(' ')[0] : '____________') + '\n\n';
+
+    doc += 'Как подать: составьте документ в двух экземплярах. Один вручите лично под подпись (с датой и ФИО принявшего) либо направьте заказным письмом с уведомлением и описью вложения. Сохраните доказательство вручения — это ключевой факт для дальнейшего обращения в суд.';
+
+    return { doc, rule };
   }
+};
 
-  let pos = position;
-  if (position === 'custom' || orgId === 'custom') {
-    pos = customPosition;
-  }
-
-  let header = '';
-  if (orgName) header += orgName + '\n';
-  if (pos) header += pos;
-  if (recipientName) header += ' ' + recipientName;
-
-  return header.trim();
-}
-
-// ============ AI GENERATION ============
+// ============ AI GENERATION (локальный движок) ============
 async function generateWithAI() {
   if (!state.situation) { alert('Выберите правовую ситуацию.'); return; }
-
   const applicant = val('applicant');
   if (!applicant) { alert('Заполните поле «Ваше ФИО».'); return; }
 
-  const missing = state.situation.fields.filter(f => f.required && !getFacts()[f.id]);
+  const facts = getFacts();
+  const missing = state.situation.fields.filter(f => f.required && !facts[f.id]);
   if (missing.length > 0) {
     alert('Заполните обязательные поля:\n' + missing.map(f => '• ' + f.label).join('\n'));
     return;
@@ -926,167 +1239,103 @@ async function generateWithAI() {
   const header = buildRecipientHeader();
   if (!header) { alert('Выберите орган и должность, либо впишите свой вариант.'); return; }
 
-  const demandText = val('demand');
-  if (!demandText) { alert('Опишите ваше требование.'); return; }
-
-  // UI: блокируем кнопки, показываем статус
-  const btnGen = document.getElementById('btnGenerate');
+  const btn = document.getElementById('btnGenerate');
   const status = document.getElementById('aiStatus');
   const statusText = document.getElementById('aiStatusText');
-  btnGen.disabled = true;
+  btn.disabled = true;
   status.className = 'ai-status show loading';
-  statusText.textContent = 'Нейросеть анализирует ситуацию и составляет документ…';
+  statusText.textContent = 'Юридический ИИ анализирует факты и подбирает нормы…';
+
+  // Небольшая задержка для UX (имитация анализа)
+  await new Promise(r => setTimeout(r, 700));
 
   try {
-    const factsText = factsToText();
-    const applicantAddr = val('applicantAddr');
-    const phone = val('phone');
-    const docDate = val('docDate') || new Date().toISOString().slice(0, 10);
+    const rule = LegalEngine.analyze(facts, state.situation);
+    const result = LegalEngine.buildDoc({
+      header, applicant,
+      applicantAddr: val('applicantAddr'),
+      phone: val('phone'),
+      docDate: val('docDate'),
+      situation: state.situation,
+      rule, facts,
+      demandExtra: val('demand')
+    });
 
-    const prompt = `Ты — опытный российский юрист с 25-летним стажем судебной практики. Составь юридически грамотный официальный документ.
-
-=== ДАННЫЕ ДОКУМЕНТА ===
-Тип документа: ${state.situation.type === 'claim' ? 'ПРЕТЕНЗИЯ' : state.situation.type === 'motion' ? 'ХОДАТАЙСТВО' : state.situation.type === 'complaint' ? 'ЖАЛОБА' : state.situation.type === 'intl' ? 'INTERNATIONAL REQUEST' : 'ЗАЯВЛЕНИЕ'}
-
-КОМУ (шапка документа):
-${header}
-
-ОТ КОГО:
-${applicant}
-Адрес: ${applicantAddr || 'не указан'}
-Телефон: ${phone || 'не указан'}
-
-ПРАВОВАЯ СИТУАЦИЯ: ${state.situation.title}
-
-ФАКТЫ ДЕЛА:
-${factsText}
-
-ТРЕБОВАНИЕ ЗАЯВИТЕЛЯ (в свободной форме):
-${demandText}
-
-ДАТА СОСТАВЛЕНИЯ: ${docDate}
-
-=== ТРЕБОВАНИЯ К ДОКУМЕНТУ ===
-1. Структура строго по процессуальной форме:
-   - Шапка (кому, от кого, адреса, телефон)
-   - Название документа (ПРЕТЕНЗИЯ / ХОДАТАЙСТВО / ЖАЛОБА / ЗАЯВЛЕНИЕ) — большими буквами
-   - Описательная часть: факты юридическим языком
-   - Правовое обоснование: конкретные статьи законов с номерами
-   - Требования (ПРОШУ / ТРЕБУЮ) — пронумерованный список
-   - Приложения
-   - Дата, подпись
-
-2. Правовое обоснование обязательно должно содержать РЕАЛЬНЫЕ статьи:
-   - ГК РФ (гражданские споры)
-   - ЗоЗПП (защита прав потребителей)
-   - ТК РФ (трудовые споры)
-   - ЖК РФ (ЖКХ)
-   - ГПК РФ (гражданский процесс)
-   - КоАП РФ (административные дела)
-   - НК РФ (налоги)
-   - УПК РФ (уголовный процесс)
-   - ФЗ № 59-ФЗ (обращения граждан)
-   - ФЗ «О прокуратуре РФ»
-   Указывай ТОЧНЫЕ номера статей и пунктов.
-
-3. Стиль — официальный, канцелярский, как в настоящих судебных документах.
-   Используй формулировки: «на основании изложенного», «в соответствии с», «руководствуясь», «прошу», «обязуюсь».
-
-4. НЕ используй Markdown-разметку (никаких **, ##, __, backtick).
-   Пиши обычным текстом. Абзацы разделяй пустой строкой.
-
-5. Формулировки требований должны содержать ссылку на конкретную статью и срок исполнения, где это применимо.
-
-6. В конце документа — перечень приложений (по одному в строке) и место для подписи и даты.
-
-7. Если ситуация относится к международному праву — используй нормы международного права (CISG, Directive (EU) 2019/771, BGB, Code civil, UCC и т.д.).
-
-Верни ТОЛЬКО текст документа, готовый к подаче. Без вступлений типа «Вот документ», без пояснений и комментариев.`;
-
-    // Вызов бесплатной нейросети через Puter.js
-    const response = await puter.ai.chat(prompt, { model: 'gpt-4o-mini' });
-
-    let text = '';
-    if (typeof response === 'string') text = response;
-    else if (response && response.message && response.message.content) text = response.message.content;
-    else if (response && response.text) text = response.text;
-    else if (response && response.toString) text = response.toString();
-
-    if (!text || !text.trim()) throw new Error('Пустой ответ от нейросети');
-
-    // Очистка от возможной Markdown-разметки
-    text = text.replace(/\*\*/g, '').replace(/^#{1,6}\s+/gm, '').replace(/`/g, '');
-
-    // Рендер
-    const el = document.getElementById('docPreview');
-    el.innerHTML = '<div class="doc-text">' + escapeHtml(text) + '</div>';
-
+    document.getElementById('docPreview').innerHTML = '<div class="doc-text">' + escapeHtml(result.doc) + '</div>';
     status.className = 'ai-status show success';
-    statusText.textContent = '✓ Документ составлен нейросетью. Проверьте реквизиты и нормы перед подачей.';
+    statusText.textContent = '✓ Документ составлен. Применено норм: ' + rule.arts.length + '. Проверьте реквизиты перед подачей.';
 
+    // Сохраняем в историю
+    saveToHistory({
+      title: state.situation.title,
+      date: new Date().toISOString(),
+      text: result.doc
+    });
   } catch (err) {
     console.error(err);
     status.className = 'ai-status show error';
-    statusText.textContent = '✕ Ошибка генерации: ' + (err.message || 'не удалось получить ответ. Попробуйте ещё раз.');
-
-    // Фолбэк — шаблон
+    statusText.textContent = '✕ Ошибка: ' + (err.message || 'не удалось составить документ');
     generateTemplate();
   } finally {
-    btnGen.disabled = false;
+    btn.disabled = false;
   }
 }
 
 // ============ TEMPLATE FALLBACK ============
 function generateTemplate() {
   if (!state.situation) { alert('Выберите правовую ситуацию.'); return; }
-
   const applicant = val('applicant');
   if (!applicant) { alert('Заполните поле «Ваше ФИО».'); return; }
-
   const header = buildRecipientHeader();
-  const applicantAddr = val('applicantAddr');
-  const phone = val('phone');
-  const demand = val('demand');
-  const docDate = val('docDate');
   const facts = getFacts();
-
-  const titleMap = { claim: 'ПРЕТЕНЗИЯ', motion: 'ХОДАТАЙСТВО', statement: 'ЗАЯВЛЕНИЕ', complaint: 'ЖАЛОБА', intl: 'INTERNATIONAL REQUEST' };
-  const title = titleMap[state.situation.type] || 'ЗАЯВЛЕНИЕ';
-
-  let body = '';
-  body += header + '\n\n';
-  body += 'От: ' + applicant + '\n';
-  if (applicantAddr) body += 'Адрес: ' + applicantAddr + '\n';
-  if (phone) body += 'Тел.: ' + phone + '\n';
-  body += '\n';
-  body += title + '\n\n';
-
-  body += state.situation.fields
-    .filter(f => facts[f.id])
-    .map(f => f.label + ': ' + facts[f.id])
-    .join('\n');
-
-  body += '\n\n' + (demand || 'Прошу рассмотреть обращение и принять меры.');
-
-  body += '\n\n' + formatDateRu(docDate);
-  body += '\n\n_______________________ / ' + (applicant ? applicant.split(' ')[0] : '____________');
+  const titleMap = { claim:'ПРЕТЕНЗИЯ', motion:'ХОДАТАЙСТВО', statement:'ЗАЯВЛЕНИЕ', complaint:'ЖАЛОБА', intl:'INTERNATIONAL REQUEST' };
+  let body = header + '\n\nОт: ' + applicant;
+  if (val('applicantAddr')) body += '\nАдрес: ' + val('applicantAddr');
+  if (val('phone')) body += '\nТелефон: ' + val('phone');
+  body += '\n\n' + (titleMap[state.situation.type] || 'ЗАЯВЛЕНИЕ') + '\n\n';
+  body += state.situation.fields.filter(f => facts[f.id]).map(f => f.label + ': ' + facts[f.id]).join('\n');
+  body += '\n\n' + (val('demand') || 'Прошу рассмотреть обращение и принять меры.');
+  body += '\n\n' + formatDateRu(val('docDate'));
+  body += '\n\n_______________________ / ' + applicant.split(' ')[0];
   body += '\n\nПриложения:\n1. Копия документа, подтверждающего обстоятельства\n2. Копия настоящего обращения';
+  document.getElementById('docPreview').innerHTML = '<div class="doc-text">' + escapeHtml(body) + '</div>';
+}
 
-  const el = document.getElementById('docPreview');
-  el.innerHTML = '<div class="doc-text">' + escapeHtml(body) + '</div>';
+// ============ RECIPIENT ============
+function buildRecipientHeader() {
+  const orgId = val('orgSelect');
+  const position = val('positionSelect');
+  const recipientName = val('recipientName');
+  const customOrg = val('customOrg');
+  const customPosition = val('customPosition');
+  const recipientFull = val('recipientFull');
+  let orgName = '';
+  if (orgId === 'custom') orgName = customOrg;
+  else {
+    const org = ORGS.find(o => o.id === orgId);
+    orgName = recipientFull || (org ? org.template : '');
+  }
+  let pos = position;
+  if (position === 'custom' || orgId === 'custom') pos = customPosition;
+  let h = '';
+  if (orgName) h += orgName + '\n';
+  if (pos) h += pos;
+  if (recipientName) h += ' ' + recipientName;
+  return h.trim();
 }
 
 // ============ UTILS ============
 function val(id) { return (document.getElementById(id).value || '').trim(); }
-function escapeHtml(text) {
-  if (!text) return '';
-  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-}
+function escapeHtml(t) { if (!t) return ''; return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 function formatDateRu(dateStr) {
   if (!dateStr) return '«___» __________ 20___ г.';
   const d = new Date(dateStr);
-  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-  return `«${String(d.getDate()).padStart(2,'0')}» ${months[d.getMonth()]} ${d.getFullYear()} г.`;
+  const m = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  return '«' + String(d.getDate()).padStart(2,'0') + '» ' + m[d.getMonth()] + ' ' + d.getFullYear() + ' г.';
+}
+function days(d1, d2) {
+  if (!d1 || !d2) return 9999;
+  return (new Date(d2) - new Date(d1)) / 86400000;
 }
 
 // ============ DRAFT ============
@@ -1122,13 +1371,52 @@ function loadDraft() {
   alert('Черновик загружен.');
 }
 
+// ============ HISTORY ============
+function saveToHistory(item) {
+  try {
+    let h = JSON.parse(localStorage.getItem('lexscriptor_history') || '[]');
+    h.unshift(item);
+    h = h.slice(0, 10);
+    localStorage.setItem('lexscriptor_history', JSON.stringify(h));
+  } catch(e){}
+}
+function renderHistory() {
+  const el = document.getElementById('historyList');
+  if (!el) return;
+  try {
+    const h = JSON.parse(localStorage.getItem('lexscriptor_history') || '[]');
+    if (!h.length) { el.innerHTML = '<p style="font-family: system-ui, sans-serif; font-size: 12.5px; color: var(--muted);">Пока нет сохранённых документов.</p>'; return; }
+    el.innerHTML = h.map((it, i) =>
+      '<div class="history-item" onclick="openHistory(' + i + ')">' +
+        '<div class="h-title">' + escapeHtml(it.title) + '</div>' +
+        '<div class="h-meta">' + new Date(it.date).toLocaleString('ru-RU') + '</div>' +
+      '</div>'
+    ).join('');
+  } catch(e){ el.innerHTML = ''; }
+}
+function openHistory(i) {
+  try {
+    const h = JSON.parse(localStorage.getItem('lexscriptor_history') || '[]');
+    if (h[i]) {
+      switchPage('constructor');
+      document.getElementById('docPreview').innerHTML = '<div class="doc-text">' + escapeHtml(h[i].text) + '</div>';
+    }
+  } catch(e){}
+}
+function clearHistory() {
+  if (confirm('Очистить историю документов?')) {
+    localStorage.removeItem('lexscriptor_history');
+    renderHistory();
+  }
+}
+
 // ============ EXPORT ============
 function downloadPDF() {
   const el = document.getElementById('docPreview');
   if (el.querySelector('.placeholder-empty')) { alert('Сначала сформируйте документ.'); return; }
   html2pdf().set({
     margin: [15, 15, 15, 15],
-    filename: `lexscriptor_${Date.now()}.pdf`,
+    filename: 'lexscriptor_' + Date.now() + '.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -1139,8 +1427,7 @@ function printDoc() {
   if (el.querySelector('.placeholder-empty')) { alert('Сначала сформируйте документ.'); return; }
   const win = window.open('', '_blank');
   win.document.write('<html><head><title>Печать</title><style>body{font-family:"Times New Roman",serif;padding:40px;font-size:14px;line-height:1.8;color:#111;white-space:pre-wrap}@media print{@page{margin:15mm}}</style></head><body>' + el.innerHTML + '</body></html>');
-  win.document.close();
-  win.focus();
+  win.document.close(); win.focus();
   setTimeout(() => win.print(), 300);
 }
 function copyText() {
@@ -1162,22 +1449,80 @@ function resetForm() {
 // ============ TEMPLATES PAGE ============
 function initTemplatesPage() {
   const grid = document.getElementById('templatesGrid');
-  Object.values(SITUATIONS).forEach(s => {
+  Object.entries(SITUATIONS).forEach(([id, s]) => {
     const card = document.createElement('div');
     card.className = 'template-card';
     card.onclick = () => {
       switchPage('constructor');
-      document.getElementById('situationSelect').value = s.id;
+      document.getElementById('situationSelect').value = id;
       onSituationChange();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-    card.innerHTML = `
-      <h3>${escapeHtml(s.title)}</h3>
-      <p>${escapeHtml(s.group)}</p>
-      <span class="tag">${s.type.toUpperCase()}</span>
-    `;
+    card.innerHTML = '<h3>' + escapeHtml(s.title) + '</h3>' +
+      '<p>' + escapeHtml(s.group) + '</p>' +
+      '<span class="tag">' + s.type.toUpperCase() + ' · ' + s.rules.length + ' правил</span>';
     grid.appendChild(card);
   });
+}
+
+// ============ ORG TEMPLATES PAGE ============
+function initOrgTemplatesPage() {
+  const grid = document.getElementById('orgTemplatesGrid');
+  ORG_TEMPLATES.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'org-tpl';
+    card.onclick = () => {
+      switchPage('constructor');
+      document.getElementById('orgSelect').value = t.orgId;
+      onOrgChange();
+      document.getElementById('situationSelect').value = t.situationId;
+      onSituationChange();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    card.innerHTML = '<span class="org-icon">' + t.icon + '</span>' +
+      '<h4>' + escapeHtml(t.title) + '</h4>' +
+      '<p>' + escapeHtml(t.desc) + '</p>';
+    grid.appendChild(card);
+  });
+}
+
+// ============ TOOLS: CALCULATOR ============
+function calcFee() {
+  const type = document.getElementById('feeType').value;
+  const amount = parseFloat(document.getElementById('feeAmount').value) || 0;
+  const res = document.getElementById('feeResult');
+  let fee = 0;
+  if (type === 'nonproperty') { fee = 300; res.textContent = 'Госпошлина: ' + fee + ' руб. (ст. 333.19 НК РФ)'; return; }
+  if (type === 'moral') { fee = 300; res.textContent = 'Госпошлина: ' + fee + ' руб. (требование неимущественного характера)'; return; }
+  // имущественный
+  if (amount <= 100000) fee = 4000;
+  else if (amount <= 300000) fee = 4000 + (amount - 100000) * 0.03;
+  else if (amount <= 500000) fee = 10000 + (amount - 300000) * 0.02;
+  else if (amount <= 1000000) fee = 14000 + (amount - 500000) * 0.01;
+  else fee = 19000 + (amount - 1000000) * 0.005;
+  if (fee > 60000) fee = 60000;
+  // Для потребителей при сумме до 1 млн — не платят
+  const consumerNote = amount <= 1000000 ? ' Для потребителей при цене иска до 1 млн руб. — госпошлина не уплачивается (ст. 333.36 НК РФ).' : '';
+  res.textContent = 'Госпошлина: ' + fee.toFixed(0) + ' руб. (ст. 333.19 НК РФ).' + consumerNote;
+}
+
+// ============ TOOLS: DEADLINES ============
+function showDeadline() {
+  const k = document.getElementById('deadlineSelect').value;
+  const el = document.getElementById('deadlineResult');
+  const map = {
+    d10_zozpp: 'Возврат денег за товар — 10 дней с момента предъявления требования (ст. 22 ЗоЗПП).',
+    d7_zozpp: 'Замена товара — 7 дней, при проверке качества — 20 дней (ст. 21 ЗоЗПП).',
+    d45_zozpp: 'Устранение недостатков — не более 45 дней (ст. 20 ЗоЗПП).',
+    d10_koap: 'Обжалование штрафа — 10 суток со дня вручения или получения копии постановления (ст. 30.3 КоАП РФ).',
+    d3m_tk: 'Обращение в суд по спору об увольнении — 1 месяц со дня вручения копии приказа (ст. 392 ТК РФ).',
+    d1y_tk: 'Обращение по спорам о невыплате зарплаты — 1 год со дня установленного срока выплаты (ст. 392 ТК РФ).',
+    d3y_gk: 'Общий срок исковой давности — 3 года (ст. 196 ГК РФ).',
+    d30_59fz: 'Рассмотрение письменного обращения гражданина — 30 дней (ФЗ № 59-ФЗ).',
+    d5_gpk: 'Апелляционная жалоба — 1 месяц со дня принятия решения в окончательной форме (ст. 321 ГПК РФ).',
+    d10_gpk: 'Возражение на судебный приказ — 10 дней со дня получения копии (ст. 128 ГПК РФ).'
+  };
+  el.textContent = map[k] || 'Выберите срок для пояснения';
 }
 
 // ============ SUBSCRIBE ============
@@ -1191,6 +1536,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initOrgSelector();
   initSituationSelector();
   initTemplatesPage();
+  initOrgTemplatesPage();
+  renderHistory();
 });
 </script>
 </body>

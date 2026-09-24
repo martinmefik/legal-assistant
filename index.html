@@ -155,6 +155,33 @@
   .history-item:hover { background: var(--paper-3); border-left-color: var(--navy); }
   .history-item .h-title { font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; color: var(--navy); }
   .history-item .h-meta { font-family: system-ui, sans-serif; font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* Справочник законов */
+  .law-category { margin-bottom: 16px; border: 1px solid var(--border-2); border-radius: 2px; overflow: hidden; }
+  .law-category-header { background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%); color: var(--gold-2); padding: 12px 18px; font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .law-category-header:hover { color: var(--gold-3); }
+  .law-category-header .arrow { transition: transform 0.3s; }
+  .law-category-header.open .arrow { transform: rotate(180deg); }
+  .law-category-body { display: none; padding: 8px 0; background: var(--paper); }
+  .law-category-body.open { display: block; }
+  .law-item { padding: 10px 20px; border-bottom: 1px dashed var(--border-2); font-family: system-ui, sans-serif; font-size: 13px; }
+  .law-item:last-child { border-bottom: none; }
+  .law-item .law-name { color: var(--navy); font-weight: 700; }
+  .law-item .law-desc { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+  .law-item .law-article { color: var(--gold); font-size: 11px; font-weight: 600; }
+
+  /* Сроки */
+  .deadline-table { width: 100%; border-collapse: collapse; font-family: system-ui, sans-serif; font-size: 12.5px; margin-top: 12px; }
+  .deadline-table th { background: var(--navy); color: var(--gold-2); padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .deadline-table td { padding: 9px 12px; border-bottom: 1px solid var(--border-2); vertical-align: top; }
+  .deadline-table tr:nth-child(even) td { background: var(--paper-2); }
+  .deadline-table .dl-cat { background: var(--paper-3); font-weight: 700; color: var(--navy); font-size: 12px; }
+  .deadline-table .dl-value { color: var(--success); font-weight: 700; white-space: nowrap; }
+  .deadline-table .dl-article { color: var(--gold); font-size: 11px; white-space: nowrap; }
+  .deadline-table .dl-note { color: var(--muted); font-size: 11px; font-style: italic; }
+
+  .law-search { width: 100%; padding: 12px 16px; border: 2px solid var(--gold); border-radius: 2px; font-family: system-ui, sans-serif; font-size: 14px; margin-bottom: 18px; }
+  .law-search:focus { outline: none; box-shadow: 0 0 0 3px rgba(184,137,74,0.15); }
 </style>
 </head>
 <body>
@@ -171,10 +198,10 @@
       но не знаешь как? — Тогда тебе к нам.
     </p>
     <div class="benefits">
-      <div class="benefit"><div class="icon">§</div><div class="text"><strong>Встроенный юридический ИИ</strong><span>Работает прямо на странице — без интернета и API-ключей</span></div></div>
+      <div class="benefit"><div class="icon">§</div><div class="text"><strong>Встроенный юридический ИИ</strong><span>Переписывает текст клиента в юридический стиль, подбирает нормы</span></div></div>
       <div class="benefit"><div class="icon">✎</div><div class="text"><strong>Генерация, а не вставка</strong><span>Движок сам строит документ по процессуальной форме</span></div></div>
       <div class="benefit"><div class="icon">🏛</div><div class="text"><strong>Все органы РФ</strong><span>Суды, прокуратура, УК, ФНС, ГИБДД, СФР, школы и другие</span></div></div>
-      <div class="benefit"><div class="icon">📄</div><div class="text"><strong>25+ ситуаций</strong><span>Потребители, ЖКХ, труд, налоги, семья, ДТП, наследство</span></div></div>
+      <div class="benefit"><div class="icon">📚</div><div class="text"><strong>Справочник законов</strong><span>Все кодексы и федеральные законы РФ в одном месте</span></div></div>
     </div>
     <div class="welcome-actions">
       <button class="btn-large btn-gold" onclick="startApp()">Начать работу →</button>
@@ -195,7 +222,7 @@
       <button class="active" data-page="constructor" onclick="switchPage('constructor')">Конструктор</button>
       <button data-page="templates" onclick="switchPage('templates')">Ситуации</button>
       <button data-page="orgtemplates" onclick="switchPage('orgtemplates')">Шаблоны заявлений</button>
-      <button data-page="tools" onclick="switchPage('tools')">Инструменты</button>
+      <button data-page="tools" onclick="switchPage('tools')">Справочная</button>
       <button data-page="subscription" onclick="switchPage('subscription')">Подписка</button>
     </div>
   </div>
@@ -269,7 +296,8 @@
           <h2>Ваше требование</h2>
           <div class="field">
             <label>Опишите своими словами, что вы хотите</label>
-            <textarea id="demand" placeholder="Например: прошу провести проверку и привлечь виновных к ответственности..."></textarea>
+            <textarea id="demand" placeholder="Например: прошу провести проверку и привлечь виновных к ответственности, вернуть деньги, устранить недостатки..."></textarea>
+            <div class="hint">ИИ перепишет ваш текст в юридическом стиле и добавит ссылки на нормы.</div>
           </div>
           <div class="field">
             <label>Дата составления</label>
@@ -301,12 +329,13 @@
           <div id="docPreview">
             <div class="placeholder-empty">
               Заполните данные слева<br>и нажмите «Составить через ИИ»<br><br>
-              Встроенный движок проанализирует факты<br>и составит документ по всей форме.
+              Встроенный движок проанализирует факты,<br>перепишет текст и составит документ.
             </div>
           </div>
           <div class="actions">
             <button class="btn btn-success" onclick="downloadPDF()">📥 Скачать PDF</button>
-            <button class="btn btn-gold" onclick="printDoc()">🖨 Печать</button>
+            <button class="btn btn-gold" onclick="downloadWord()">📄 Скачать Word</button>
+            <button class="btn btn-outline" onclick="printDoc()">🖨 Печать</button>
             <button class="btn btn-outline" onclick="copyText()">📋 Копировать</button>
           </div>
         </div>
@@ -318,7 +347,7 @@
       <div class="panel" style="border-top-color: var(--gold);">
         <h2>Правовые ситуации <span class="badge" id="sitCount">25+</span></h2>
         <p style="font-family: system-ui, sans-serif; font-size: 13.5px; color: var(--muted); margin-bottom: 6px;">
-          Выберите ситуацию — встроенный ИИ подберёт статьи и составит документ.
+          Выберите ситуацию — встроенный ИИ подберёт статьи, перепишет текст и составит документ.
         </p>
         <div class="templates-grid" id="templatesGrid"></div>
       </div>
@@ -338,71 +367,25 @@
     <!-- TOOLS -->
     <div class="page" id="page-tools">
       <div class="panel" style="border-top-color: var(--gold);">
-        <h2>Правовые инструменты</h2>
-        <div class="tools-grid">
-          <div class="tool-card">
-            <h3>🧮 Калькулятор госпошлины</h3>
-            <div class="field">
-              <label>Тип иска</label>
-              <select id="feeType" onchange="calcFee()">
-                <option value="property">Имущественный (цена иска)</option>
-                <option value="nonproperty">Неимущественный (для граждан)</option>
-                <option value="moral">О компенсации морального вреда</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Цена иска (руб.)</label>
-              <input type="number" id="feeAmount" placeholder="50000" oninput="calcFee()">
-            </div>
-            <div class="result" id="feeResult">Введите сумму для расчёта</div>
-            <p style="font-family: system-ui, sans-serif; font-size: 11px; color: var(--muted); margin-top: 10px;">
-              Расчёт по ст. 333.19 НК РФ (2025). Для потребителей — госпошлина не уплачивается при цене иска до 1 млн руб.
-            </p>
-          </div>
+        <h2>Справочная информация</h2>
 
-          <div class="tool-card">
-            <h3>⏱ Юридические сроки</h3>
-            <div class="field">
-              <label>Выберите срок</label>
-              <select id="deadlineSelect" onchange="showDeadline()">
-                <option value="">— Выберите —</option>
-                <option value="d10_zozpp">Возврат денег за товар (10 дней) — ст. 22 ЗоЗПП</option>
-                <option value="d7_zozpp">Замена товара (7 дней) — ст. 21 ЗоЗПП</option>
-                <option value="d45_zozpp">Устранение недостатков (45 дней) — ст. 20 ЗоЗПП</option>
-                <option value="d10_koap">Обжалование штрафа (10 суток) — ст. 30.3 КоАП</option>
-                <option value="d3m_tk">Обращение в суд по увольнению (1 месяц) — ст. 392 ТК</option>
-                <option value="d1y_tk">Обращение по зарплате (1 год) — ст. 392 ТК</option>
-                <option value="d3y_gk">Общий срок исковой давности (3 года) — ст. 196 ГК</option>
-                <option value="d30_59fz">Рассмотрение обращения (30 дней) — 59-ФЗ</option>
-                <option value="d5_gpk">Апелляционная жалоба (1 месяц) — ст. 321 ГПК</option>
-                <option value="d10_gpk">Возражение на судебный приказ (10 дней) — ст. 128 ГПК</option>
-              </select>
-            </div>
-            <div class="result" id="deadlineResult">Выберите срок для пояснения</div>
-          </div>
-
-          <div class="tool-card">
-            <h3>📚 История документов</h3>
-            <div id="historyList"><p style="font-family: system-ui, sans-serif; font-size: 12.5px; color: var(--muted);">Пока нет сохранённых документов.</p></div>
-            <button class="btn btn-outline" onclick="clearHistory()" style="margin-top: 10px;">Очистить историю</button>
-          </div>
-
-          <div class="tool-card">
-            <h3>📖 Правовой справочник</h3>
-            <p style="font-family: system-ui, sans-serif; font-size: 12.5px; color: var(--muted); line-height: 1.7;">
-              <strong style="color: var(--navy);">ГК РФ</strong> — гражданские споры, сделки, наследство<br>
-              <strong style="color: var(--navy);">ЗоЗПП</strong> — защита прав потребителей<br>
-              <strong style="color: var(--navy);">ТК РФ</strong> — трудовые споры<br>
-              <strong style="color: var(--navy);">ЖК РФ</strong> — жилищные вопросы<br>
-              <strong style="color: var(--navy);">ГПК РФ</strong> — гражданский процесс<br>
-              <strong style="color: var(--navy);">КоАП РФ</strong> — административные дела<br>
-              <strong style="color: var(--navy);">НК РФ</strong> — налоги и вычеты<br>
-              <strong style="color: var(--navy);">УПК РФ</strong> — уголовный процесс<br>
-              <strong style="color: var(--navy);">СК РФ</strong> — семейные споры<br>
-              <strong style="color: var(--navy);">59-ФЗ</strong> — обращения граждан
-            </p>
-          </div>
+        <h3 style="font-family: system-ui, sans-serif; font-size: 14px; color: var(--navy); margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase;">⏱ Юридические сроки</h3>
+        <div style="max-height: 500px; overflow-y: auto; border: 1px solid var(--border-2); border-radius: 2px;">
+          <table class="deadline-table" id="deadlineTable">
+            <thead>
+              <tr><th>Действие</th><th>Срок</th><th>Норма</th><th>Примечание</th></tr>
+            </thead>
+            <tbody id="deadlineBody"></tbody>
+          </table>
         </div>
+
+        <h3 style="font-family: system-ui, sans-serif; font-size: 14px; color: var(--navy); margin: 24px 0 12px; letter-spacing: 1px; text-transform: uppercase;">📚 Справочник законов</h3>
+        <input type="text" class="law-search" id="lawSearch" placeholder="Поиск по законам и кодексам…" oninput="filterLaws()">
+        <div id="lawReference"></div>
+
+        <h3 style="font-family: system-ui, sans-serif; font-size: 14px; color: var(--navy); margin: 24px 0 12px; letter-spacing: 1px; text-transform: uppercase;">📂 История документов</h3>
+        <div id="historyList"><p style="font-family: system-ui, sans-serif; font-size: 12.5px; color: var(--muted);">Пока нет сохранённых документов.</p></div>
+        <button class="btn btn-outline" onclick="clearHistory()" style="margin-top: 10px; max-width: 200px;">Очистить историю</button>
       </div>
     </div>
 
@@ -461,13 +444,14 @@
         </p>
       </div>
     </div>
+
   </div>
 </div>
 
 <script>
 /* =========================================================
    LEXSCRIPTOR — встроенный юридический ИИ-движок
-   Работает локально, без внешних API
+   С обработкой текста, справочником законов и сроками
    ========================================================= */
 
 // ============ РЕЕСТР ОРГАНОВ РФ ============
@@ -514,10 +498,8 @@ const ORGS = [
 ];
 
 // ============ БАЗА ПРАВОВЫХ СИТУАЦИЙ (25+) ============
-// Формат: fields, rules [{when, arts, why, demand}], descTpl, attach
 const SITUATIONS = {
 
-// ===== ЗАЩИТА ПРАВ ПОТРЕБИТЕЛЕЙ =====
 defective_goods: {
   title: 'Товар ненадлежащего качества', type: 'claim', group: 'Защита прав потребителей',
   fields: [
@@ -586,7 +568,6 @@ insurance_claim: {
   attach: ['Копия полиса','Документы о страховом случае','Копия заявления о выплате']
 },
 
-// ===== ТРУДОВЫЕ СПОРЫ =====
 salary_delay: {
   title: 'Задержка заработной платы', type: 'claim', group: 'Трудовые споры',
   fields: [
@@ -621,7 +602,6 @@ dismissal_claim: {
   attach: ['Копия приказа об увольнении','Копия трудовой книжки','Документы, подтверждающие нарушение']
 },
 
-// ===== ЖКХ =====
 uk_failure: {
   title: 'Бездействие управляющей компании', type: 'statement', group: 'ЖКХ',
   fields: [
@@ -671,7 +651,6 @@ noise_complaint: {
   attach: ['Записи замеров шума (при наличии)','Заявления соседей','Копии обращений в УК']
 },
 
-// ===== СУДЕБНЫЕ ДОКУМЕНТЫ =====
 court_evidence: {
   title: 'Ходатайство об истребовании доказательств', type: 'motion', group: 'Судебные документы',
   fields: [
@@ -707,7 +686,6 @@ appeal_court_order: {
   attach: ['Копия судебного приказа']
 },
 
-// ===== АДМИНИСТРАТИВНЫЕ ДЕЛА =====
 fine_appeal: {
   title: 'Обжалование административного штрафа', type: 'complaint', group: 'Административные дела',
   fields: [
@@ -721,7 +699,7 @@ fine_appeal: {
   ],
   rules: [{ when: () => true,
     arts: ['ст. 30.1 КоАП РФ','ст. 30.2 КоАП РФ','ст. 30.3 КоАП РФ'],
-    why: 'Постановление может быть обжаловано в течение 10 суток со дня вручения или получения копии (ч. 1 ст. 30.3 КоАП РФ).',
+    why: 'Постановление может быть обжаловано в течение 10 дней со дня вручения или получения копии (ч. 1 ст. 30.3 КоАП РФ).',
     demand: 'Отменить постановление № {fineNumber} от {fineDate} о назначении административного наказания в виде штрафа {fineAmount} руб. и прекратить производство по делу.' }],
   descTpl: '{fineDate} {fineAuthority} вынесено постановление № {fineNumber} о назначении мне штрафа в размере {fineAmount} руб. за {violationDesc}. Копия получена мной {receivedDate}. Считаю постановление незаконным, поскольку {appealReason}. На основании изложенного, руководствуясь ст. 30.1–30.3 КоАП РФ,',
   attach: ['Копия постановления','Доказательства в обоснование позиции']
@@ -744,7 +722,6 @@ police_statement: {
   attach: ['Копии документов, подтверждающих обстоятельства','Материальные носители (фото, видео)']
 },
 
-// ===== НАЛОГИ =====
 tax_deduction: {
   title: 'Заявление на налоговый вычет', type: 'statement', group: 'Налоги',
   fields: [
@@ -776,7 +753,6 @@ tax_deduction: {
   attach: ['Копия декларации 3-НДФЛ','Документы, подтверждающие расходы','Копия паспорта','Реквизиты счёта']
 },
 
-// ===== СЕМЕЙНЫЕ СПОРЫ =====
 divorce: {
   title: 'Расторжение брака', type: 'statement', group: 'Семейные споры',
   fields: [
@@ -810,7 +786,6 @@ alimony: {
   attach: ['Копия свидетельства о рождении ребёнка','Справка о доходах','Копия свидетельства о браке/разводе']
 },
 
-// ===== ПРОКУРАТУРА / НАДЗОР =====
 prosecutor_complaint: {
   title: 'Жалоба в прокуратуру', type: 'complaint', group: 'Надзорные органы',
   fields: [
@@ -828,7 +803,6 @@ prosecutor_complaint: {
   attach: ['Копии документов по существу жалобы','Копии предыдущих обращений и ответов']
 },
 
-// ===== ЗАЩИТА ЧЕСТИ И ДОСТОИНСТВА =====
 defamation: {
   title: 'Защита чести, достоинства и деловой репутации', type: 'claim', group: 'Надзорные органы',
   fields: [
@@ -846,7 +820,6 @@ defamation: {
   attach: ['Доказательства распространения сведений (скриншоты, публикации)','Документы, опровергающие сведения']
 },
 
-// ===== НАСЛЕДСТВО =====
 inheritance: {
   title: 'Восстановление срока принятия наследства', type: 'statement', group: 'Наследственные споры',
   fields: [
@@ -863,7 +836,6 @@ inheritance: {
   attach: ['Копия свидетельства о смерти','Документы, подтверждающие родство','Документы на наследственное имущество','Доказательства уважительности причин']
 },
 
-// ===== ЗАЩИТА ПРАВ ДОЛЬЩИКОВ =====
 building_claim: {
   title: 'Претензия застройщику (долевое строительство)', type: 'claim', group: 'Строительство и недвижимость',
   fields: [
@@ -899,7 +871,6 @@ cadastral: {
   attach: ['Отчёт об оценке рыночной стоимости','Выписка из ЕГРН','Копия правоустанавливающего документа']
 },
 
-// ===== ДТП / СТРАХОВАНИЕ =====
 traffic_accident: {
   title: 'Возмещение ущерба от ДТП', type: 'claim', group: 'ДТП и страхование',
   fields: [
@@ -918,7 +889,6 @@ traffic_accident: {
   attach: ['Справка о ДТП','Постановление по делу об АП','Заключение независимой экспертизы','Копия выплатного дела']
 },
 
-// ===== МЕДИЦИНА =====
 medical_complaint: {
   title: 'Жалоба на медицинское учреждение', type: 'complaint', group: 'Медицина',
   fields: [
@@ -935,7 +905,6 @@ medical_complaint: {
   attach: ['Копия медицинской карты','Копии заключений','Копии чеков на лечение']
 },
 
-// ===== ОБРАЗОВАНИЕ =====
 school_complaint: {
   title: 'Жалоба на школу / детский сад', type: 'complaint', group: 'Образование',
   fields: [
@@ -952,7 +921,6 @@ school_complaint: {
   attach: ['Копии документов, подтверждающих нарушение','Копии письменных обращений к администрации']
 },
 
-// ===== МЕЖДУНАРОДНЫЕ =====
 intl_consumer: {
   title: 'Обращение в защиту потребителя (международное)', type: 'intl', group: 'Международные обращения',
   fields: [
@@ -994,6 +962,159 @@ intl_consumer: {
   attach: ['Copy of receipt','Copy of warranty','Copy of correspondence with seller']
 }
 };
+
+// ============ СПРАВОЧНИК ЗАКОНОВ РФ ============
+const LAW_REFERENCE = [
+  { category: 'Конституция и конституционные законы', items: [
+    { name: 'Конституция РФ', desc: 'Основной закон Российской Федерации', article: 'Принята 12.12.1993' },
+    { name: 'ФКЗ «О Правительстве РФ»', desc: 'Статус и полномочия Правительства', article: 'ФКЗ от 17.12.1997 № 2-ФКЗ' },
+    { name: 'ФКЗ «О судебной системе РФ»', desc: 'Структура судебной системы', article: 'ФКЗ от 31.12.1996 № 1-ФКЗ' },
+    { name: 'ФКЗ «О Конституционном Суде РФ»', desc: 'Конституционное судопроизводство', article: 'ФКЗ от 21.07.1994 № 1-ФКЗ' },
+  ]},
+  { category: 'Кодексы РФ', items: [
+    { name: 'Гражданский кодекс РФ (части 1–4)', desc: 'Гражданские правоотношения, сделки, обязательства, наследство, интеллектуальные права', article: 'ГК РФ' },
+    { name: 'Гражданский процессуальный кодекс РФ', desc: 'Гражданское судопроизводство', article: 'ГПК РФ' },
+    { name: 'Арбитражный процессуальный кодекс РФ', desc: 'Экономические споры', article: 'АПК РФ' },
+    { name: 'Кодекс административного судопроизводства РФ', desc: 'Административные дела', article: 'КАС РФ' },
+    { name: 'Кодекс РФ об административных правонарушениях', desc: 'Административная ответственность', article: 'КоАП РФ' },
+    { name: 'Трудовой кодекс РФ', desc: 'Трудовые отношения', article: 'ТК РФ' },
+    { name: 'Жилищный кодекс РФ', desc: 'Жилищные правоотношения', article: 'ЖК РФ' },
+    { name: 'Семейный кодекс РФ', desc: 'Семейные правоотношения', article: 'СК РФ' },
+    { name: 'Налоговый кодекс РФ (части 1–2)', desc: 'Налоги и сборы', article: 'НК РФ' },
+    { name: 'Уголовный кодекс РФ', desc: 'Преступления и наказания', article: 'УК РФ' },
+    { name: 'Уголовно-процессуальный кодекс РФ', desc: 'Уголовное судопроизводство', article: 'УПК РФ' },
+    { name: 'Уголовно-исполнительный кодекс РФ', desc: 'Исполнение наказаний', article: 'УИК РФ' },
+    { name: 'Земельный кодекс РФ', desc: 'Земельные правоотношения', article: 'ЗК РФ' },
+    { name: 'Лесной кодекс РФ', desc: 'Лесные правоотношения', article: 'ЛК РФ' },
+    { name: 'Водный кодекс РФ', desc: 'Водные правоотношения', article: 'ВК РФ' },
+    { name: 'Воздушный кодекс РФ', desc: 'Воздушные перевозки', article: 'ВК РФ' },
+    { name: 'Градостроительный кодекс РФ', desc: 'Строительство и градостроительство', article: 'ГрК РФ' },
+    { name: 'Бюджетный кодекс РФ', desc: 'Бюджетные правоотношения', article: 'БК РФ' },
+    { name: 'Таможенный кодекс ЕАЭС', desc: 'Таможенное регулирование', article: 'ТК ЕАЭС' },
+  ]},
+  { category: 'Федеральные законы (основные)', items: [
+    { name: 'ФЗ «О защите прав потребителей»', desc: 'Права потребителей при покупке товаров и услуг', article: 'Закон РФ от 07.02.1992 № 2300-1' },
+    { name: 'ФЗ «О прокуратуре РФ»', desc: 'Прокурорский надзор', article: 'ФЗ от 17.01.1992 № 2202-1' },
+    { name: 'ФЗ «О порядке рассмотрения обращений граждан РФ»', desc: 'Сроки и порядок рассмотрения обращений', article: 'ФЗ от 02.05.2006 № 59-ФЗ' },
+    { name: 'ФЗ «Об исполнительном производстве»', desc: 'Принудительное исполнение', article: 'ФЗ от 02.10.2007 № 229-ФЗ' },
+    { name: 'ФЗ «Об ОСАГО»', desc: 'Обязательное страхование автогражданской ответственности', article: 'ФЗ от 25.04.2002 № 40-ФЗ' },
+    { name: 'ФЗ «Об участии в долевом строительстве»', desc: 'Долевое строительство', article: 'ФЗ от 30.12.2004 № 214-ФЗ' },
+    { name: 'ФЗ «Об основах охраны здоровья граждан»', desc: 'Медицинская помощь', article: 'ФЗ от 21.11.2011 № 323-ФЗ' },
+    { name: 'ФЗ «Об образовании в РФ»', desc: 'Образовательные правоотношения', article: 'ФЗ от 29.12.2012 № 273-ФЗ' },
+    { name: 'ФЗ «О полиции»', desc: 'Деятельность полиции', article: 'ФЗ от 07.02.2011 № 3-ФЗ' },
+    { name: 'ФЗ «О государственной регистрации недвижимости»', desc: 'Регистрация прав на недвижимость', article: 'ФЗ от 13.07.2015 № 218-ФЗ' },
+    { name: 'ФЗ «Об оценочной деятельности»', desc: 'Оценка имущества, кадастровая стоимость', article: 'ФЗ от 29.07.1998 № 135-ФЗ' },
+    { name: 'ФЗ «О социальной защите инвалидов»', desc: 'Социальная защита инвалидов', article: 'ФЗ от 24.11.1995 № 181-ФЗ' },
+    { name: 'ФЗ «О персональных данных»', desc: 'Защита персональных данных', article: 'ФЗ от 27.07.2006 № 152-ФЗ' },
+  ]},
+  { category: 'Международные акты', items: [
+    { name: 'Всеобщая декларация прав человека', desc: 'Основные права и свободы', article: 'Принята 10.12.1948' },
+    { name: 'Конвенция о защите прав человека и основных свобод', desc: 'Европейская конвенция по правам человека', article: 'ETS № 005' },
+    { name: 'Венская конвенция о договорах международной купли-продажи товаров (CISG)', desc: 'Международная купля-продажа', article: 'CISG 1980' },
+    { name: 'Directive (EU) 2019/771', desc: 'Гарантия соответствия товаров в ЕС', article: 'EU 2019/771' },
+    { name: 'GDPR (Regulation (EU) 2016/679)', desc: 'Защита персональных данных в ЕС', article: 'EU 2016/679' },
+  ]}
+];
+
+// ============ ЮРИДИЧЕСКИЕ СРОКИ (расширенный) ============
+const LEGAL_DEADLINES = [
+  { category: 'Гражданский кодекс (ГК РФ)', items: [
+    { action: 'Общий срок исковой давности', value: '3 года', article: 'ст. 196 ГК РФ', note: 'Не более 10 лет со дня нарушения права' },
+    { action: 'Специальный срок — оспоримая сделка', value: '1 год', article: 'п. 2 ст. 181 ГК РФ', note: 'Со дня прекращения насилия/угрозы' },
+    { action: 'Специальный срок — ничтожная сделка', value: '3 года', article: 'п. 1 ст. 181 ГК РФ', note: 'Со дня начала исполнения' },
+    { action: 'Недостатки работ по подряду', value: '1 год', article: 'п. 1 ст. 725 ГК РФ', note: 'Для зданий/сооружений — 5 лет' },
+    { action: 'Перевозка грузов', value: '1 год', article: 'п. 3 ст. 797 ГК РФ', note: '' },
+    { action: 'Имущественное страхование', value: '2 года', article: 'ст. 966 ГК РФ', note: '' },
+    { action: 'Преимущественное право покупки доли', value: '3 месяца', article: 'п. 3 ст. 250 ГК РФ', note: '' },
+    { action: 'Оспаривание решения собрания', value: '6 месяцев', article: 'п. 5 ст. 181.4 ГК РФ', note: 'В пределах 2 лет' },
+    { action: 'Предварительный договор', value: '6 месяцев', article: 'п. 5 ст. 429 ГК РФ', note: 'Если не указан иной срок' },
+    { action: 'Банковская гарантия', value: 'По договору', article: 'ст. 374 ГК РФ', note: 'Срок определяется гарантией' },
+  ]},
+  { category: 'Гражданский процессуальный кодекс (ГПК РФ)', items: [
+    { action: 'Принятие искового заявления', value: '5 дней', article: 'ст. 133 ГПК РФ', note: 'Со дня поступления в суд' },
+    { action: 'Рассмотрение гражданского дела (районный суд)', value: '2 месяца', article: 'ч. 1 ст. 154 ГПК РФ', note: 'Со дня поступления заявления' },
+    { action: 'Рассмотрение дела мировым судьёй', value: '1 месяц', article: 'ч. 1 ст. 154 ГПК РФ', note: 'Со дня принятия к производству' },
+    { action: 'Восстановление на работе, взыскание алиментов', value: '1 месяц', article: 'ч. 2 ст. 154 ГПК РФ', note: '' },
+    { action: 'Выдача судебного приказа', value: '5 дней', article: 'ст. 126 ГПК РФ', note: 'Со дня поступления заявления' },
+    { action: 'Возражение на судебный приказ', value: '10 дней', article: 'ст. 128 ГПК РФ', note: 'Со дня получения копии' },
+    { action: 'Апелляционная жалоба', value: '1 месяц', article: 'ст. 321 ГПК РФ', note: 'Со дня изготовления решения в окончательной форме' },
+    { action: 'Кассационная жалоба', value: '3 месяца', article: 'ст. 376.1 ГПК РФ', note: 'Со дня вступления в силу' },
+    { action: 'Частная жалоба', value: '15 дней', article: 'ст. 332 ГПК РФ', note: 'Со дня вынесения определения' },
+    { action: 'Предъявление исполнительного листа', value: '3 года', article: 'ст. 21 ФЗ № 229-ФЗ', note: 'Со дня вступления в силу' },
+    { action: 'Замечания на протокол', value: '5 дней', article: 'ст. 231 ГПК РФ', note: 'Со дня составления протокола' },
+  ]},
+  { category: 'Трудовой кодекс (ТК РФ)', items: [
+    { action: 'Выплата заработной платы', value: 'Не реже 1/2 месяца', article: 'ст. 136 ТК РФ', note: 'Не позднее 15 календарных дней' },
+    { action: 'Обращение в суд по увольнению', value: '1 месяц', article: 'ст. 392 ТК РФ', note: 'Со дня вручения приказа/трудовой книжки' },
+    { action: 'Обращение по зарплате', value: '1 год', article: 'ст. 392 ТК РФ', note: 'Со дня установленного срока выплаты' },
+    { action: 'Предупреждение об увольнении по собственному желанию', value: '2 недели', article: 'ст. 80 ТК РФ', note: '' },
+    { action: 'Испытательный срок', value: 'до 3 мес.', article: 'ст. 70 ТК РФ', note: 'Для руководителей — до 6 мес.' },
+    { action: 'Дисциплинарное взыскание', value: '1 месяц', article: 'ст. 193 ТК РФ', note: 'Со дня обнаружения проступка' },
+    { action: 'Отпуск (ежегодный)', value: '28 дней', article: 'ст. 115 ТК РФ', note: '' },
+    { action: 'Предупреждение о сокращении', value: '2 месяца', article: 'ст. 180 ТК РФ', note: '' },
+    { action: 'Уведомление о срочном договоре', value: '3 дня', article: 'ст. 79 ТК РФ', note: 'О прекращении срочного договора' },
+  ]},
+  { category: 'КоАП РФ', items: [
+    { action: 'Обжалование постановления', value: '10 дней', article: 'ст. 30.3 КоАП РФ', note: 'Со дня вручения/получения копии' },
+    { action: 'Обжалование (избирательные права)', value: '5 дней', article: 'ч. 3 ст. 30.3 КоАП РФ', note: 'Ст. 5.1–5.25, 5.45–5.52, 5.56, 5.58, 5.69' },
+    { action: 'Рассмотрение жалобы', value: '2 месяца', article: 'ст. 30.5 КоАП РФ', note: 'Со дня поступления' },
+    { action: 'Уплата штрафа (добровольно)', value: '60 дней', article: 'ст. 32.2 КоАП РФ', note: 'Со дня вступления в силу' },
+    { action: 'Уплата штрафа (со скидкой 50%)', value: '20 дней', article: 'ст. 32.2 КоАП РФ', note: 'Со дня вынесения постановления' },
+    { action: 'Лишение специального права', value: 'от 1 мес. до 3 лет', article: 'ст. 3.8 КоАП РФ', note: 'Устанавливается судом' },
+    { action: 'Административный арест', value: 'до 15 суток', article: 'ст. 3.9 КоАП РФ', note: 'За отдельные правонарушения — до 30 суток' },
+  ]},
+  { category: 'Закон о защите прав потребителей (ЗоЗПП)', items: [
+    { action: 'Возврат денег за товар', value: '10 дней', article: 'ст. 22 ЗоЗПП', note: 'Со дня предъявления требования' },
+    { action: 'Замена товара (общий случай)', value: '7 дней', article: 'ст. 21 ЗоЗПП', note: 'Со дня предъявления требования' },
+    { action: 'Замена товара (с проверкой качества)', value: '20 дней', article: 'ст. 21 ЗоЗПП', note: '' },
+    { action: 'Замена товара (нет в наличии)', value: '1 месяц', article: 'ст. 21 ЗоЗПП', note: '' },
+    { action: 'Устранение недостатков (ремонт)', value: '45 дней', article: 'ст. 20 ЗоЗПП', note: 'Максимальный срок по соглашению' },
+    { action: 'Предоставление подменного товара', value: '3 дня', article: 'ст. 20 ЗоЗПП', note: 'На период ремонта' },
+    { action: 'Возврат товара надлежащего качества', value: '14 дней', article: 'ст. 25 ЗоЗПП', note: 'Не считая дня покупки' },
+    { action: 'Возврат денег за товар надлежащего качества', value: '3 дня', article: 'ст. 25 ЗоЗПП', note: 'Со дня возврата товара' },
+    { action: 'Неустойка за просрочку', value: '1% в день', article: 'ст. 23 ЗоЗПП', note: 'От цены товара' },
+    { action: 'Гарантийный срок (по умолчанию)', value: '2 года', article: 'ст. 19 ЗоЗПП', note: 'Если не установлен иной' },
+  ]},
+  { category: 'Жилищный кодекс (ЖК РФ) и долевое строительство', items: [
+    { action: 'Передача объекта долевого строительства', value: 'По договору', article: 'ст. 6 ФЗ № 214-ФЗ', note: 'Не позднее срока в договоре' },
+    { action: 'Уведомление о завершении строительства', value: 'За 1 месяц', article: 'ч. 2 ст. 6 ФЗ № 214-ФЗ', note: 'До наступления срока передачи' },
+    { action: 'Принятие объекта дольщиком', value: '7 рабочих дней', article: 'ч. 4 ст. 6 ФЗ № 214-ФЗ', note: 'Со дня получения сообщения' },
+    { action: 'Неустойка за просрочку застройщика', value: '1/300 ставки', article: 'ч. 2 ст. 6 ФЗ № 214-ФЗ', note: 'Для граждан — 1/150' },
+    { action: 'Перерасчёт за некачественные услуги', value: 'По факту', article: 'п. 4 ст. 157 ЖК РФ', note: 'За период нарушения' },
+    { action: 'Оплата коммунальных услуг', value: 'Ежемесячно до 10 числа', article: 'ст. 155 ЖК РФ', note: '' },
+    { action: 'Срок капремонта', value: 'По программе', article: 'ст. 166 ЖК РФ', note: 'Не позднее 5 лет с включения в программу' },
+  ]},
+  { category: 'Налоговый кодекс (НК РФ)', items: [
+    { action: 'Подача декларации 3-НДФЛ', value: '30 апреля', article: 'п. 1 ст. 229 НК РФ', note: 'Года, следующего за отчётным' },
+    { action: 'Уплата НДФЛ', value: '15 июля', article: 'п. 4 ст. 228 НК РФ', note: 'Года, следующего за отчётным' },
+    { action: 'Возврат НДФЛ (камеральная проверка)', value: '3 месяца', article: 'п. 2 ст. 88 НК РФ', note: 'Со дня подачи декларации' },
+    { action: 'Перечисление налога в бюджет', value: '1 месяц', article: 'п. 6 ст. 226 НК РФ', note: 'С дня выплаты дохода' },
+    { action: 'Подача возражений на акт проверки', value: '1 месяц', article: 'п. 6 ст. 100 НК РФ', note: 'Со дня получения акта' },
+    { action: 'Обжалование решения налогового органа', value: '1 год', article: 'п. 2 ст. 139 НК РФ', note: 'Со дня вступления в силу' },
+  ]},
+  { category: 'Семейный кодекс (СК РФ)', items: [
+    { action: 'Расторжение брака в ЗАГС', value: '1 месяц', article: 'ст. 19 СК РФ', note: 'Со дня подачи заявления' },
+    { action: 'Расторжение брака в суде', value: 'не более 2 мес.', article: 'ст. 23 СК РФ', note: 'При отсутствии спора' },
+    { action: 'Взыскание алиментов на 1 ребёнка', value: '1/4 дохода', article: 'ст. 81 СК РФ', note: 'Ежемесячно' },
+    { action: 'Взыскание алиментов на 2 детей', value: '1/3 дохода', article: 'ст. 81 СК РФ', note: 'Ежемесячно' },
+    { action: 'Взыскание алиментов на 3+ детей', value: '1/2 дохода', article: 'ст. 81 СК РФ', note: 'Ежемесячно' },
+    { action: 'Принятие наследства', value: '6 месяцев', article: 'ст. 1154 ГК РФ', note: 'Со дня открытия наследства' },
+    { action: 'Раздел общего имущества супругов', value: '3 года', article: 'п. 7 ст. 38 СК РФ', note: 'Срок исковой давности' },
+  ]},
+  { category: 'Уголовно-процессуальный кодекс (УПК РФ)', items: [
+    { action: 'Рассмотрение заявления о преступлении', value: '3 суток', article: 'ст. 144 УПК РФ', note: 'Может быть продлён до 10 суток' },
+    { action: 'Обжалование действий следователя', value: '10 суток', article: 'ст. 125 УПК РФ', note: 'В порядке ст. 125' },
+    { action: 'Апелляционное обжалование приговора', value: '10 суток', article: 'ст. 389.4 УПК РФ', note: 'Со дня провозглашения' },
+    { action: 'Кассационное обжалование', value: '1 год', article: 'ст. 401.2 УПК РФ', note: 'Со дня вступления в силу' },
+  ]},
+  { category: 'Прочие федеральные законы', items: [
+    { action: 'Рассмотрение обращения в прокуратуру', value: '30 дней', article: 'ст. 10 ФЗ № 59-ФЗ', note: 'Со дня регистрации' },
+    { action: 'Рассмотрение обращения (общий срок)', value: '30 дней', article: 'ст. 12 ФЗ № 59-ФЗ', note: 'Может продлеваться' },
+    { action: 'Предъявление исполнительного листа', value: '3 года', article: 'ст. 21 ФЗ № 229-ФЗ', note: 'Со дня вступления в силу судебного акта' },
+    { action: 'Обжалование действий пристава', value: '10 дней', article: 'ст. 122 ФЗ № 229-ФЗ', note: 'Со дня вынесения/совершения' },
+    { action: 'Оспаривание кадастровой стоимости', value: '5 лет', article: 'ст. 24.18 ФЗ № 135-ФЗ', note: 'Со дня внесения сведений в ЕГРН' },
+  ]},
+];
 
 // ============ ОРГ-ШАБЛОНЫ ЗАЯВЛЕНИЙ ============
 const ORG_TEMPLATES = [
@@ -1040,7 +1161,7 @@ function switchPage(page) {
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.topbar .nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (page === 'tools') renderHistory();
+  if (page === 'tools') { renderDeadlines(); renderLawReference(); renderHistory(); }
 }
 
 // ============ ORG SELECTOR ============
@@ -1141,15 +1262,130 @@ function getFacts() {
   return facts;
 }
 
-// ============ ВСТРОЕННЫЙ ИИ-ДВИЖОК ============
-// Локальный анализатор: применяет правила, строит документ по процессуальной форме
+// ============ ВСТРОЕННЫЙ ИИ-ДВИЖОК С ОБРАБОТКОЙ ТЕКСТА ============
 const LegalEngine = {
+  // Словарь юридических замен (разговорное → юридическое)
+  replacements: [
+    [/\bкупил\b/gi, 'приобрёл'],
+    [/\bкупила\b/gi, 'приобрела'],
+    [/\bсломался\b/gi, 'вышел из строя'],
+    [/\bсломалась\b/gi, 'вышла из строя'],
+    [/\bсломалось\b/gi, 'вышло из строя'],
+    [/\bне работает\b/gi, 'не функционирует'],
+    [/\bне работал\b/gi, 'не функционировал'],
+    [/\bотказывается\b/gi, 'отказывается в добровольном порядке'],
+    [/\bденьги\b/gi, 'денежные средства'],
+    [/\bмагазин\b/gi, 'торговую организацию'],
+    [/\bчек\b/gi, 'кассовый чек'],
+    [/\bбрак\b/gi, 'производственный недостаток'],
+    [/\bмуж\b/gi, 'супруг'],
+    [/\bжена\b/gi, 'супруга'],
+    [/\bсын\b/gi, 'сын'],
+    [/\bдочь\b/gi, 'дочь'],
+    [/\bквартира\b/gi, 'жилое помещение'],
+    [/\bмашина\b/gi, 'автомобиль'],
+    [/\bначальник\b/gi, 'руководитель'],
+    [/\bконтора\b/gi, 'организация'],
+    [/\bфирма\b/gi, 'организация'],
+    [/\bзарплата\b/gi, 'заработная плата'],
+    [/\bболел\b/gi, 'находился на больничном'],
+    [/\bуволили\b/gi, 'уволили'],
+    [/\bуволился\b/gi, 'уволился по собственному желанию'],
+    [/\bпремия\b/gi, 'премия'],
+    [/\bотпуск\b/gi, 'ежегодный оплачиваемый отпуск'],
+    [/\bпереработка\b/gi, 'сверхурочная работа'],
+    [/\bсосед\b/gi, 'сосед'],
+    [/\bсоседка\b/gi, 'соседка'],
+    [/\bподъезд\b/gi, 'подъезд'],
+    [/\bкрыша\b/gi, 'кровля'],
+    [/\bтруба\b/gi, 'трубопровод'],
+    [/\bбатарея\b/gi, 'отопительный прибор'],
+    [/\bсвет\b/gi, 'электроэнергия'],
+    [/\bвода\b/gi, 'водоснабжение'],
+    [/\bгаз\b/gi, 'газоснабжение'],
+    [/\bмусор\b/gi, 'твёрдые коммунальные отходы'],
+    [/\bштраф\b/gi, 'административный штраф'],
+    [/\bгаи\b/gi, 'ГИБДД'],
+    [/\bгибдд\b/gi, 'ГИБДД'],
+    [/\bполиция\b/gi, 'орган внутренних дел'],
+    [/\bсуд\b/gi, 'суд'],
+    [/\bиск\b/gi, 'исковое заявление'],
+    [/\bзаявление\b/gi, 'заявление'],
+    [/\bжалоба\b/gi, 'жалоба'],
+    [/\bпретензия\b/gi, 'претензия'],
+    [/\bдоговор\b/gi, 'договор'],
+    [/\bуслуга\b/gi, 'услуга'],
+    [/\bработа\b/gi, 'работа'],
+    [/\bтовар\b/gi, 'товар'],
+    [/\bденьги\b/gi, 'денежные средства'],
+    [/\bущерб\b/gi, 'ущерб'],
+    [/\bвред\b/gi, 'вред'],
+    [/\bморальный вред\b/gi, 'компенсация морального вреда'],
+  ],
+
+  // Юридические вводные фразы
+  legalPhrases: {
+    factPrefix: 'Как следует из обстоятельств дела, ',
+    closing: 'На основании вышеизложенного, руководствуясь действующим законодательством,',
+    requestPrefix: 'ПРОШУ:'
+  },
+
+  // Нормализация текста: исправление падежей и предлогов
+  normalizeText(text) {
+    if (!text) return '';
+    let t = text.trim();
+    // Убираем разговорные начала
+    t = t.replace(/^(ну\s+|вот\s+|короче\s+|значит\s+|это\s+)/i, '');
+    // Исправляем распространённые ошибки
+    t = t.replace(/\bв магазин\s+/gi, 'в магазине ');
+    t = t.replace(/\bв организацию\s+/gi, 'в организации ');
+    t = t.replace(/\bв компанию\s+/gi, 'в компании ');
+    t = t.replace(/\bв банк\s+/gi, 'в банке ');
+    t = t.replace(/\bв суд\s+/gi, 'в суде ');
+    t = t.replace(/\bв прокуратуру\s+/gi, 'в прокуратуре ');
+    t = t.replace(/\bв полицию\s+/gi, 'в полиции ');
+    t = t.replace(/\bна работу\s+/gi, 'на работе ');
+    // Убираем двойные пробелы
+    t = t.replace(/\s{2,}/g, ' ');
+    // Добавляем точку в конце, если нет
+    if (!/[.!?]$/.test(t)) t += '.';
+    // Первая буква заглавная
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+    return t;
+  },
+
+  // Юридическая переработка текста
+  legalizeText(text) {
+    if (!text) return '';
+    let t = this.normalizeText(text);
+    // Применяем замены
+    this.replacements.forEach(([re, to]) => { t = t.replace(re, to); });
+    return t;
+  },
+
+  // Переписывание требования пользователя
+  rewriteDemand(text) {
+    if (!text) return '';
+    let t = this.legalizeText(text);
+    // Убираем "хочу", "прошу" в начале, если есть
+    t = t.replace(/^(хочу|прошу|требую|мне нужно)\s+/i, '');
+    // Убираем лишние слова
+    t = t.replace(/\bпожалуйста\b/gi, '');
+    t = t.replace(/\s{2,}/g, ' ');
+    // Делаем первую букву заглавной
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+    // Добавляем точку, если нет
+    if (!/[.!?]$/.test(t)) t += '.';
+    return t;
+  },
+
   analyze(facts, situation) {
     let rule = null;
     for (const r of situation.rules) { try { if (r.when(facts)) { rule = r; break; } } catch(e){} }
     if (!rule) rule = situation.rules[situation.rules.length - 1];
     return rule;
   },
+
   buildDescription(tpl, facts, applicant, org) {
     let t = tpl;
     Object.entries(facts).forEach(([k, v]) => { t = t.replace(new RegExp('\\{'+k+'\\}','g'), v || '____'); });
@@ -1167,7 +1403,7 @@ const LegalEngine = {
       const m = { 'не последовало': 'Моё обращение оставлено без ответа', 'отказано': 'Исполнитель отказал в удовлетворении требования', 'Нет': 'Ранее я к исполнителю не обращался(ась)' };
       for (const k in m) if (facts.priorContact.includes(k)) { t = t.replace('{priorText}', m[k]); break; }
     }
-    if (facts.priorAppeals !== undefined) t = t.replace('{priorText}', facts.priorAppeals ? 'Ранее я обращался(ась): ' + facts.priorAppeals + '.' : 'Ранее по данному вопросу я не обращался(ась).');
+    if (facts.priorAppeals !== undefined) t = t.replace('{priorText}', facts.priorAppeals ? 'Ранее я обращался(ась): ' + this.legalizeText(facts.priorAppeals) + '.' : 'Ранее по данному вопросу я не обращался(ась).');
     if (facts.payout) {
       const m = { 'Отказано': 'Страховая компания отказала в выплате', 'Занижено': 'Страховая компания необоснованно занизила размер выплаты', 'не последовало': 'Ответ страховой компании не поступил' };
       for (const k in m) if (facts.payout.includes(k)) { t = t.replace('{payoutText}', m[k]); break; }
@@ -1175,7 +1411,7 @@ const LegalEngine = {
     if (facts.children) t = t.replace('{childrenText}', facts.children === 'Да, есть общие дети' ? 'От брака имеются несовершеннолетние дети.' : 'Несовершеннолетних детей от брака нет.');
     if (facts.secondParentIncome) t = t.replace('{incomeText}', 'Доход второго родителя: ' + facts.secondParentIncome + '.');
     else t = t.replace('{incomeText}', '');
-    if (facts.defects) t = t.replace('{defectsText}', 'Кроме того, при осмотре выявлены недостатки: ' + facts.defects + '.');
+    if (facts.defects) t = t.replace('{defectsText}', 'Кроме того, при осмотре выявлены недостатки: ' + this.legalizeText(facts.defects) + '.');
     else t = t.replace('{defectsText}', '');
     if (facts.insurancePaid) t = t.replace('{insuranceText}', 'Страховая компания по ОСАГО выплатила ' + facts.insurancePaid + ' руб.');
     else t = t.replace('{insuranceText}', 'Страховая выплата по ОСАГО не производилась.');
@@ -1183,22 +1419,37 @@ const LegalEngine = {
     else t = t.replace('{suspectText}', '');
     if (facts.damage) t = t.replace('{damageText}', 'Размер ущерба: ' + facts.damage + ' руб.');
     else t = t.replace('{damageText}', '');
+    // Обрабатываем описания
+    if (facts.defectDesc) t = t.replace('{defectDesc}', this.legalizeText(facts.defectDesc));
+    if (facts.problem) t = t.replace('{problem}', this.legalizeText(facts.problem));
+    if (facts.violation) t = t.replace('{violation}', this.legalizeText(facts.violation));
+    if (facts.violationDesc) t = t.replace('{violationDesc}', this.legalizeText(facts.violationDesc));
+    if (facts.reason) t = t.replace('{reason}', this.legalizeText(facts.reason));
+    if (facts.objection) t = t.replace('{objection}', this.legalizeText(facts.objection));
+    if (facts.missedDeadline) t = t.replace('{missedDeadline}', this.legalizeText(facts.missedDeadline));
+    if (facts.appealReason) t = t.replace('{appealReason}', this.legalizeText(facts.appealReason));
     // Оставшиеся пустые плейсхолдеры
     t = t.replace(/\{[a-zA-Z_]+\}/g, '____');
     return t;
   },
+
   buildDemand(tpl, facts) {
     let t = tpl;
     Object.entries(facts).forEach(([k, v]) => { t = t.replace(new RegExp('\\{'+k+'\\}','g'), v || '____'); });
     t = t.replace(/\{[a-zA-Z_]+\}/g, '____');
     return t;
   },
+
   buildDoc({ header, applicant, applicantAddr, phone, docDate, situation, rule, facts, demandExtra }) {
     const titleMap = { claim:'ПРЕТЕНЗИЯ', motion:'ХОДАТАЙСТВО', statement:'ЗАЯВЛЕНИЕ', complaint:'ЖАЛОБА', intl:'INTERNATIONAL REQUEST' };
     const title = titleMap[situation.type] || 'ЗАЯВЛЕНИЕ';
 
     const desc = this.buildDescription(situation.descTpl, facts, applicant, header);
-    const demand = this.buildDemand(rule.demand, facts) + (demandExtra ? ' ' + demandExtra : '');
+    let demand = this.buildDemand(rule.demand, facts);
+    // Обрабатываем дополнительное требование пользователя
+    if (demandExtra) {
+      demand += ' ' + this.rewriteDemand(demandExtra);
+    }
     const legalBasis = rule.arts.join(';\n') + '.';
 
     let doc = '';
@@ -1223,7 +1474,7 @@ const LegalEngine = {
   }
 };
 
-// ============ AI GENERATION (локальный движок) ============
+// ============ AI GENERATION ============
 async function generateWithAI() {
   if (!state.situation) { alert('Выберите правовую ситуацию.'); return; }
   const applicant = val('applicant');
@@ -1239,14 +1490,16 @@ async function generateWithAI() {
   const header = buildRecipientHeader();
   if (!header) { alert('Выберите орган и должность, либо впишите свой вариант.'); return; }
 
+  const demandText = val('demand');
+  if (!demandText) { alert('Опишите ваше требование.'); return; }
+
   const btn = document.getElementById('btnGenerate');
   const status = document.getElementById('aiStatus');
   const statusText = document.getElementById('aiStatusText');
   btn.disabled = true;
   status.className = 'ai-status show loading';
-  statusText.textContent = 'Юридический ИИ анализирует факты и подбирает нормы…';
+  statusText.textContent = 'Юридический ИИ анализирует факты, переписывает текст и подбирает нормы…';
 
-  // Небольшая задержка для UX (имитация анализа)
   await new Promise(r => setTimeout(r, 700));
 
   try {
@@ -1258,14 +1511,13 @@ async function generateWithAI() {
       docDate: val('docDate'),
       situation: state.situation,
       rule, facts,
-      demandExtra: val('demand')
+      demandExtra: demandText
     });
 
     document.getElementById('docPreview').innerHTML = '<div class="doc-text">' + escapeHtml(result.doc) + '</div>';
     status.className = 'ai-status show success';
-    statusText.textContent = '✓ Документ составлен. Применено норм: ' + rule.arts.length + '. Проверьте реквизиты перед подачей.';
+    statusText.textContent = '✓ Документ составлен. Применено норм: ' + rule.arts.length + '. Текст переписан в юридическом стиле.';
 
-    // Сохраняем в историю
     saveToHistory({
       title: state.situation.title,
       date: new Date().toISOString(),
@@ -1293,8 +1545,8 @@ function generateTemplate() {
   if (val('applicantAddr')) body += '\nАдрес: ' + val('applicantAddr');
   if (val('phone')) body += '\nТелефон: ' + val('phone');
   body += '\n\n' + (titleMap[state.situation.type] || 'ЗАЯВЛЕНИЕ') + '\n\n';
-  body += state.situation.fields.filter(f => facts[f.id]).map(f => f.label + ': ' + facts[f.id]).join('\n');
-  body += '\n\n' + (val('demand') || 'Прошу рассмотреть обращение и принять меры.');
+  body += state.situation.fields.filter(f => facts[f.id]).map(f => f.label + ': ' + LegalEngine.legalizeText(facts[f.id])).join('\n');
+  body += '\n\n' + LegalEngine.rewriteDemand(val('demand') || 'Прошу рассмотреть обращение и принять меры.');
   body += '\n\n' + formatDateRu(val('docDate'));
   body += '\n\n_______________________ / ' + applicant.split(' ')[0];
   body += '\n\nПриложения:\n1. Копия документа, подтверждающего обстоятельства\n2. Копия настоящего обращения';
@@ -1422,6 +1674,19 @@ function downloadPDF() {
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   }).from(el).save();
 }
+function downloadWord() {
+  const el = document.getElementById('docPreview');
+  if (el.querySelector('.placeholder-empty')) { alert('Сначала сформируйте документ.'); return; }
+  const text = el.innerText;
+  const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Документ</title></head><body style="font-family: Times New Roman, serif; font-size: 14px; line-height: 1.8; padding: 40px; white-space: pre-wrap;">' + escapeHtml(text) + '</body></html>';
+  const blob = new Blob([html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'lexscriptor_' + Date.now() + '.doc';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 function printDoc() {
   const el = document.getElementById('docPreview');
   if (el.querySelector('.placeholder-empty')) { alert('Сначала сформируйте документ.'); return; }
@@ -1486,43 +1751,64 @@ function initOrgTemplatesPage() {
   });
 }
 
-// ============ TOOLS: CALCULATOR ============
-function calcFee() {
-  const type = document.getElementById('feeType').value;
-  const amount = parseFloat(document.getElementById('feeAmount').value) || 0;
-  const res = document.getElementById('feeResult');
-  let fee = 0;
-  if (type === 'nonproperty') { fee = 300; res.textContent = 'Госпошлина: ' + fee + ' руб. (ст. 333.19 НК РФ)'; return; }
-  if (type === 'moral') { fee = 300; res.textContent = 'Госпошлина: ' + fee + ' руб. (требование неимущественного характера)'; return; }
-  // имущественный
-  if (amount <= 100000) fee = 4000;
-  else if (amount <= 300000) fee = 4000 + (amount - 100000) * 0.03;
-  else if (amount <= 500000) fee = 10000 + (amount - 300000) * 0.02;
-  else if (amount <= 1000000) fee = 14000 + (amount - 500000) * 0.01;
-  else fee = 19000 + (amount - 1000000) * 0.005;
-  if (fee > 60000) fee = 60000;
-  // Для потребителей при сумме до 1 млн — не платят
-  const consumerNote = amount <= 1000000 ? ' Для потребителей при цене иска до 1 млн руб. — госпошлина не уплачивается (ст. 333.36 НК РФ).' : '';
-  res.textContent = 'Госпошлина: ' + fee.toFixed(0) + ' руб. (ст. 333.19 НК РФ).' + consumerNote;
+// ============ TOOLS: DEADLINES ============
+function renderDeadlines() {
+  const tbody = document.getElementById('deadlineBody');
+  if (!tbody) return;
+  let html = '';
+  LEGAL_DEADLINES.forEach(cat => {
+    html += '<tr><td colspan="4" class="dl-cat">' + escapeHtml(cat.category) + '</td></tr>';
+    cat.items.forEach(item => {
+      html += '<tr>' +
+        '<td>' + escapeHtml(item.action) + '</td>' +
+        '<td class="dl-value">' + escapeHtml(item.value) + '</td>' +
+        '<td class="dl-article">' + escapeHtml(item.article) + '</td>' +
+        '<td class="dl-note">' + escapeHtml(item.note) + '</td>' +
+      '</tr>';
+    });
+  });
+  tbody.innerHTML = html;
 }
 
-// ============ TOOLS: DEADLINES ============
-function showDeadline() {
-  const k = document.getElementById('deadlineSelect').value;
-  const el = document.getElementById('deadlineResult');
-  const map = {
-    d10_zozpp: 'Возврат денег за товар — 10 дней с момента предъявления требования (ст. 22 ЗоЗПП).',
-    d7_zozpp: 'Замена товара — 7 дней, при проверке качества — 20 дней (ст. 21 ЗоЗПП).',
-    d45_zozpp: 'Устранение недостатков — не более 45 дней (ст. 20 ЗоЗПП).',
-    d10_koap: 'Обжалование штрафа — 10 суток со дня вручения или получения копии постановления (ст. 30.3 КоАП РФ).',
-    d3m_tk: 'Обращение в суд по спору об увольнении — 1 месяц со дня вручения копии приказа (ст. 392 ТК РФ).',
-    d1y_tk: 'Обращение по спорам о невыплате зарплаты — 1 год со дня установленного срока выплаты (ст. 392 ТК РФ).',
-    d3y_gk: 'Общий срок исковой давности — 3 года (ст. 196 ГК РФ).',
-    d30_59fz: 'Рассмотрение письменного обращения гражданина — 30 дней (ФЗ № 59-ФЗ).',
-    d5_gpk: 'Апелляционная жалоба — 1 месяц со дня принятия решения в окончательной форме (ст. 321 ГПК РФ).',
-    d10_gpk: 'Возражение на судебный приказ — 10 дней со дня получения копии (ст. 128 ГПК РФ).'
-  };
-  el.textContent = map[k] || 'Выберите срок для пояснения';
+// ============ TOOLS: LAW REFERENCE ============
+function renderLawReference(filter) {
+  const container = document.getElementById('lawReference');
+  if (!container) return;
+  const q = (filter || '').toLowerCase();
+  let html = '';
+  LAW_REFERENCE.forEach((cat, ci) => {
+    let items = cat.items;
+    if (q) {
+      items = items.filter(it => it.name.toLowerCase().includes(q) || it.desc.toLowerCase().includes(q) || it.article.toLowerCase().includes(q));
+    }
+    if (!items.length) return;
+    const open = q ? 'open' : (ci === 0 ? 'open' : '');
+    html += '<div class="law-category">' +
+      '<div class="law-category-header ' + open + '" onclick="toggleLawCategory(this)">' +
+        '<span>' + escapeHtml(cat.category) + ' (' + items.length + ')</span>' +
+        '<span class="arrow">▼</span>' +
+      '</div>' +
+      '<div class="law-category-body ' + open + '">';
+    items.forEach(it => {
+      html += '<div class="law-item">' +
+        '<div class="law-name">' + escapeHtml(it.name) + '</div>' +
+        '<div class="law-article">' + escapeHtml(it.article) + '</div>' +
+        '<div class="law-desc">' + escapeHtml(it.desc) + '</div>' +
+      '</div>';
+    });
+    html += '</div></div>';
+  });
+  if (!html) html = '<p style="font-family: system-ui, sans-serif; font-size: 13px; color: var(--muted); padding: 12px;">Ничего не найдено.</p>';
+  container.innerHTML = html;
+}
+function toggleLawCategory(el) {
+  el.classList.toggle('open');
+  const body = el.nextElementSibling;
+  if (body) body.classList.toggle('open');
+}
+function filterLaws() {
+  const q = document.getElementById('lawSearch').value;
+  renderLawReference(q);
 }
 
 // ============ SUBSCRIBE ============

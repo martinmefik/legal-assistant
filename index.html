@@ -977,7 +977,9 @@ async function generateWithAI() {
   statusText.textContent = 'DeepSeek анализирует факты, переписывает текст и подбирает нормы…';
 
   try {
-    const rule = LegalEngine.analyze(facts, state.situation);
+    let rule = null;
+for (const r of state.situation.rules) { try { if (r.when(facts)) { rule = r; break; } } catch(e){} }
+if (!rule) rule = state.situation.rules[state.situation.rules.length - 1];
     const factsText = state.situation.fields
       .filter(f => facts[f.id])
       .map(f => f.label + ': ' + facts[f.id])
